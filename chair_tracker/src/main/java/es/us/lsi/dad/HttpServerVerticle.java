@@ -14,11 +14,11 @@ public class HttpServerVerticle extends AbstractVerticle {
 
 	@Override
 	public void start(Promise<Void> startFuture) {
-		// Iniciamos el verticle encargado de la base de datos
+		//Inicializacion
+			//Verticle base de datos
 		vertx.deployVerticle(new BBDDVerticle());
 
-		// Creamos el objeto Router que nos permite enlazar peticiones REST a funciones
-		// de nuestro servidor
+			//Router peticiones REST 
 		Router router = Router.router(vertx);
 
 		// USUARIO
@@ -61,7 +61,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 		router.get("/api/registros/llamadas/enviadas/:remitente_nif_fk").handler(this::obtenerRegistrosLlamadasEnviadas);
 		router.get("/api/registros/llamadas/recibidas/:destinatario_nif_fk").handler(this::obtenerRegistrosLlamadasRecibidas);
 		
-		// Creamos el servidor HTTP en el puerto 808X
+			//Server HTTP
 		httpServer = vertx.createHttpServer();
 		httpServer.requestHandler(router::handle).listen(8084, res -> {
 			System.out.println("Conectado");
@@ -83,8 +83,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 	 **********************************************/
 
 	private void obtenerUsuarios(RoutingContext routingContext) {
-		// Enviamos petición al canal abierto del verticle BD y devolvemos una respuesta
-		// a la petición REST. Así igual con el resto
+		//Peticion al bus de eventos para comunicarnos con el verticle BBDD, devolvemos respuesta en consecuencia
 		vertx.eventBus().request("obtenerUsuarios", "obtenerUsuarios", reply -> {
 			if (reply.succeeded()) {
 				System.out.println(reply.result().body());
@@ -112,8 +111,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 	}
 
 	private void anadirUsuario(RoutingContext routingContext) {
-		// Añadimos un usuario utilizando los datos que están dentro del body de la
-		// petición. IMPORTANTE: USAR EL BODY EN POSTMAN DE TIPO RAW
+		//Añadimos un usuario con los datos del body de la peticion
 		vertx.eventBus().request("anadirUsuario", routingContext.getBodyAsString(), reply -> {
 			if (reply.succeeded()) {
 				System.out.println(reply.result().body());
@@ -128,10 +126,9 @@ public class HttpServerVerticle extends AbstractVerticle {
 
 	private void editarUsuario(RoutingContext routingContext) {
 		String nif = routingContext.request().getParam("nif");
-		// Creamos un objeto JSON de los datos a modificar del usuario
+		//json de los datos a modificar del usuario
 		JsonObject json = routingContext.getBodyAsJson();
-		// Añadimos a dicho JSON el id_placa para poder saber que usuario queremos
-		// modificar.
+		//Añadir el nif que identifica al usuario para su modificacion
 		json.put("nif", nif);
 		vertx.eventBus().request("editarUsuario", json.toString(), reply -> {
 			if (reply.succeeded()) {

@@ -103,7 +103,7 @@ public class BBDDVerticle extends AbstractVerticle {
 						json.put(v.getString("nif"), v.toJson());
 					});
 				} else {
-					json.put(String.valueOf("Error"), res.cause());
+					json.put(String.valueOf("ERROR"), res.cause());
 				}
 				;
 				message.reply(json);
@@ -229,7 +229,7 @@ public class BBDDVerticle extends AbstractVerticle {
 						json.put(String.valueOf(v.getValue("oid_placa")), v.toJson());
 					});
 				} else {
-					json.put(String.valueOf("Error"), res.cause());
+					json.put(String.valueOf("ERROR"), res.cause());
 				}
 				;
 				message.reply(json);
@@ -261,7 +261,7 @@ public class BBDDVerticle extends AbstractVerticle {
 						json.put(String.valueOf(v.getValue("oid_placa")), v.toJson());
 					});
 				} else {
-					json.put(String.valueOf("Error"), res.cause());
+					json.put(String.valueOf("ERROR"), res.cause());
 				}
 				;
 				message.reply(json);
@@ -384,7 +384,7 @@ public class BBDDVerticle extends AbstractVerticle {
 						json.put(String.valueOf(v.getValue("oid_alarma")), v.toJson());
 					});
 				} else {
-					json.put(String.valueOf("Error"), res.cause());
+					json.put(String.valueOf("ERROR"), res.cause());
 				}
 				;
 				message.reply(json);
@@ -421,7 +421,7 @@ public class BBDDVerticle extends AbstractVerticle {
 						json.put(String.valueOf(v.getValue("oid_alarma")), v.toJson());
 					});
 				} else {
-					json.put(String.valueOf("Error"), res.cause());
+					json.put(String.valueOf("ERROR"), res.cause());
 				}
 				;
 				message.reply(json);
@@ -557,7 +557,7 @@ public class BBDDVerticle extends AbstractVerticle {
 						json.put(String.valueOf(v.getValue("oid_llamada")), v.toJson());
 					});
 				} else {
-					json.put(String.valueOf("Error"), res.cause());
+					json.put(String.valueOf("ERROR"), res.cause());
 				}
 				;
 				message.reply(json);
@@ -591,7 +591,7 @@ public class BBDDVerticle extends AbstractVerticle {
 						json.put(String.valueOf(v.getValue("oid_llamada")), v.toJson());
 					});
 				} else {
-					json.put(String.valueOf("Error"), res.cause());
+					json.put(String.valueOf("ERROR"), res.cause());
 				}
 				;
 				message.reply(json);
@@ -625,7 +625,7 @@ public class BBDDVerticle extends AbstractVerticle {
 						json.put(String.valueOf(v.getValue("oid_llamada")), v.toJson());
 					});
 				} else {
-					json.put(String.valueOf("Error"), res.cause());
+					json.put(String.valueOf("ERROR"), res.cause());
 				}
 				;
 				message.reply(json);
@@ -735,7 +735,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 					});
 				} else {
-					json.put(String.valueOf("Error"), res.cause());
+					json.put(String.valueOf("ERROR"), res.cause());
 				}
 				;
 				message.reply(json);
@@ -773,7 +773,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 					});
 				} else {
-					json.put(String.valueOf("Error"), res.cause());
+					json.put(String.valueOf("ERROR"), res.cause());
 				}
 				;
 				message.reply(json);
@@ -810,7 +810,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 					});
 				} else {
-					json.put(String.valueOf("Error"), res.cause());
+					json.put(String.valueOf("ERROR"), res.cause());
 				}
 				;
 				message.reply(json);
@@ -850,7 +850,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 					});
 				} else {
-					json.put(String.valueOf("Error"), res.cause());
+					json.put(String.valueOf("ERROR"), res.cause());
 				}
 				;
 				message.reply(json);
@@ -890,7 +890,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 					});
 				} else {
-					json.put(String.valueOf("Error"), res.cause());
+					json.put(String.valueOf("ERROR"), res.cause());
 				}
 				;
 				message.reply(json);
@@ -930,7 +930,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 					});
 				} else {
-					json.put(String.valueOf("Error"), res.cause());
+					json.put(String.valueOf("ERROR"), res.cause());
 				}
 				;
 				message.reply(json);
