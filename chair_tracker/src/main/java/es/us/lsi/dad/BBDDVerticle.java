@@ -114,18 +114,36 @@ public class BBDDVerticle extends AbstractVerticle {
 	//Borra un usuario de la BBDD dado su nif
 	private void borrarUsuario() {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("borrarUsuario");
-
+				
 		consumer.handler(message -> {
 			String nif = message.body();
-			Query<RowSet<Row>> query = mySqlClient.query("DELETE FROM proyectodad.Usuarios WHERE nif = '" + nif + "';");
 
-			query.execute(res -> {
+			
+			Query<RowSet<Row>> queryCount = mySqlClient.query("SELECT COUNT(*) AS cuenta FROM proyectodad.usuarios WHERE nif = '" + nif + "';");
+			
+			queryCount.execute(res -> {
 				if (res.succeeded()) {
-					message.reply("Borrado del usuario " + nif);
+					
+					Row rowCount = res.result().iterator().next();
+				
+					if(rowCount.getInteger("cuenta") > 0) {
+						
+						Query<RowSet<Row>> query = mySqlClient.query("DELETE FROM proyectodad.Usuarios WHERE nif = '" + nif + "';");
+						
+						query.execute(resQuery -> {
+							if (resQuery.succeeded()) {
+								message.reply("Borrado del usuario " + nif);
+							} else {
+								message.reply("ERROR AL BORRAR EL USUARIO");
+							}
+						});
+					}
+						else {
+						message.reply("ERROR AL ELIMINAR EL USUARIO: NO EXISTE UN USUARIO CON ESE NIF");
+					}	
 				} else {
-					message.reply("ERROR AL BORRAR EL USUARIO");
+					message.reply("ERROR AL ELIMINAR EL USUARIO " + res.cause());
 				}
-				;
 			});
 		});
 	}
@@ -182,19 +200,36 @@ public class BBDDVerticle extends AbstractVerticle {
 			editUser.setRol(jsonEditUsuario.getString("rol"));
 			editUser.setNif_jefe(jsonEditUsuario.getString("nif_jefe"));
 			
-			Query<RowSet<Row>> query = mySqlClient.query("UPDATE proyectodad.Usuarios SET nif = '"
-					+ editUser.getNif() + "', contrasena = '" + editUser.getContrasena()
-			 +"', last_login = '"+editUser.getLastLogin() 
-					+ "', nombre = '" + editUser.getNombre() + "', apellidos = '" + editUser.getApellidos()
-					+ "', rol = '" + editUser.getRol() + "', nif_jefe = '" + editUser.getNif_jefe() +"' WHERE nif = '" + nif + "';");
-
-			query.execute(res -> {
+			Query<RowSet<Row>> queryCount = mySqlClient.query("SELECT COUNT(*) AS cuenta FROM proyectodad.Usuarios WHERE nif = '" + nif + "';");
+			
+			queryCount.execute(res -> {
 				if (res.succeeded()) {
-					message.reply("Editado el usuario " + editUser.getNombre() + " con NIF: " + editUser.getNif());
+					
+					Row rowCount = res.result().iterator().next();
+				
+					if(rowCount.getInteger("cuenta") > 0) {
+						
+						Query<RowSet<Row>> query = mySqlClient.query("UPDATE proyectodad.Usuarios SET nif = '"
+								+ editUser.getNif() + "', contrasena = '" + editUser.getContrasena()
+						 +"', last_login = '"+editUser.getLastLogin() 
+								+ "', nombre = '" + editUser.getNombre() + "', apellidos = '" + editUser.getApellidos()
+								+ "', rol = '" + editUser.getRol() + "', nif_jefe = '" + editUser.getNif_jefe() +"' WHERE nif = '" + nif + "';");
+						
+						
+						query.execute(resQuery -> {
+							if (resQuery.succeeded()) {
+								message.reply("Editado el usuario " + editUser.getNombre() + " con NIF: " + editUser.getNif());
+							} else {
+								message.reply("ERROR AL EDITAR EL USUARIO" + resQuery.cause());
+							}
+						});
+					}
+						else {
+						message.reply("ERROR AL EDITAR EL USUARIO: NO EXISTE UN USUARIO CON ESE NIF");
+					}	
 				} else {
 					message.reply("ERROR AL EDITAR EL USUARIO " + res.cause());
 				}
-				;
 			});
 		});
 	}
@@ -272,19 +307,36 @@ public class BBDDVerticle extends AbstractVerticle {
 	//Borra la placa segun oid_placa
 	private void borrarPlaca() {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("borrarPlaca");
-
+				
 		consumer.handler(message -> {
 			String oid_placa = message.body();
-			Query<RowSet<Row>> query = mySqlClient
-					.query("DELETE FROM proyectodad.placas WHERE oid_placa = '" + oid_placa + "';");
 
-			query.execute(res -> {
+			
+			Query<RowSet<Row>> queryCount = mySqlClient.query("SELECT COUNT(*) AS cuenta FROM proyectodad.placas WHERE oid_placa = '" + oid_placa + "';");
+			
+			queryCount.execute(res -> {
 				if (res.succeeded()) {
-					message.reply("Borrado la placa " + oid_placa);
+					
+					Row rowCount = res.result().iterator().next();
+				
+					if(rowCount.getInteger("cuenta") > 0) {
+						
+						Query<RowSet<Row>> query = mySqlClient.query("DELETE FROM proyectodad.placas WHERE oid_placa = '" + oid_placa + "';");
+						
+						query.execute(resQuery -> {
+							if (resQuery.succeeded()) {
+								message.reply("Borrado la placa " + oid_placa);
+							} else {
+								message.reply("ERROR AL BORRAR LA PLACA");
+							}
+						});
+					}
+						else {
+						message.reply("ERROR AL ELIMINAR LA PLACA: NO EXISTE UNA PLACA CON ESE OID");
+					}	
 				} else {
-					message.reply("ERROR AL BORRAR LA PLACA");
+					message.reply("ERROR AL ELIMINAR LA PLACA " + res.cause());
 				}
-				;
 			});
 		});
 	}
@@ -322,6 +374,8 @@ public class BBDDVerticle extends AbstractVerticle {
 	private void editarPlaca() {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("editarPlaca");
 
+		
+		
 		consumer.handler(message -> {
 			JsonObject jsonEditPlaca = new JsonObject(message.body());
 			String oid_placa = jsonEditPlaca.getString("oid_placa");
@@ -331,19 +385,36 @@ public class BBDDVerticle extends AbstractVerticle {
 			editPlaca.setNombre(jsonEditPlaca.getString("nombre"));
 			editPlaca.setNif_fk(jsonEditPlaca.getString("nif_fk"));
 			editPlaca.setEstado(jsonEditPlaca.getString("estado"));
-
-			Query<RowSet<Row>> query = mySqlClient
-					.query("UPDATE proyectodad.placas SET " + "oid_placa = '" + editPlaca.getOid_placa()
-							+ "', nombre = '" + editPlaca.getNombre() + "', nif_fk = '" + editPlaca.getNif_fk()
-							+ "', estado = '" + editPlaca.getEstado() + "' WHERE oid_placa = '" + oid_placa + "';");
-
-			query.execute(res -> {
+			
+			Query<RowSet<Row>> queryCount = mySqlClient.query("SELECT COUNT(*) AS cuenta FROM proyectodad.placas WHERE oid_placa = '" + oid_placa + "';");
+			
+			queryCount.execute(res -> {
 				if (res.succeeded()) {
-					message.reply("Editada la placa " + editPlaca.getNombre() + " con ID: " + editPlaca.getOid_placa());
+					
+					Row rowCount = res.result().iterator().next();
+				
+					if(rowCount.getInteger("cuenta") > 0) {
+						
+						Query<RowSet<Row>> query = mySqlClient
+								.query("UPDATE proyectodad.placas SET " + "oid_placa = '" + editPlaca.getOid_placa()
+										+ "', nombre = '" + editPlaca.getNombre() + "', nif_fk = '" + editPlaca.getNif_fk()
+										+ "', estado = '" + editPlaca.getEstado() + "' WHERE oid_placa = '" + oid_placa + "';");
+						
+						
+						query.execute(resQuery -> {
+							if (resQuery.succeeded()) {
+								message.reply("Editada la placa " + editPlaca.getNombre() + " con ID: " + editPlaca.getOid_placa());
+							} else {
+								message.reply("ERROR AL EDITAR LA PLACA " + resQuery.cause());
+							}
+						});
+					}
+						else {
+						message.reply("ERROR AL EDITAR LA PLACA: NO EXISTE UNA PLACA CON ESE OID");
+					}	
 				} else {
 					message.reply("ERROR AL EDITAR LA PLACA " + res.cause());
 				}
-				;
 			});
 		});
 	}
@@ -431,22 +502,39 @@ public class BBDDVerticle extends AbstractVerticle {
 	
 	//Borra la alarma segun oid_alarma
 	private void borrarAlarma() {
-		MessageConsumer<String> consumer = vertx.eventBus().consumer("borrarAlarma");
-
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("borrarAlarma");		
+		
 		consumer.handler(message -> {
 			String oid_alarma = message.body();
-			Query<RowSet<Row>> query = mySqlClient
-					.query("DELETE FROM proyectodad.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
 
-			query.execute(res -> {
+			
+			Query<RowSet<Row>> queryCount = mySqlClient.query("SELECT COUNT(*) AS cuenta FROM proyectodad.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
+			
+			queryCount.execute(res -> {
 				if (res.succeeded()) {
-					message.reply("Borrado la alarma " + oid_alarma);
+					
+					Row rowCount = res.result().iterator().next();
+				
+					if(rowCount.getInteger("cuenta") > 0) {
+						
+						Query<RowSet<Row>> query = mySqlClient.query("DELETE FROM proyectodad.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
+						
+						query.execute(resQuery -> {
+							if (resQuery.succeeded()) {
+								message.reply("Borrado la alarma " + oid_alarma);
+							} else {
+								message.reply("ERROR AL BORRAR LA ALARMA");
+							}
+						});
+					}
+						else {
+						message.reply("ERROR AL ELIMINAR LA ALARMA: NO EXISTE UNA ALARMA CON ESE OID");
+					}	
 				} else {
-					message.reply("ERROR AL BORRAR LA ALARMA");
+					message.reply("ERROR AL ELIMINAR LA ALARMA " + res.cause());
 				}
-				;
 			});
-		});
+		});	
 	}
 
 	//Anade alarma a la BBDD
@@ -490,7 +578,7 @@ public class BBDDVerticle extends AbstractVerticle {
 	//Edita una alarma dado su oid
 	private void editarAlarma() {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("editarAlarma");
-
+		
 		consumer.handler(message -> {
 			JsonObject jsonEditAlarma = new JsonObject(message.body());
 			String oid_alarma = jsonEditAlarma.getString("oid_alarma");
@@ -505,22 +593,38 @@ public class BBDDVerticle extends AbstractVerticle {
 			editAlarma.setT_descanso(Short.valueOf(jsonEditAlarma.getString("t_descanso")));
 			editAlarma.setCiclo(Short.valueOf(jsonEditAlarma.getString("ciclo")));
 			editAlarma.setNif_fk(jsonEditAlarma.getString("nif_fk"));
-
-			Query<RowSet<Row>> query = mySqlClient.query("UPDATE proyectodad.alarmas SET " + "oid_alarma = '"
-					+ editAlarma.getOid_alarma() + "', dias = '" + editAlarma.getDias()
-					+ "', estado = '" + editAlarma.getEstado()  
-			 +"', t_inicio = '"+ editAlarma.getT_inicio()
-			 +"', t_fin = '"+ editAlarma.getT_fin()
-					+ "', t_trabajo = '" + editAlarma.getT_trabajo() + "', t_descanso = '" + editAlarma.getT_descanso()
-					+ "', ciclo = '" + editAlarma.getCiclo() + "', nif_fk = '" + editAlarma.getNif_fk() + "' WHERE oid_alarma = '" + oid_alarma + "';");
-
-			query.execute(res -> {
+			
+			Query<RowSet<Row>> queryCount = mySqlClient.query("SELECT COUNT(*) AS cuenta FROM proyectodad.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
+			
+			queryCount.execute(res -> {
 				if (res.succeeded()) {
-					message.reply("Editada la alarma con ID: " + editAlarma.getOid_alarma());
+					
+					Row rowCount = res.result().iterator().next();
+				
+					if(rowCount.getInteger("cuenta") > 0) {
+						
+						Query<RowSet<Row>> query = mySqlClient.query("UPDATE proyectodad.alarmas SET " + "oid_alarma = '"
+								+ editAlarma.getOid_alarma() + "', dias = '" + editAlarma.getDias()
+								+ "', estado = '" + editAlarma.getEstado()  
+						 +"', t_inicio = '"+ editAlarma.getT_inicio()
+						 +"', t_fin = '"+ editAlarma.getT_fin()
+								+ "', t_trabajo = '" + editAlarma.getT_trabajo() + "', t_descanso = '" + editAlarma.getT_descanso()
+								+ "', ciclo = '" + editAlarma.getCiclo() + "', nif_fk = '" + editAlarma.getNif_fk() + "' WHERE oid_alarma = '" + oid_alarma + "';");
+						
+						query.execute(resQuery -> {
+							if (resQuery.succeeded()) {
+								message.reply("Editada la alarma con ID: " + editAlarma.getOid_alarma());
+							} else {
+								message.reply("ERROR AL EDITAR LA ALARMA " + resQuery.cause());
+							}
+						});
+					}
+						else {
+						message.reply("ERROR AL EDITAR LA ALARMA: NO EXISTE UNA ALARMA CON ESE OID");
+					}	
 				} else {
-					message.reply("ERROR AL EDITAR LA ALARMA " + res.cause());
+					message.reply("ERROR AL EDITAR LA PLACA " + res.cause());
 				}
-				;
 			});
 		});
 	}
@@ -668,7 +772,7 @@ public class BBDDVerticle extends AbstractVerticle {
 	//edita una llamada dado su oid
 	private void editarLlamada() {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("editarLlamada");
-
+				
 		consumer.handler(message -> {
 			JsonObject jsonEditLlamada = new JsonObject(message.body());
 			String oid_llamada = jsonEditLlamada.getString("oid_llamada");
@@ -680,20 +784,37 @@ public class BBDDVerticle extends AbstractVerticle {
 			editLlamada.setDescripcion(jsonEditLlamada.getString("descripcion"));
 			editLlamada.setRemitente_nif_fk(jsonEditLlamada.getString("remitente_nif_fk"));
 			editLlamada.setDestinatario_nif_fk(jsonEditLlamada.getString("destinatario_nif_fk"));
-
-			Query<RowSet<Row>> query = mySqlClient.query("UPDATE proyectodad.llamadas SET " + "oid_llamada = '"
-					+ editLlamada.getOid_llamada() + "', estado = '" + editLlamada.getEstado() + "', desde = '"
-					+ editLlamada.getDesde() + "', descripcion = '" + editLlamada.getDescripcion() + "', remitente_nif_fk = '"
-					+ editLlamada.getRemitente_nif_fk() +  "', destinatario_nif_fk = '"
-					+ editLlamada.getDestinatario_nif_fk() + "' WHERE oid_llamada = '" + oid_llamada + "';");
-
-			query.execute(res -> {
+			
+			Query<RowSet<Row>> queryCount = mySqlClient.query("SELECT COUNT(*) AS cuenta FROM proyectodad.llamadas WHERE oid_llamada = '" + oid_llamada + "';");
+			
+			queryCount.execute(res -> {
 				if (res.succeeded()) {
-					message.reply("Editada la llamada con ID: " + editLlamada.getOid_llamada());
+					
+					Row rowCount = res.result().iterator().next();
+				
+					if(rowCount.getInteger("cuenta") > 0) {
+						
+						Query<RowSet<Row>> query = mySqlClient.query("UPDATE proyectodad.llamadas SET " + "oid_llamada = '"
+								+ editLlamada.getOid_llamada() + "', estado = '" + editLlamada.getEstado() + "', desde = '"
+								+ editLlamada.getDesde() + "', descripcion = '" + editLlamada.getDescripcion() + "', remitente_nif_fk = '"
+								+ editLlamada.getRemitente_nif_fk() +  "', destinatario_nif_fk = '"
+								+ editLlamada.getDestinatario_nif_fk() + "' WHERE oid_llamada = '" + oid_llamada + "';");
+
+						query.execute(resQuery -> {
+							if (resQuery.succeeded()) {
+								message.reply("Editada la llamada con ID: " + editLlamada.getOid_llamada());
+
+							} else {
+								message.reply("ERROR AL EDITAR LA LLAMADA " + resQuery.cause());
+							}
+						});
+					}
+						else {
+						message.reply("ERROR AL EDITAR LA LLAMADA: NO EXISTE UNA LLAMADA CON ESE OID");
+					}	
 				} else {
 					message.reply("ERROR AL EDITAR LA LLAMADA " + res.cause());
 				}
-				;
 			});
 		});
 	}
