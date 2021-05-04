@@ -1,0 +1,940 @@
+package es.us.lsi.dad;
+
+import com.google.gson.Gson;
+
+import es.us.lsi.dad.impl.AlarmaImpl;
+import es.us.lsi.dad.impl.LlamadaImpl;
+import es.us.lsi.dad.impl.PlacaImpl;
+import es.us.lsi.dad.impl.RegistroImpl;
+import es.us.lsi.dad.impl.UsuarioImpl;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Promise;
+import io.vertx.core.eventbus.MessageConsumer;
+import io.vertx.core.json.JsonObject;
+import io.vertx.mysqlclient.MySQLConnectOptions;
+import io.vertx.mysqlclient.MySQLPool;
+import io.vertx.sqlclient.PoolOptions;
+import io.vertx.sqlclient.Query;
+import io.vertx.sqlclient.Row;
+import io.vertx.sqlclient.RowSet;
+
+public class BBDDVerticle extends AbstractVerticle {
+
+	MySQLPool mySqlClient;
+	Gson gson;
+
+	@Override
+	public void start(Promise<Void> startFuture) {
+		MySQLConnectOptions connectOptions = new MySQLConnectOptions().setPort(3306).setHost("localhost")
+				.setDatabase("proyectodad").setUser("root").setPassword("root");
+
+		PoolOptions poolOptions = new PoolOptions().setMaxSize(5);
+
+		mySqlClient = MySQLPool.pool(vertx, connectOptions, poolOptions);
+
+		// USUARIOS
+		obtenerUsuarios();
+		borrarUsuario();
+		anadirUsuario();
+		editarUsuario();
+
+		// PLACAS
+		obtenerPlacas();
+		obtenerPlacasUsuario();
+		borrarPlaca();
+		anadirPlaca();
+		editarPlaca();
+
+		// ALARMAS
+		obtenerAlarmas();
+		obtenerAlarmasUsuario();
+		borrarAlarma();
+		anadirAlarma();
+		editarAlarma();
+
+		// LLAMADAS
+		obtenerLlamadas();
+		obtenerLlamadasRecibidasUsuario();
+		obtenerLlamadasEnviadasUsuario();
+		anadirLlamada();
+		editarLlamada();
+		
+		// REGISTROS
+		obtenerRegistros();
+		obtenerRegistrosLlamadas();
+		obtenerRegistrosAlarmas();
+		obtenerRegistrosAlarmasUsuario();
+		obtenerRegistrosLlamadasEnviadas();
+		obtenerRegistrosLlamadasRecibidas();
+
+		startFuture.complete();
+	}
+
+	/*
+	 * *********************************************
+	 * 
+	 * 
+	 * USUARIOS
+	 * 
+	 * 
+	 * *********************************************/
+	
+	//Obtiene todos los usuarios de la BBDD
+	private void obtenerUsuarios() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerUsuarios");
+
+		consumer.handler(message -> {
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.usuarios;");
+
+			query.execute(res -> {
+				JsonObject json = new JsonObject();
+				if (res.succeeded()) {
+
+					res.result().forEach(v -> {
+						UsuarioImpl usuario = new UsuarioImpl();
+						usuario.setNif(v.getString("nif"));
+						usuario.setContrasena(v.getString("contrasena"));
+						usuario.setLastLogin(UsuarioImpl.ParseaLocalDateTimeFromJson(String.valueOf(v.getValue("last_login"))));
+						usuario.setNombre(v.getString("nombre"));
+						usuario.setApellidos(v.getString("apellidos"));
+						usuario.setRol(v.getString("rol"));
+						usuario.setNif_jefe(v.getString("nif_jefe"));
+						System.out.println(json);
+						json.put(v.getString("nif"), v.toJson());
+					});
+				} else {
+					json.put(String.valueOf("Error"), res.cause());
+				}
+				;
+				message.reply(json);
+			});
+		});
+	}
+
+	//Borra un usuario de la BBDD dado su nif
+	private void borrarUsuario() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("borrarUsuario");
+
+		consumer.handler(message -> {
+			String nif = message.body();
+			Query<RowSet<Row>> query = mySqlClient.query("DELETE FROM proyectodad.Usuarios WHERE nif = '" + nif + "';");
+
+			query.execute(res -> {
+				if (res.succeeded()) {
+					message.reply("Borrado del usuario " + nif);
+				} else {
+					message.reply("ERROR AL BORRAR EL USUARIO");
+				}
+				;
+			});
+		});
+	}
+
+	//Anade un usuario a la BBDD
+	private void anadirUsuario() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("anadirUsuario");
+
+		consumer.handler(message -> {
+			JsonObject jsonNewUsuario = new JsonObject(message.body());
+			UsuarioImpl newUser = new UsuarioImpl();
+
+			newUser.setNif(jsonNewUsuario.getString("nif"));
+			newUser.setContrasena(jsonNewUsuario.getString("contrasena"));
+			newUser.setLastLogin(UsuarioImpl.ParseaLocalDateTimeFromJson(String.valueOf(jsonNewUsuario.getValue("last_login"))));
+			newUser.setNombre(jsonNewUsuario.getString("nombre"));
+			newUser.setApellidos(jsonNewUsuario.getString("apellidos"));
+			newUser.setRol(jsonNewUsuario.getString("rol"));
+			newUser.setNif_jefe(jsonNewUsuario.getString("nif_jefe"));
+
+
+			Query<RowSet<Row>> query = mySqlClient.query(
+					"INSERT INTO proyectodad.Usuarios(nif, contrasena, last_login, nombre, apellidos, rol, nif_jefe) "
+							+ "VALUES ('" + newUser.getNif() + "','" + newUser.getContrasena()
+			 +"','" + newUser.getLastLogin() 
+							+ "','" + newUser.getNombre() + "','" + newUser.getApellidos() + "','" + newUser.getRol()
+							+ "','" + newUser.getNif_jefe() +"');");
+
+			query.execute(res -> {
+				if (res.succeeded()) {
+					message.reply("Añadido el usuario " + newUser.getNombre() + " con NIF: " + newUser.getNif());
+				} else {
+					message.reply("ERROR AL AÑADIR EL USUARIO " + res.cause());
+				}
+				;
+			});
+		});
+	}
+
+	//Edita los datos de un usuario dado su nif
+	private void editarUsuario() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("editarUsuario");
+
+		consumer.handler(message -> {
+			JsonObject jsonEditUsuario = new JsonObject(message.body());
+			String nif = jsonEditUsuario.getString("nif");
+			UsuarioImpl editUser = new UsuarioImpl();
+			
+			editUser.setNif(jsonEditUsuario.getString("nif"));
+			editUser.setContrasena(jsonEditUsuario.getString("contrasena"));
+			editUser.setLastLogin(UsuarioImpl.ParseaLocalDateTimeFromJson(String.valueOf(jsonEditUsuario.getValue("last_login"))));
+			editUser.setNombre(jsonEditUsuario.getString("nombre"));
+			editUser.setApellidos(jsonEditUsuario.getString("apellidos"));
+			editUser.setRol(jsonEditUsuario.getString("rol"));
+			editUser.setNif_jefe(jsonEditUsuario.getString("nif_jefe"));
+			
+			Query<RowSet<Row>> query = mySqlClient.query("UPDATE proyectodad.Usuarios SET nif = '"
+					+ editUser.getNif() + "', contrasena = '" + editUser.getContrasena()
+			 +"', last_login = '"+editUser.getLastLogin() 
+					+ "', nombre = '" + editUser.getNombre() + "', apellidos = '" + editUser.getApellidos()
+					+ "', rol = '" + editUser.getRol() + "', nif_jefe = '" + editUser.getNif_jefe() +"' WHERE nif = '" + nif + "';");
+
+			query.execute(res -> {
+				if (res.succeeded()) {
+					message.reply("Editado el usuario " + editUser.getNombre() + " con NIF: " + editUser.getNif());
+				} else {
+					message.reply("ERROR AL EDITAR EL USUARIO " + res.cause());
+				}
+				;
+			});
+		});
+	}
+
+	/*
+	 * *********************************************
+	 * 
+	 * 
+	 * PLACAS
+	 * 
+	 * 
+	 * *********************************************/
+	
+	//Obtiene todas las placas de la BBDD
+	private void obtenerPlacas() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerPlacas");
+
+		consumer.handler(message -> {
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.placas;");
+
+			query.execute(res -> {
+				JsonObject json = new JsonObject();
+				if (res.succeeded()) {
+
+					res.result().forEach(v -> {
+						PlacaImpl placa = new PlacaImpl();
+						placa.setOid_placa(v.getShort("oid_placa"));
+						placa.setNombre(v.getString("nombre"));
+						placa.setNif_fk(v.getString("nif_fk"));
+						placa.setEstado(v.getString("estado"));
+						System.out.println(json);
+						json.put(String.valueOf(v.getValue("oid_placa")), v.toJson());
+					});
+				} else {
+					json.put(String.valueOf("Error"), res.cause());
+				}
+				;
+				message.reply(json);
+			});
+		});
+	}
+	
+	//Obtiene las placas asociadas al usuario dado segun su nif
+	private void obtenerPlacasUsuario() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerPlacasUsuario");
+
+		consumer.handler(message -> {
+			JsonObject jsonEditLlamada = new JsonObject(message.body());
+			String nif_fk = jsonEditLlamada.getString("nif_fk");
+
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.placas WHERE nif_fk = '" + nif_fk + "';");
+
+			query.execute(res -> {
+				JsonObject json = new JsonObject();
+				if (res.succeeded()) {
+
+					res.result().forEach(v -> {
+						PlacaImpl placa = new PlacaImpl();
+						placa.setOid_placa(v.getShort("oid_placa"));
+						placa.setNombre(v.getString("nombre"));
+						placa.setNif_fk(v.getString("nif_fk"));
+						placa.setEstado(v.getString("estado"));
+						System.out.println(json);
+						json.put(String.valueOf(v.getValue("oid_placa")), v.toJson());
+					});
+				} else {
+					json.put(String.valueOf("Error"), res.cause());
+				}
+				;
+				message.reply(json);
+			});
+		});
+	}
+
+	//Borra la placa segun oid_placa
+	private void borrarPlaca() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("borrarPlaca");
+
+		consumer.handler(message -> {
+			String oid_placa = message.body();
+			Query<RowSet<Row>> query = mySqlClient
+					.query("DELETE FROM proyectodad.placas WHERE oid_placa = '" + oid_placa + "';");
+
+			query.execute(res -> {
+				if (res.succeeded()) {
+					message.reply("Borrado la placa " + oid_placa);
+				} else {
+					message.reply("ERROR AL BORRAR LA PLACA");
+				}
+				;
+			});
+		});
+	}
+
+	//Anade placa a la BBDD
+	private void anadirPlaca() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("anadirPlaca");
+
+		consumer.handler(message -> {
+			JsonObject jsonNewPlaca = new JsonObject(message.body());
+			PlacaImpl newPlaca = new PlacaImpl();
+
+			newPlaca.setOid_placa(Short.valueOf(jsonNewPlaca.getString("oid_placa")));
+			newPlaca.setNombre(jsonNewPlaca.getString("nombre"));
+			newPlaca.setNif_fk(jsonNewPlaca.getString("nif_fk"));
+			newPlaca.setEstado(jsonNewPlaca.getString("estado"));
+
+			Query<RowSet<Row>> query = mySqlClient
+					.query("INSERT INTO proyectodad.placas(oid_placa, nombre, nif_fk, estado) " + "VALUES ('"
+							+ newPlaca.getOid_placa() + "','" + newPlaca.getNombre() + "','" + newPlaca.getNif_fk()
+							+ "','" + newPlaca.getEstado() + "');");
+
+			query.execute(res -> {
+				if (res.succeeded()) {
+					message.reply("Añadida la placa " + newPlaca.getNombre() + " con ID: " + newPlaca.getOid_placa());
+				} else {
+					message.reply("ERROR AL AÑADIR LA PLACA " + res.cause());
+				}
+				;
+			});
+		});
+	}
+
+	//Edita los datos de una placa dado su oid
+	private void editarPlaca() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("editarPlaca");
+
+		consumer.handler(message -> {
+			JsonObject jsonEditPlaca = new JsonObject(message.body());
+			String oid_placa = jsonEditPlaca.getString("oid_placa");
+			PlacaImpl editPlaca = new PlacaImpl();
+
+			editPlaca.setOid_placa(Short.valueOf(jsonEditPlaca.getString("oid_placa")));
+			editPlaca.setNombre(jsonEditPlaca.getString("nombre"));
+			editPlaca.setNif_fk(jsonEditPlaca.getString("nif_fk"));
+			editPlaca.setEstado(jsonEditPlaca.getString("estado"));
+
+			Query<RowSet<Row>> query = mySqlClient
+					.query("UPDATE proyectodad.placas SET " + "oid_placa = '" + editPlaca.getOid_placa()
+							+ "', nombre = '" + editPlaca.getNombre() + "', nif_fk = '" + editPlaca.getNif_fk()
+							+ "', estado = '" + editPlaca.getEstado() + "' WHERE oid_placa = '" + oid_placa + "';");
+
+			query.execute(res -> {
+				if (res.succeeded()) {
+					message.reply("Editada la placa " + editPlaca.getNombre() + " con ID: " + editPlaca.getOid_placa());
+				} else {
+					message.reply("ERROR AL EDITAR LA PLACA " + res.cause());
+				}
+				;
+			});
+		});
+	}
+
+	/*
+	 * *********************************************
+	 * 
+	 * 
+	 * ALARMAS
+	 * 
+	 * 
+	 * *********************************************/
+	
+	//Obtiene todas las alarmas de la BBDD
+	private void obtenerAlarmas() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerAlarmas");
+
+		consumer.handler(message -> {
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.alarmas;");
+
+			query.execute(res -> {
+				JsonObject json = new JsonObject();
+
+				if (res.succeeded()) {
+
+					res.result().forEach(v -> {
+						AlarmaImpl alarma = new AlarmaImpl();
+						alarma.setOid_alarma(v.getShort("oid_alarma"));
+						alarma.setDias(v.getString("dias"));
+						alarma.setEstado("estado");
+						alarma.setT_inicio(AlarmaImpl.ParseaLocalTimeFromJson(String.valueOf(v.getValue("t_inicio"))));
+						alarma.setT_fin(AlarmaImpl.ParseaLocalTimeFromJson(String.valueOf(v.getValue("t_fin"))));
+						alarma.setT_trabajo(v.getShort("t_trabajo"));
+						alarma.setT_descanso(v.getShort("t_descanso"));
+						alarma.setCiclo(v.getShort("ciclo"));
+						alarma.setNif_fk(v.getString("nif_fk"));
+						System.out.println(json);
+						json.put(String.valueOf(v.getValue("oid_alarma")), v.toJson());
+					});
+				} else {
+					json.put(String.valueOf("Error"), res.cause());
+				}
+				;
+				message.reply(json);
+			});
+		});
+	}
+	
+	//Obtiene las alarmas asociadas a un usuario dado su nif
+	private void obtenerAlarmasUsuario() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerAlarmasUsuario");
+
+		consumer.handler(message -> {
+			JsonObject jsonEditLlamada = new JsonObject(message.body());
+			String nif_fk = jsonEditLlamada.getString("nif_fk");
+
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.alarmas WHERE nif_fk = '" + nif_fk + "';");
+
+			query.execute(res -> {
+				JsonObject json = new JsonObject();
+				if (res.succeeded()) {
+
+					res.result().forEach(v -> {
+						AlarmaImpl alarma = new AlarmaImpl();
+						alarma.setOid_alarma(v.getShort("oid_alarma"));
+						alarma.setDias(v.getString("dias"));
+						alarma.setEstado("estado");
+						alarma.setT_inicio(AlarmaImpl.ParseaLocalTimeFromJson(String.valueOf(v.getValue("t_inicio"))));
+						alarma.setT_fin(AlarmaImpl.ParseaLocalTimeFromJson(String.valueOf(v.getValue("t_fin"))));
+						alarma.setT_trabajo(v.getShort("t_trabajo"));
+						alarma.setT_descanso(v.getShort("t_descanso"));
+						alarma.setCiclo(v.getShort("ciclo"));
+						alarma.setNif_fk(v.getString("nif_fk"));
+						System.out.println(json);
+						json.put(String.valueOf(v.getValue("oid_alarma")), v.toJson());
+					});
+				} else {
+					json.put(String.valueOf("Error"), res.cause());
+				}
+				;
+				message.reply(json);
+			});
+		});
+	}
+	
+	//Borra la alarma segun oid_alarma
+	private void borrarAlarma() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("borrarAlarma");
+
+		consumer.handler(message -> {
+			String oid_alarma = message.body();
+			Query<RowSet<Row>> query = mySqlClient
+					.query("DELETE FROM proyectodad.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
+
+			query.execute(res -> {
+				if (res.succeeded()) {
+					message.reply("Borrado la alarma " + oid_alarma);
+				} else {
+					message.reply("ERROR AL BORRAR LA ALARMA");
+				}
+				;
+			});
+		});
+	}
+
+	//Anade alarma a la BBDD
+	private void anadirAlarma() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("anadirAlarma");
+		
+		consumer.handler(message -> {
+			JsonObject jsonNewAlarma = new JsonObject(message.body());
+			AlarmaImpl newAlarma = new AlarmaImpl();
+
+			newAlarma.setOid_alarma(Short.valueOf(jsonNewAlarma.getString("oid_alarma")));
+			newAlarma.setDias(jsonNewAlarma.getString("dias"));
+			newAlarma.setEstado(jsonNewAlarma.getString("estado"));
+			newAlarma.setT_inicio(AlarmaImpl.ParseaLocalTimeFromJson(jsonNewAlarma.getString("t_inicio")));
+			newAlarma.setT_fin( AlarmaImpl.ParseaLocalTimeFromJson(jsonNewAlarma.getString("t_fin")));
+			newAlarma.setT_trabajo(Short.valueOf(jsonNewAlarma.getString("t_trabajo")));
+			newAlarma.setT_descanso(Short.valueOf(jsonNewAlarma.getString("t_descanso")));
+			newAlarma.setCiclo(Short.valueOf(jsonNewAlarma.getString("ciclo")));
+			newAlarma.setNif_fk(jsonNewAlarma.getString("nif_fk"));
+						
+			Query<RowSet<Row>> query = mySqlClient.query("INSERT INTO proyectodad.alarmas(oid_alarma, dias, estado, t_inicio, t_fin," +
+			"t_trabajo, t_descanso, ciclo, nif_fk) " + "VALUES ('" + newAlarma.getOid_alarma() + "','" + newAlarma.getDias() + "','" + newAlarma.getEstado()
+			 +"','"+ newAlarma.getT_inicio()
+			 +"','"+ newAlarma.getT_fin()
+			 + "','" + newAlarma.getT_trabajo() 
+			 + "','" + newAlarma.getT_descanso() 
+			 + "','" + newAlarma.getCiclo()
+			 + "','" + newAlarma.getNif_fk() + "');");
+
+			query.execute(res -> {
+				if (res.succeeded()) {
+					message.reply("Añadida la alarma con ID: " + newAlarma.getOid_alarma());
+				} else {
+					message.reply("ERROR AL AÑADIR LA ALARMA " + res.cause());
+				}
+				;
+			});
+		});
+	}
+
+	//Edita una alarma dado su oid
+	private void editarAlarma() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("editarAlarma");
+
+		consumer.handler(message -> {
+			JsonObject jsonEditAlarma = new JsonObject(message.body());
+			String oid_alarma = jsonEditAlarma.getString("oid_alarma");
+			AlarmaImpl editAlarma = new AlarmaImpl();
+
+			editAlarma.setOid_alarma(Short.valueOf(jsonEditAlarma.getString("oid_alarma")));
+			editAlarma.setDias(jsonEditAlarma.getString("dias"));
+			editAlarma.setEstado(jsonEditAlarma.getString("estado"));
+			editAlarma.setT_inicio(AlarmaImpl.ParseaLocalTimeFromJson(jsonEditAlarma.getString("t_inicio")));
+			editAlarma.setT_fin( AlarmaImpl.ParseaLocalTimeFromJson(jsonEditAlarma.getString("t_fin")));
+			editAlarma.setT_trabajo(Short.valueOf(jsonEditAlarma.getString("t_trabajo")));
+			editAlarma.setT_descanso(Short.valueOf(jsonEditAlarma.getString("t_descanso")));
+			editAlarma.setCiclo(Short.valueOf(jsonEditAlarma.getString("ciclo")));
+			editAlarma.setNif_fk(jsonEditAlarma.getString("nif_fk"));
+
+			Query<RowSet<Row>> query = mySqlClient.query("UPDATE proyectodad.alarmas SET " + "oid_alarma = '"
+					+ editAlarma.getOid_alarma() + "', dias = '" + editAlarma.getDias()
+					+ "', estado = '" + editAlarma.getEstado()  
+			 +"', t_inicio = '"+ editAlarma.getT_inicio()
+			 +"', t_fin = '"+ editAlarma.getT_fin()
+					+ "', t_trabajo = '" + editAlarma.getT_trabajo() + "', t_descanso = '" + editAlarma.getT_descanso()
+					+ "', ciclo = '" + editAlarma.getCiclo() + "', nif_fk = '" + editAlarma.getNif_fk() + "' WHERE oid_alarma = '" + oid_alarma + "';");
+
+			query.execute(res -> {
+				if (res.succeeded()) {
+					message.reply("Editada la alarma con ID: " + editAlarma.getOid_alarma());
+				} else {
+					message.reply("ERROR AL EDITAR LA ALARMA " + res.cause());
+				}
+				;
+			});
+		});
+	}
+
+	/*
+	 * *********************************************
+	 * 
+	 * 
+	 * LLAMADAS
+	 * 
+	 * 
+	 * *********************************************/
+
+	//Obtiene todas las llamdas de la BBDD
+	private void obtenerLlamadas() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerLlamadas");
+
+		consumer.handler(message -> {
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.llamadas;");
+
+			query.execute(res -> {
+				JsonObject json = new JsonObject();
+				if (res.succeeded()) {
+
+					res.result().forEach(v -> {
+						LlamadaImpl llamada = new LlamadaImpl();
+						llamada.setOid_llamada(v.getShort("oid_llamada"));
+						llamada.setEstado((String) v.getValue("estado"));
+						llamada.setDesde((String) v.getValue("desde"));
+						llamada.setDescripcion((String) v.getValue("descripcion"));
+						llamada.setRemitente_nif_fk((String) v.getValue("remitente_nif_fk"));
+						llamada.setDestinatario_nif_fk((String) v.getValue("destinatario_nif_fk"));
+						System.out.println(json);
+						json.put(String.valueOf(v.getValue("oid_llamada")), v.toJson());
+					});
+				} else {
+					json.put(String.valueOf("Error"), res.cause());
+				}
+				;
+				message.reply(json);
+			});
+		});
+	}
+	
+	//Obtiene las llamadas recibidas por un usuario dado su nif
+	private void obtenerLlamadasRecibidasUsuario() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerLlamadasRecibidasUsuario");
+
+		consumer.handler(message -> {
+			JsonObject jsonEditLlamada = new JsonObject(message.body());
+			String destinatario_nif_fk = jsonEditLlamada.getString("destinatario_nif_fk");
+
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.llamadas WHERE destinatario_nif_fk = '" + destinatario_nif_fk + "';");
+
+			query.execute(res -> {
+				JsonObject json = new JsonObject();
+				if (res.succeeded()) {
+
+					res.result().forEach(v -> {
+						LlamadaImpl llamada = new LlamadaImpl();
+						llamada.setOid_llamada(v.getShort("oid_llamada"));
+						llamada.setEstado((String) v.getValue("estado"));
+						llamada.setDesde((String) v.getValue("desde"));
+						llamada.setDescripcion((String) v.getValue("descripcion"));
+						llamada.setRemitente_nif_fk((String) v.getValue("remitente_nif_fk"));
+						llamada.setDestinatario_nif_fk((String) v.getValue("destinatario_nif_fk"));
+						System.out.println(json);
+						json.put(String.valueOf(v.getValue("oid_llamada")), v.toJson());
+					});
+				} else {
+					json.put(String.valueOf("Error"), res.cause());
+				}
+				;
+				message.reply(json);
+			});
+		});
+	}
+	
+	//Obtiene las llamadas enviadas por un usuario dado su nif
+	private void obtenerLlamadasEnviadasUsuario() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerLlamadasEnviadasUsuario");
+
+		consumer.handler(message -> {
+			JsonObject jsonEditLlamada = new JsonObject(message.body());
+			String remitente_nif_fk = jsonEditLlamada.getString("remitente_nif_fk");
+
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.llamadas WHERE remitente_nif_fk = '" + remitente_nif_fk + "';");
+
+			query.execute(res -> {
+				JsonObject json = new JsonObject();
+				if (res.succeeded()) {
+
+					res.result().forEach(v -> {
+						LlamadaImpl llamada = new LlamadaImpl();
+						llamada.setOid_llamada(v.getShort("oid_llamada"));
+						llamada.setEstado((String) v.getValue("estado"));
+						llamada.setDesde((String) v.getValue("desde"));
+						llamada.setDescripcion((String) v.getValue("descripcion"));
+						llamada.setRemitente_nif_fk((String) v.getValue("remitente_nif_fk"));
+						llamada.setDestinatario_nif_fk((String) v.getValue("destinatario_nif_fk"));
+						System.out.println(json);
+						json.put(String.valueOf(v.getValue("oid_llamada")), v.toJson());
+					});
+				} else {
+					json.put(String.valueOf("Error"), res.cause());
+				}
+				;
+				message.reply(json);
+			});
+		});
+	}
+	
+	//Anade una llamada a la BBDD
+	private void anadirLlamada() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("anadirLlamada");
+
+		consumer.handler(message -> {
+			JsonObject jsonNewLlamada = new JsonObject(message.body());
+			LlamadaImpl newLlamada = new LlamadaImpl();
+
+			newLlamada.setOid_llamada(Short.valueOf(jsonNewLlamada.getString("oid_llamada")));
+			newLlamada.setEstado(jsonNewLlamada.getString("estado"));
+			newLlamada.setDesde(jsonNewLlamada.getString("desde"));
+			newLlamada.setDescripcion(jsonNewLlamada.getString("descripcion"));
+			newLlamada.setRemitente_nif_fk(jsonNewLlamada.getString("remitente_nif_fk"));
+			newLlamada.setDestinatario_nif_fk(jsonNewLlamada.getString("destinatario_nif_fk"));
+
+			Query<RowSet<Row>> query = mySqlClient
+					.query("INSERT INTO proyectodad.llamadas(oid_llamada, estado, desde, descripcion, nif_fk) "
+							+ "VALUES ('" + newLlamada.getOid_llamada() + "','" + newLlamada.getEstado() + "','"
+							+ newLlamada.getDesde() + "','" + newLlamada.getDescripcion() + "','"
+							+ newLlamada.getRemitente_nif_fk() + "','" + newLlamada.getDestinatario_nif_fk() + "');");
+
+			query.execute(res -> {
+				if (res.succeeded()) {
+					message.reply("Añadida la llamada con ID: " + newLlamada.getOid_llamada());
+				} else {
+					message.reply("ERROR AL AÑADIR LA LLAMADA " + res.cause());
+				}
+				;
+			});
+		});
+	}
+
+	//edita una llamada dado su oid
+	private void editarLlamada() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("editarLlamada");
+
+		consumer.handler(message -> {
+			JsonObject jsonEditLlamada = new JsonObject(message.body());
+			String oid_llamada = jsonEditLlamada.getString("oid_llamada");
+			LlamadaImpl editLlamada = new LlamadaImpl();
+
+			editLlamada.setOid_llamada(Short.valueOf(jsonEditLlamada.getString("oid_llamada")));
+			editLlamada.setEstado(jsonEditLlamada.getString("estado"));
+			editLlamada.setDesde(jsonEditLlamada.getString("desde"));
+			editLlamada.setDescripcion(jsonEditLlamada.getString("descripcion"));
+			editLlamada.setRemitente_nif_fk(jsonEditLlamada.getString("remitente_nif_fk"));
+			editLlamada.setDestinatario_nif_fk(jsonEditLlamada.getString("destinatario_nif_fk"));
+
+			Query<RowSet<Row>> query = mySqlClient.query("UPDATE proyectodad.llamadas SET " + "oid_llamada = '"
+					+ editLlamada.getOid_llamada() + "', estado = '" + editLlamada.getEstado() + "', desde = '"
+					+ editLlamada.getDesde() + "', descripcion = '" + editLlamada.getDescripcion() + "', remitente_nif_fk = '"
+					+ editLlamada.getRemitente_nif_fk() +  "', destinatario_nif_fk = '"
+					+ editLlamada.getDestinatario_nif_fk() + "' WHERE oid_llamada = '" + oid_llamada + "';");
+
+			query.execute(res -> {
+				if (res.succeeded()) {
+					message.reply("Editada la llamada con ID: " + editLlamada.getOid_llamada());
+				} else {
+					message.reply("ERROR AL EDITAR LA LLAMADA " + res.cause());
+				}
+				;
+			});
+		});
+	}
+	
+	/*
+	 * *********************************************
+	 * 
+	 * 
+	 * REGISTROS
+	 * 
+	 * 
+	 * *********************************************/
+	
+	//Obtiene todos los registros, tanto llamadas como alarmas, de la BBDD
+	private void obtenerRegistros() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerRegistros");
+				
+		consumer.handler(message -> {
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.registros;");
+
+			query.execute(res -> {
+				JsonObject json = new JsonObject();
+				if (res.succeeded()) {
+
+					res.result().forEach(v -> {
+						RegistroImpl registro = new RegistroImpl();
+						registro.setOid_reg(v.getShort("oid_reg"));
+						registro.setTipo(v.getString("tipo"));
+						registro.setFecha(UsuarioImpl.ParseaLocalDateTimeFromJson(String.valueOf(v.getValue("fecha"))));
+						registro.setTrabajo(v.getShort("trabajo"));
+						registro.setDescanso(v.getShort("descanso"));
+						registro.setOid_llamada_fk(v.getShort("oid_llamada_fk"));
+						registro.setOid_alarma_fk(v.getShort("oid_alarma_fk"));
+						registro.setNif_fk(v.getString("nif_fk"));
+						registro.setRemitente_nif_fk(v.getString("remitente_nif_fk"));
+						registro.setDestinatario_nif_fk(v.getString("destinatario_nif_fk"));
+						System.out.println(json);
+						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
+
+					});
+				} else {
+					json.put(String.valueOf("Error"), res.cause());
+				}
+				;
+				message.reply(json);
+			});
+		});
+	}
+	
+		
+	//Obtiene todos los registros de tipo llamada de la BBDD
+	private void obtenerRegistrosLlamadas() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerRegistrosLlamadas");
+				
+		consumer.handler(message -> {
+			
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.registros WHERE tipo = 'L';");
+
+			query.execute(res -> {
+				JsonObject json = new JsonObject();
+				if (res.succeeded()) {
+
+					res.result().forEach(v -> {
+						RegistroImpl registro = new RegistroImpl();
+						registro.setOid_reg(v.getShort("oid_reg"));
+						registro.setTipo(v.getString("tipo"));
+						registro.setFecha(UsuarioImpl.ParseaLocalDateTimeFromJson(String.valueOf(v.getValue("fecha"))));
+						registro.setTrabajo(v.getShort("trabajo"));
+						registro.setDescanso(v.getShort("descanso"));
+						registro.setOid_llamada_fk(v.getShort("oid_llamada_fk"));
+						registro.setOid_alarma_fk(v.getShort("oid_alarma_fk"));
+						registro.setNif_fk(v.getString("nif_fk"));
+						registro.setRemitente_nif_fk(v.getString("remitente_nif_fk"));
+						registro.setDestinatario_nif_fk(v.getString("destinatario_nif_fk"));
+						System.out.println(json);
+						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
+
+					});
+				} else {
+					json.put(String.valueOf("Error"), res.cause());
+				}
+				;
+				message.reply(json);
+			});
+		});
+	}
+	
+	//Obtiene todos los registros de tipo llamada de la BBDD
+	private void obtenerRegistrosAlarmas() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerRegistrosAlarmas");
+				
+		consumer.handler(message -> {
+			
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.registros WHERE tipo = 'A';");
+
+			query.execute(res -> {
+				JsonObject json = new JsonObject();
+				if (res.succeeded()) {
+
+					res.result().forEach(v -> {
+						RegistroImpl registro = new RegistroImpl();
+						registro.setOid_reg(v.getShort("oid_reg"));
+						registro.setTipo(v.getString("tipo"));
+						registro.setFecha(UsuarioImpl.ParseaLocalDateTimeFromJson(String.valueOf(v.getValue("fecha"))));
+						registro.setTrabajo(v.getShort("trabajo"));
+						registro.setDescanso(v.getShort("descanso"));
+						registro.setOid_llamada_fk(v.getShort("oid_llamada_fk"));
+						registro.setOid_alarma_fk(v.getShort("oid_alarma_fk"));
+						registro.setNif_fk(v.getString("nif_fk"));
+						registro.setRemitente_nif_fk(v.getString("remitente_nif_fk"));
+						registro.setDestinatario_nif_fk(v.getString("destinatario_nif_fk"));
+						System.out.println(json);
+						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
+
+					});
+				} else {
+					json.put(String.valueOf("Error"), res.cause());
+				}
+				;
+				message.reply(json);
+			});
+		});
+	}
+	
+	//Obtiene el registro de las alarmas asociadas a un usuario dado su nif
+	private void obtenerRegistrosAlarmasUsuario() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerRegistrosAlarmasUsuario");
+
+		consumer.handler(message -> {
+			JsonObject jsonEditLlamada = new JsonObject(message.body());
+			String nif_fk = jsonEditLlamada.getString("nif_fk");
+
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.registros WHERE nif_fk ="
+					+ " '" + nif_fk + "';");
+
+			query.execute(res -> {
+				JsonObject json = new JsonObject();
+				if (res.succeeded()) {
+
+					res.result().forEach(v -> {
+						RegistroImpl registro = new RegistroImpl();
+						registro.setOid_reg(v.getShort("oid_reg"));
+						registro.setTipo(v.getString("tipo"));
+						registro.setFecha(UsuarioImpl.ParseaLocalDateTimeFromJson(String.valueOf(v.getValue("fecha"))));
+						registro.setTrabajo(v.getShort("trabajo"));
+						registro.setDescanso(v.getShort("descanso"));
+						registro.setOid_llamada_fk(v.getShort("oid_llamada_fk"));
+						registro.setOid_alarma_fk(v.getShort("oid_alarma_fk"));
+						registro.setNif_fk(v.getString("nif_fk"));
+						registro.setRemitente_nif_fk(v.getString("remitente_nif_fk"));
+						registro.setDestinatario_nif_fk(v.getString("destinatario_nif_fk"));
+						System.out.println(json);
+						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
+
+					});
+				} else {
+					json.put(String.valueOf("Error"), res.cause());
+				}
+				;
+				message.reply(json);
+			});
+		});
+	}
+	
+	//Obtiene el registro de llamadas enviadas por un usuario dado su nif
+	private void obtenerRegistrosLlamadasEnviadas() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerRegistrosLlamadasEnviadas");
+
+		consumer.handler(message -> {
+			JsonObject jsonEditLlamada = new JsonObject(message.body());
+			String remitente_nif_fk = jsonEditLlamada.getString("remitente_nif_fk");
+
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.registros WHERE remitente_nif_fk ="
+					+ " '" + remitente_nif_fk + "';");
+
+			query.execute(res -> {
+				JsonObject json = new JsonObject();
+				if (res.succeeded()) {
+
+					res.result().forEach(v -> {
+						RegistroImpl registro = new RegistroImpl();
+						registro.setOid_reg(v.getShort("oid_reg"));
+						registro.setTipo(v.getString("tipo"));
+						registro.setFecha(UsuarioImpl.ParseaLocalDateTimeFromJson(String.valueOf(v.getValue("fecha"))));
+						registro.setTrabajo(v.getShort("trabajo"));
+						registro.setDescanso(v.getShort("descanso"));
+						registro.setOid_llamada_fk(v.getShort("oid_llamada_fk"));
+						registro.setOid_alarma_fk(v.getShort("oid_alarma_fk"));
+						registro.setNif_fk(v.getString("nif_fk"));
+						registro.setRemitente_nif_fk(v.getString("remitente_nif_fk"));
+						registro.setDestinatario_nif_fk(v.getString("destinatario_nif_fk"));
+						System.out.println(json);
+						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
+
+					});
+				} else {
+					json.put(String.valueOf("Error"), res.cause());
+				}
+				;
+				message.reply(json);
+			});
+		});
+	}
+	
+	//Obtiene el registro de llamadas recibidas por un usuario dado su nif
+	private void obtenerRegistrosLlamadasRecibidas() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerRegistrosLlamadasRecibidas");
+
+		consumer.handler(message -> {
+			JsonObject jsonEditLlamada = new JsonObject(message.body());
+			String destinatario_nif_fk = jsonEditLlamada.getString("destinatario_nif_fk");
+
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.registros WHERE destinatario_nif_fk ="
+					+ " '" + destinatario_nif_fk + "';");
+
+			query.execute(res -> {
+				JsonObject json = new JsonObject();
+				if (res.succeeded()) {
+
+					res.result().forEach(v -> {
+						RegistroImpl registro = new RegistroImpl();
+						registro.setOid_reg(v.getShort("oid_reg"));
+						registro.setTipo(v.getString("tipo"));
+						registro.setFecha(UsuarioImpl.ParseaLocalDateTimeFromJson(String.valueOf(v.getValue("fecha"))));
+						registro.setTrabajo(v.getShort("trabajo"));
+						registro.setDescanso(v.getShort("descanso"));
+						registro.setOid_llamada_fk(v.getShort("oid_llamada_fk"));
+						registro.setOid_alarma_fk(v.getShort("oid_alarma_fk"));
+						registro.setNif_fk(v.getString("nif_fk"));
+						registro.setRemitente_nif_fk(v.getString("remitente_nif_fk"));
+						registro.setDestinatario_nif_fk(v.getString("destinatario_nif_fk"));
+						System.out.println(json);
+						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
+
+					});
+				} else {
+					json.put(String.valueOf("Error"), res.cause());
+				}
+				;
+				message.reply(json);
+			});
+		});
+	}
+}
