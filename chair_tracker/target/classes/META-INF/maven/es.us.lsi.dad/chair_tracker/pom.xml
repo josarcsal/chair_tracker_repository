@@ -1,10 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>es.us.lsi.dad</groupId>
-  <artifactId>chair_tracker</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>ChairTrackerDAD</name>
-  	<dependencies>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>es.us.lsi.dad</groupId>
+	<artifactId>chair_tracker</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>ChairTrackerDAD</name>
+	<dependencies>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
@@ -34,12 +36,24 @@
 			<artifactId>vertx-mysql-client</artifactId>
 			<version>4.0.3</version>
 		</dependency>
-		
+
 		<dependency>
-          <groupId>io.netty</groupId>
-          <artifactId>netty-resolver-dns-native-macos</artifactId>
-          <version>4.1.63.Final</version>
-          <classifier>osx-x86_64</classifier>
-        </dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-resolver-dns-native-macos</artifactId>
+			<version>4.1.63.Final</version>
+			<classifier>osx-x86_64</classifier>
+		</dependency>
+
+		<!-- mvnrepository.com/artifact/io.vertx/vertx-mqtt -->
+
+		<dependency>
+
+			<groupId>io.vertx</groupId>
+
+			<artifactId>vertx-mqtt</artifactId>
+
+			<version>4.0.3</version>
+
+		</dependency>
 	</dependencies>
 </project>
