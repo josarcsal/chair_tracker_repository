@@ -31,7 +31,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 		// PLACA
 		router.route("/api/placas/*").handler(BodyHandler.create());
 		router.get("/api/placas").handler(this::obtenerPlacas);
-		router.get("/api/placas/:nif_fk").handler(this::obtenerPlacasUsuario);
+		router.get("/api/placas/usuario").handler(this::obtenerPlacasUsuario);
 		router.post("/api/placas/anadirPlaca").handler(this::anadirPlaca);
 		router.put("/api/placas/editarPlaca/:id_placa").handler(this::editarPlaca);
 		router.delete("/api/placas/:id_placa").handler(this::borrarPlaca);
@@ -165,9 +165,9 @@ public class HttpServerVerticle extends AbstractVerticle {
 	}
 	
 	private void obtenerPlacasUsuario(RoutingContext routingContext) {
-		String nif_fk = routingContext.request().getParam("nif_fk");
+		//String nif_fk = routingContext.request().getParam("nif_fk");
 		JsonObject json = routingContext.getBodyAsJson();
-		json.put("nif_fk", nif_fk);
+		json.put("nif_fk", json.getString("nif_fk"));
 		vertx.eventBus().request("obtenerPlacasUsuario", json.toString(), reply -> {
 			if (reply.succeeded()) {
 				System.out.println(reply.result().body());
