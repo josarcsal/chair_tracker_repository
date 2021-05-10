@@ -12,7 +12,7 @@ import io.vertx.mqtt.MqttClientOptions;
 
 public class MqttVerticle extends AbstractVerticle {
 
-	@Override
+	/*@Override
 	public void start(Promise<Void> startFuture) {
 		MqttClient mqttClient = MqttClient.create(getVertx(), new MqttClientOptions().setAutoKeepAlive(true));
 
@@ -84,5 +84,5 @@ public class MqttVerticle extends AbstractVerticle {
 	@Override
 	public void stop(Promise<Void> startFuture) {
 		.close();
-	}
+	}*/
 }

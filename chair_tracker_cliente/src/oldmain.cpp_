@@ -1,0 +1,35 @@
+#include <Arduino.h>
+#include "doGetPostDelete.h"
+
+const char* ssid = "Xiaomi_4A";
+const char* password = "oE25yJ9ms54Vd9222Z6B";
+const char* ipServer = "192.168.1.56";
+const int portHttp = 8084;
+const int portMqtt = 1883;
+String placaId = "";
+
+RestClient client = RestClient(ipServer, portHttp);
+
+//Setup
+void setup() {
+  Serial.begin(9600);
+  Serial.println("connect to WiFi network");
+  client.begin(ssid, password);
+  Serial.println("Setup!");
+}
+
+String response;
+void loop(){
+
+  /*response = "";
+  int statusCode = client.get("/api/usuarios", &response);
+  Serial.print("Status code from server: ");
+  Serial.println(statusCode);
+  Serial.print("Response body from server: ");
+  Serial.println(response);
+  delay(10000);*/
+
+  //doGet(client, "/api/usuarios");
+  doGet(client, "/api/placas");
+
+}
