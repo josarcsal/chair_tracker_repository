@@ -1,3 +1,0 @@
-#include <RestClient.h>
-
-void doGet(RestClient client, const char* uri);

@@ -127,8 +127,10 @@ public class HttpServerVerticle extends AbstractVerticle {
 	private void editarUsuario(RoutingContext routingContext) {
 		//json de los datos a modificar del usuario
 		JsonObject json = routingContext.getBodyAsJson();
+		json.put("nif", json.getString("nif"));
+		System.out.println(json.toString());
 		//Añadir el nif que identifica al usuario para su modificacion
-		vertx.eventBus().request("editarUsuario", json.getString("nif"), reply -> {
+		vertx.eventBus().request("editarUsuario",  json.toString(), reply -> {
 			if (reply.succeeded()) {
 				System.out.println(reply.result().body());
 				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
@@ -207,6 +209,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 	private void editarPlaca(RoutingContext routingContext) {
 		JsonObject json = routingContext.getBodyAsJson();
 		json.put("oid_placa", json.getString("oid_placa"));
+
 		vertx.eventBus().request("editarPlaca", json.toString(), reply -> {
 			if (reply.succeeded()) {
 				System.out.println(reply.result().body());
