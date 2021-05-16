@@ -117,7 +117,6 @@ public class BBDDVerticle extends AbstractVerticle {
 				
 		consumer.handler(message -> {
 			String nif = message.body();
-
 			
 			Query<RowSet<Row>> queryCount = mySqlClient.query("SELECT COUNT(*) AS cuenta FROM proyectodad.usuarios WHERE nif = '" + nif + "';");
 			
@@ -753,7 +752,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			newLlamada.setDestinatario_nif_fk(jsonNewLlamada.getString("destinatario_nif_fk"));
 
 			Query<RowSet<Row>> query = mySqlClient
-					.query("INSERT INTO proyectodad.llamadas(oid_llamada, estado, desde, descripcion, nif_fk) "
+					.query("INSERT INTO proyectodad.llamadas(oid_llamada, estado, desde, descripcion, remitente_nif_fk, destinatario_nif_fk) "
 							+ "VALUES ('" + newLlamada.getOid_llamada() + "','" + newLlamada.getEstado() + "','"
 							+ newLlamada.getDesde() + "','" + newLlamada.getDescripcion() + "','"
 							+ newLlamada.getRemitente_nif_fk() + "','" + newLlamada.getDestinatario_nif_fk() + "');");

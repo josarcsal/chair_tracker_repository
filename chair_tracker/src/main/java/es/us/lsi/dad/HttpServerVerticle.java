@@ -25,41 +25,41 @@ public class HttpServerVerticle extends AbstractVerticle {
 		router.route("/api/usuarios/*").handler(BodyHandler.create());
 		router.get("/api/usuarios").handler(this::obtenerUsuarios);
 		router.post("/api/usuarios/anadirUsuario").handler(this::anadirUsuario);
-		router.put("/api/usuarios/editarUsuario/nif").handler(this::editarUsuario);
-		router.delete("/api/usuarios/borrarUsuario/nif").handler(this::borrarUsuario);
+		router.put("/api/usuarios/editarUsuario").handler(this::editarUsuario);
+		router.delete("/api/usuarios/borrarUsuario").handler(this::borrarUsuario);
 
 		// PLACA
 		router.route("/api/placas/*").handler(BodyHandler.create());
 		router.get("/api/placas").handler(this::obtenerPlacas);
 		router.get("/api/placas/usuario").handler(this::obtenerPlacasUsuario);
 		router.post("/api/placas/anadirPlaca").handler(this::anadirPlaca);
-		router.put("/api/placas/editarPlaca/oid_placa").handler(this::editarPlaca);
-		router.delete("/api/placas/borrarPlaca/oid_placa").handler(this::borrarPlaca);
+		router.put("/api/placas/editarPlaca").handler(this::editarPlaca);
+		router.delete("/api/placas/borrarPlaca").handler(this::borrarPlaca);
 
 		// ALARMA
 		router.route("/api/alarmas/*").handler(BodyHandler.create());
 		router.get("/api/alarmas").handler(this::obtenerAlarmas);
-		router.get("/api/alarmas/nif_fk").handler(this::obtenerAlarmasUsuario);
+		router.get("/api/alarmas/nif").handler(this::obtenerAlarmasUsuario);
 		router.post("/api/alarmas/anadirAlarma").handler(this::anadirAlarma);
-		router.put("/api/alarmas/editarAlarma/oid_alarma").handler(this::editarAlarma);
-		router.delete("/api/alarmas/oid_alarma").handler(this::borrarAlarma);
+		router.put("/api/alarmas/editarAlarma").handler(this::editarAlarma);
+		router.delete("/api/alarmas/borrarAlarma").handler(this::borrarAlarma);
 
 		// LLAMADA
 		router.route("/api/llamadas/*").handler(BodyHandler.create());
 		router.get("/api/llamadas").handler(this::obtenerLlamadas);
-		router.get("/api/llamadas/enviadas/remitente_nif_fk").handler(this::obtenerLlamadasEnviadasUsuario);
-		router.get("/api/llamadas/recibidas/destinatario_nif_fk").handler(this::obtenerLlamadasRecibidasUsuario);
+		router.get("/api/llamadas/enviadas/nif").handler(this::obtenerLlamadasEnviadasUsuario);
+		router.get("/api/llamadas/recibidas/nif").handler(this::obtenerLlamadasRecibidasUsuario);
 		router.post("/api/llamadas/anadirLlamada").handler(this::anadirLlamada);
-		router.put("/api/llamadas/editarLlamada/oid_llamada").handler(this::editarLlamada);
+		router.put("/api/llamadas/editarLlamada").handler(this::editarLlamada);
 		
 		//REGISTRO
 		router.route("/api/registros/*").handler(BodyHandler.create());
-		router.get("/api/registros/").handler(this::obtenerRegistros);
+		router.get("/api/registros").handler(this::obtenerRegistros);
 		router.get("/api/registros/llamadas").handler(this::obtenerRegistrosLlamadas);
 		router.get("/api/registros/alarmas").handler(this::obtenerRegistrosAlarmas);
-		router.get("/api/registros/alarmas/nif_fk").handler(this::obtenerRegistrosAlarmasUsuario);
-		router.get("/api/registros/llamadas/enviadas/remitente_nif_fk").handler(this::obtenerRegistrosLlamadasEnviadas);
-		router.get("/api/registros/llamadas/recibidas/destinatario_nif_fk").handler(this::obtenerRegistrosLlamadasRecibidas);
+		router.get("/api/registros/alarmas/nif").handler(this::obtenerRegistrosAlarmasUsuario);
+		router.get("/api/registros/llamadas/enviadas/nif").handler(this::obtenerRegistrosLlamadasEnviadas);
+		router.get("/api/registros/llamadas/recibidas/nif").handler(this::obtenerRegistrosLlamadasRecibidas);
 		
 			//Server HTTP
 		httpServer = vertx.createHttpServer();
