@@ -68,7 +68,7 @@ void testGetParam(HttpClient httpClient){
   String bodyGetData = "";
   bodyGet[String("remitente_nif_fk")] = String("49163961H");
   serializeJson(bodyGet, bodyGetData);
-  doRequest(httpClient, "GET", "/api/registros/llamadas/enviadas/remitente_nif_fk", bodyGetData);
+  doRequest(httpClient, "GET", "/api/registros/llamadas/enviadas/nif", bodyGetData);
 }
 
 void testPost(HttpClient httpClient){
@@ -95,7 +95,7 @@ void testPut(HttpClient httpClient){
   bodyPut[String("rol")] = String("J");
   bodyPut[String("nif_jefe")] = String("null");
   serializeJson(bodyPut, bodyPutData);
-  doRequest(httpClient, "PUT", "/api/usuarios/editarUsuario/nif", bodyPutData);
+  doRequest(httpClient, "PUT", "/api/usuarios/editarUsuario", bodyPutData);
 }
 
 void testDelete(HttpClient httpClient){
@@ -104,6 +104,14 @@ void testDelete(HttpClient httpClient){
   String bodyDeleteData = "";
   bodyDelete[String("nif")] = String("10163961P");
   serializeJson(bodyDelete, bodyDeleteData);
-  doRequest(httpClient, "DELETE", "/api/usuarios/borrarUsuario/nif", bodyDeleteData);
+  doRequest(httpClient, "DELETE", "/api/usuarios/borrarUsuario", bodyDeleteData);
   
+}
+
+void testCompleto(HttpClient httpClient){
+  testGet(httpClient);
+  testGetParam(httpClient);
+  testPost(httpClient);
+  testPut(httpClient);
+  testDelete(httpClient);
 }

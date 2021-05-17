@@ -10,3 +10,4 @@ void testGetParam(HttpClient httpClient);
 void testPost(HttpClient httpClient);
 void testPut(HttpClient httpClient);
 void testDelete(HttpClient httpClient);
+void testCompleto(HttpClient httpClient);

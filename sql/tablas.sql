@@ -8,7 +8,8 @@ DROP TABLE Placas;
 DROP TABLE Usuarios;
 
 CREATE TABLE Usuarios(
-    nif         VARCHAR(9) PRIMARY KEY,
+	hash_mac VARCHAR(40) PRIMARY KEY,
+    nif         VARCHAR(9) NOT NULL,
     contrasena  VARCHAR(64) NOT NULL,
     last_login   DATETIME,
     nombre      VARCHAR(20),
@@ -17,13 +18,13 @@ CREATE TABLE Usuarios(
     nif_jefe         VARCHAR(9)
 );
 
-CREATE TABLE Placas(
+/*CREATE TABLE Placas(
 	oid_placa SMALLINT PRIMARY KEY AUTO_INCREMENT,
 	nombre	VARCHAR(20),
     nif_fk VARCHAR(9),
     estado		VARCHAR(20) CHECK(estado IN ('OFF', 'ON')),
 	FOREIGN KEY (nif_fk) REFERENCES Usuarios (nif) ON DELETE CASCADE
-);
+);*/
 
 
 CREATE TABLE Alarmas(
@@ -35,8 +36,8 @@ CREATE TABLE Alarmas(
     t_trabajo	SMALLINT,
     t_descanso	SMALLINT,
     ciclo		SMALLINT,
-    nif_fk VARCHAR(9),
-    FOREIGN KEY (nif_fk) REFERENCES Usuarios (nif) ON DELETE CASCADE
+    hash_mac_fk VARCHAR(40),
+    FOREIGN KEY (hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE
 );
 
 CREATE TABLE Llamadas(
@@ -44,10 +45,10 @@ CREATE TABLE Llamadas(
     estado 		VARCHAR(10) CHECK(estado IN ('Pendiente', 'Contestada')) NOT NULL,
     desde		VARCHAR(20),
     descripcion	VARCHAR(64),
-    remitente_nif_fk VARCHAR(9),
-    destinatario_nif_fk VARCHAR(9),
-    FOREIGN KEY (remitente_nif_fk) REFERENCES Usuarios (nif) ON DELETE CASCADE,
-    FOREIGN KEY (destinatario_nif_fk) REFERENCES Usuarios (nif) ON DELETE CASCADE
+    remitente_hash_mac_fk VARCHAR(40),
+    destinatario_hash_mac_fk VARCHAR(40),
+    FOREIGN KEY (remitente_hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE,
+    FOREIGN KEY (destinatario_hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE
 );
 
 CREATE TABLE Registros(
@@ -58,12 +59,12 @@ CREATE TABLE Registros(
     descanso 	SMALLINT,
     oid_llamada_fk	SMALLINT NULL,
     oid_alarma_fk	SMALLINT NULL,
-	nif_fk VARCHAR(9) NULL,
-	remitente_nif_fk VARCHAR(9) NULL,
-    destinatario_nif_fk VARCHAR(9) NULL,
-    FOREIGN KEY (nif_fk) REFERENCES Usuarios (nif) ON DELETE CASCADE,
-    FOREIGN KEY (remitente_nif_fk) REFERENCES Usuarios (nif) ON DELETE CASCADE,
-    FOREIGN KEY (destinatario_nif_fk) REFERENCES Usuarios (nif) ON DELETE CASCADE,
+	hash_mac_fk VARCHAR(40) NULL,
+	remitente_hash_mac_fk VARCHAR(40) NULL,
+    destinatario_hash_mac_fk VARCHAR(40) NULL,
+    FOREIGN KEY (hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE,
+    FOREIGN KEY (remitente_hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE,
+    FOREIGN KEY (destinatario_hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE,
     FOREIGN KEY (oid_alarma_fk) REFERENCES Alarmas (oid_alarma) ON DELETE CASCADE,
     FOREIGN KEY (oid_llamada_fk) REFERENCES Llamadas (oid_llamada) ON DELETE CASCADE
 );
