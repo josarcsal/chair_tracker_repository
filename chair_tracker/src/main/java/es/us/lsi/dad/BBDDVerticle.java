@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 import es.us.lsi.dad.impl.AlarmaImpl;
 import es.us.lsi.dad.impl.LlamadaImpl;
-import es.us.lsi.dad.impl.PlacaImpl;
 import es.us.lsi.dad.impl.RegistroImpl;
 import es.us.lsi.dad.impl.UsuarioImpl;
 import io.vertx.core.AbstractVerticle;
@@ -37,13 +36,6 @@ public class BBDDVerticle extends AbstractVerticle {
 		borrarUsuario();
 		anadirUsuario();
 		editarUsuario();
-
-		// PLACAS
-		obtenerPlacas();
-		obtenerPlacasUsuario();
-		borrarPlaca();
-		anadirPlaca();
-		editarPlaca();
 
 		// ALARMAS
 		obtenerAlarmas();
@@ -169,7 +161,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			newUser.setNif_jefe(jsonNewUsuario.getString("nif_jefe"));
 
 			Query<RowSet<Row>> query = mySqlClient.query(
-					"INSERT INTO proyectodad.Usuarios(hash_mac, nif, contrasena, last_login, nombre, apellidos, rol, hash_mac_jefe) "
+					"INSERT INTO proyectodad.Usuarios(hash_mac, nif, contrasena, last_login, nombre, apellidos, rol, nif_jefe) "
 							+ "VALUES ('" + newUser.getHash_mac() + "','" + newUser.getNif() + "','"
 							+ newUser.getContrasena() + "','" + newUser.getLast_login() + "','" + newUser.getNombre()
 							+ "','" + newUser.getApellidos() + "','" + newUser.getRol() + "','" + newUser.getNif_jefe()
@@ -220,7 +212,7 @@ public class BBDDVerticle extends AbstractVerticle {
 								+ editUser.getHash_mac() + "', nif = '" + editUser.getNif() + "', contrasena = '"
 								+ editUser.getContrasena() + "', last_login = '" + editUser.getLast_login()
 								+ "', nombre = '" + editUser.getNombre() + "', apellidos = '" + editUser.getApellidos()
-								+ "', rol = '" + editUser.getRol() + "', hash_mac_jefe = '" + editUser.getNif_jefe()
+								+ "', rol = '" + editUser.getRol() + "', nif_jefe = '" + editUser.getNif_jefe()
 								+ "' WHERE hash_mac = '" + hash_mac + "';");
 
 						query.execute(resQuery -> {
@@ -236,190 +228,6 @@ public class BBDDVerticle extends AbstractVerticle {
 					}
 				} else {
 					message.reply("ERROR AL EDITAR EL USUARIO " + res.cause());
-				}
-			});
-		});
-	}
-
-	/*
-	 * *********************************************
-	 * 
-	 * 
-	 * PLACAS
-	 * 
-	 * 
-	 *********************************************/
-
-	// Obtiene todas las placas de la BBDD
-	private void obtenerPlacas() {
-		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerPlacas");
-
-		consumer.handler(message -> {
-			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.placas;");
-
-			query.execute(res -> {
-				JsonObject json = new JsonObject();
-				if (res.succeeded()) {
-
-					res.result().forEach(v -> {
-						PlacaImpl placa = new PlacaImpl();
-						placa.setOid_placa(v.getShort("oid_placa"));
-						placa.setNombre(v.getString("nombre"));
-						placa.setHash_mac_fk(v.getString("hash_mac_fk"));
-						placa.setEstado(v.getString("estado"));
-						System.out.println(json);
-						json.put(String.valueOf(v.getValue("oid_placa")), v.toJson());
-					});
-				} else {
-					json.put(String.valueOf("ERROR"), res.cause());
-				}
-				;
-				message.reply(json);
-			});
-		});
-	}
-
-	// Obtiene las placas asociadas al usuario dado segun su hash_mac
-	private void obtenerPlacasUsuario() {
-		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerPlacasUsuario");
-
-		consumer.handler(message -> {
-			JsonObject jsonEditLlamada = new JsonObject(message.body());
-			String hash_mac_fk = jsonEditLlamada.getString("hash_mac_fk");
-
-			Query<RowSet<Row>> query = mySqlClient
-					.query("SELECT * FROM proyectodad.placas WHERE hash_mac_fk = '" + hash_mac_fk + "';");
-
-			query.execute(res -> {
-				JsonObject json = new JsonObject();
-				if (res.succeeded()) {
-
-					res.result().forEach(v -> {
-						PlacaImpl placa = new PlacaImpl();
-						placa.setOid_placa(v.getShort("oid_placa"));
-						placa.setNombre(v.getString("nombre"));
-						placa.setHash_mac_fk(v.getString("hash_mac_fk"));
-						placa.setEstado(v.getString("estado"));
-						System.out.println(json);
-						json.put(String.valueOf(v.getValue("oid_placa")), v.toJson());
-					});
-				} else {
-					json.put(String.valueOf("ERROR"), res.cause());
-				}
-				;
-				message.reply(json);
-			});
-		});
-	}
-
-	// Borra la placa segun oid_placa
-	private void borrarPlaca() {
-		MessageConsumer<String> consumer = vertx.eventBus().consumer("borrarPlaca");
-
-		consumer.handler(message -> {
-			String oid_placa = message.body();
-
-			Query<RowSet<Row>> queryCount = mySqlClient
-					.query("SELECT COUNT(*) AS cuenta FROM proyectodad.placas WHERE oid_placa = '" + oid_placa + "';");
-
-			queryCount.execute(res -> {
-				if (res.succeeded()) {
-
-					Row rowCount = res.result().iterator().next();
-
-					if (rowCount.getInteger("cuenta") > 0) {
-
-						Query<RowSet<Row>> query = mySqlClient
-								.query("DELETE FROM proyectodad.placas WHERE oid_placa = '" + oid_placa + "';");
-
-						query.execute(resQuery -> {
-							if (resQuery.succeeded()) {
-								message.reply("Borrado la placa " + oid_placa);
-							} else {
-								message.reply("ERROR AL BORRAR LA PLACA");
-							}
-						});
-					} else {
-						message.reply("ERROR AL ELIMINAR LA PLACA: NO EXISTE UNA PLACA CON ESE OID");
-					}
-				} else {
-					message.reply("ERROR AL ELIMINAR LA PLACA " + res.cause());
-				}
-			});
-		});
-	}
-
-	// Anade placa a la BBDD
-	private void anadirPlaca() {
-		MessageConsumer<String> consumer = vertx.eventBus().consumer("anadirPlaca");
-
-		consumer.handler(message -> {
-			JsonObject jsonNewPlaca = new JsonObject(message.body());
-			PlacaImpl newPlaca = new PlacaImpl();
-
-			newPlaca.setOid_placa(Short.valueOf(jsonNewPlaca.getString("oid_placa")));
-			newPlaca.setNombre(jsonNewPlaca.getString("nombre"));
-			newPlaca.setHash_mac_fk(jsonNewPlaca.getString("hash_mac_fk"));
-			newPlaca.setEstado(jsonNewPlaca.getString("estado"));
-
-			Query<RowSet<Row>> query = mySqlClient
-					.query("INSERT INTO proyectodad.placas(oid_placa, nombre, hash_mac_fk, estado) " + "VALUES ('"
-							+ newPlaca.getOid_placa() + "','" + newPlaca.getNombre() + "','" + newPlaca.getHash_mac_fk()
-							+ "','" + newPlaca.getEstado() + "');");
-
-			query.execute(res -> {
-				if (res.succeeded()) {
-					message.reply("Añadida la placa " + newPlaca.getNombre() + " con ID: " + newPlaca.getOid_placa());
-				} else {
-					message.reply("ERROR AL AÑADIR LA PLACA " + res.cause());
-				}
-				;
-			});
-		});
-	}
-
-	// Edita los datos de una placa dado su oid
-	private void editarPlaca() {
-		MessageConsumer<String> consumer = vertx.eventBus().consumer("editarPlaca");
-
-		consumer.handler(message -> {
-			JsonObject jsonEditPlaca = new JsonObject(message.body());
-			String oid_placa = jsonEditPlaca.getString("oid_placa");
-			PlacaImpl editPlaca = new PlacaImpl();
-
-			editPlaca.setOid_placa(Short.valueOf(jsonEditPlaca.getString("oid_placa")));
-			editPlaca.setNombre(jsonEditPlaca.getString("nombre"));
-			editPlaca.setHash_mac_fk(jsonEditPlaca.getString("hash_mac_fk"));
-			editPlaca.setEstado(jsonEditPlaca.getString("estado"));
-
-			Query<RowSet<Row>> queryCount = mySqlClient
-					.query("SELECT COUNT(*) AS cuenta FROM proyectodad.placas WHERE oid_placa = '" + oid_placa + "';");
-
-			queryCount.execute(res -> {
-				if (res.succeeded()) {
-
-					Row rowCount = res.result().iterator().next();
-
-					if (rowCount.getInteger("cuenta") > 0) {
-
-						Query<RowSet<Row>> query = mySqlClient.query("UPDATE proyectodad.placas SET " + "oid_placa = '"
-								+ editPlaca.getOid_placa() + "', nombre = '" + editPlaca.getNombre()
-								+ "', hash_mac_fk = '" + editPlaca.getHash_mac_fk() + "', estado = '"
-								+ editPlaca.getEstado() + "' WHERE oid_placa = '" + oid_placa + "';");
-
-						query.execute(resQuery -> {
-							if (resQuery.succeeded()) {
-								message.reply("Editada la placa " + editPlaca.getNombre() + " con ID: "
-										+ editPlaca.getOid_placa());
-							} else {
-								message.reply("ERROR AL EDITAR LA PLACA " + resQuery.cause());
-							}
-						});
-					} else {
-						message.reply("ERROR AL EDITAR LA PLACA: NO EXISTE UNA PLACA CON ESE OID");
-					}
-				} else {
-					message.reply("ERROR AL EDITAR LA PLACA " + res.cause());
 				}
 			});
 		});

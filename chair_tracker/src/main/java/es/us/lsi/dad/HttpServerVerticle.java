@@ -28,14 +28,6 @@ public class HttpServerVerticle extends AbstractVerticle {
 		router.put("/api/usuarios/editarUsuario").handler(this::editarUsuario);
 		router.delete("/api/usuarios/borrarUsuario").handler(this::borrarUsuario);
 
-		// PLACA
-		router.route("/api/placas/*").handler(BodyHandler.create());
-		router.get("/api/placas").handler(this::obtenerPlacas);
-		router.get("/api/placas/usuario").handler(this::obtenerPlacasUsuario);
-		router.post("/api/placas/anadirPlaca").handler(this::anadirPlaca);
-		router.put("/api/placas/editarPlaca").handler(this::editarPlaca);
-		router.delete("/api/placas/borrarPlaca").handler(this::borrarPlaca);
-
 		// ALARMA
 		router.route("/api/alarmas/*").handler(BodyHandler.create());
 		router.get("/api/alarmas").handler(this::obtenerAlarmas);
@@ -132,86 +124,6 @@ public class HttpServerVerticle extends AbstractVerticle {
 		System.out.println(json.toString());
 		// Añadir el hash_mac que identifica al usuario para su modificacion
 		vertx.eventBus().request("editarUsuario", json.toString(), reply -> {
-			if (reply.succeeded()) {
-				System.out.println(reply.result().body());
-				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			} else {
-				routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			}
-		});
-	}
-
-	/*
-	 * *********************************************
-	 * 
-	 * 
-	 * PLACAS
-	 * 
-	 * 
-	 **********************************************/
-
-	private void obtenerPlacas(RoutingContext routingContext) {
-		vertx.eventBus().request("obtenerPlacas", "obtenerPlacas", reply -> {
-			if (reply.succeeded()) {
-				System.out.println(reply.result().body());
-				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			} else {
-				routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			}
-		});
-	}
-
-	private void obtenerPlacasUsuario(RoutingContext routingContext) {
-		JsonObject json = routingContext.getBodyAsJson();
-		json.put("hash_mac_fk", json.getString("hash_mac_fk"));
-		vertx.eventBus().request("obtenerPlacasUsuario", json.toString(), reply -> {
-			if (reply.succeeded()) {
-				System.out.println(reply.result().body());
-				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			} else {
-				routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			}
-		});
-	}
-
-	private void borrarPlaca(RoutingContext routingContext) {
-		JsonObject json = routingContext.getBodyAsJson();
-		vertx.eventBus().request("borrarPlaca", json.getString("oid_placa"), reply -> {
-			if (reply.succeeded()) {
-				System.out.println(reply.result().body());
-				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			} else {
-				routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			}
-		});
-	}
-
-	private void anadirPlaca(RoutingContext routingContext) {
-		vertx.eventBus().request("anadirPlaca", routingContext.getBodyAsString(), reply -> {
-			if (reply.succeeded()) {
-				System.out.println(reply.result().body());
-				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			} else {
-				routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			}
-		});
-	}
-
-	private void editarPlaca(RoutingContext routingContext) {
-		JsonObject json = routingContext.getBodyAsJson();
-		json.put("oid_placa", json.getString("oid_placa"));
-
-		vertx.eventBus().request("editarPlaca", json.toString(), reply -> {
 			if (reply.succeeded()) {
 				System.out.println(reply.result().body());
 				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
