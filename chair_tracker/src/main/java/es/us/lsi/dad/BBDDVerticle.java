@@ -563,7 +563,6 @@ public class BBDDVerticle extends AbstractVerticle {
 			JsonObject jsonNewLlamada = new JsonObject(message.body());
 			LlamadaImpl newLlamada = new LlamadaImpl();
 
-			newLlamada.setOid_llamada(Short.valueOf(jsonNewLlamada.getString("oid_llamada")));
 			newLlamada.setEstado(jsonNewLlamada.getString("estado"));
 			newLlamada.setDesde(jsonNewLlamada.getString("desde"));
 			newLlamada.setDescripcion(jsonNewLlamada.getString("descripcion"));
@@ -571,15 +570,15 @@ public class BBDDVerticle extends AbstractVerticle {
 			newLlamada.setDestinatario_hash_mac_fk(jsonNewLlamada.getString("destinatario_hash_mac_fk"));
 
 			Query<RowSet<Row>> query = mySqlClient.query(
-					"INSERT INTO proyectodad.llamadas(oid_llamada, estado, desde, descripcion, remitente_hash_mac_fk, destinatario_hash_mac_fk) "
-							+ "VALUES ('" + newLlamada.getOid_llamada() + "','" + newLlamada.getEstado() + "','"
+					"INSERT INTO proyectodad.llamadas(estado, desde, descripcion, remitente_hash_mac_fk, destinatario_hash_mac_fk) "
+							+ "VALUES ('" + newLlamada.getEstado() + "','"
 							+ newLlamada.getDesde() + "','" + newLlamada.getDescripcion() + "','"
 							+ newLlamada.getRemitente_hash_mac_fk() + "','" + newLlamada.getDestinatario_hash_mac_fk()
 							+ "');");
 
 			query.execute(res -> {
 				if (res.succeeded()) {
-					message.reply("Añadida la llamada con ID: " + newLlamada.getOid_llamada());
+					message.reply("Añadida la llamada desde: " + newLlamada.getDesde());
 				} else {
 					message.reply("ERROR AL AÑADIR LA LLAMADA " + res.cause());
 				}
