@@ -1,88 +1,47 @@
 package es.us.lsi.dad;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.netty.handler.codec.mqtt.MqttQoS;
+import io.netty.handler.ssl.ClientAuth;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.mqtt.MqttClient;
-import io.vertx.mqtt.MqttClientOptions;
 
 public class MqttVerticle extends AbstractVerticle {
 
-	/*@Override
+	MqttClient client = MqttClient.create(vertx);
+
 	public void start(Promise<Void> startFuture) {
-		MqttClient mqttClient = MqttClient.create(getVertx(), new MqttClientOptions().setAutoKeepAlive(true));
 
-		// .setUsername("admin").setPassword("admin"));
 
-		mqttClient.connect(1883, "localhost", connection -> {
-
-			if (connection.succeeded()) {
-
-				System.out.println("Client name: " + connection.result().code().name());
-
-				mqttClient.subscribe("topic_1", MqttQoS.AT_LEAST_ONCE.value(), handler -> {
-
-					if (handler.succeeded()) {
-
-						System.out.println("Client has been subscribed to topic");
-
-					}
-
-				});
-
-				mqttClient.subscribe("topic_2", MqttQoS.AT_LEAST_ONCE.value(), handler -> {
-
-					if (handler.succeeded()) {
-
-						System.out.println("Client has been subscribed to topic");
-
-					}
-
-				});
-
-				mqttClient.publishHandler(message -> {
-
-					System.out.println("Message published on topic: " + message.topicName());
-
-					System.out.println(message.payload().toString());
-
-					if (message.topicName().equals("topic_2")) {
-
-						try {
-
-							SensorEntity sensor = Gson.fromJson(message.payload().toString(), SensorEntity.class);
-
-							System.out.println(sensor.toString());
-
-						} catch (JsonSyntaxException e) {
-
-							System.out.println("Message content is wrong");
-
-						}
-
-					}
-
-				});
-
-				mqttClient.publish("topic_2", Buffer.buffer(gson.toJson(sensors.get(123))), MqttQoS.AT_LEAST_ONCE,
-						false, false);
-
-			} else {
-
-				System.out.println("Se ha producido un error en la conexión al broker");
-
-			}
-
+		client.connect(1883, "192.168.1.56", s -> {
+			client.disconnect();
 		});
+		
+		client.publishHandler(s -> {
+			  System.out.println("There are new message in topic: " + s.topicName());
+			  System.out.println("Content(as string) of the message: " + s.payload().toString());
+			  System.out.println("QoS: " + s.qosLevel());
+			})
+			  .subscribe("$SYS/broker/publish/bytes/", 2);
+		
+		client.publish("bytes",
+				  Buffer.buffer("Desde vertx"),
+				  MqttQoS.AT_LEAST_ONCE,
+				  false,
+				  false);
+		
+		client.publish("temperature",
+				  Buffer.buffer("Desde vertx"),
+				  MqttQoS.AT_LEAST_ONCE,
+				  false,
+				  false);
+
 
 	}
-
-	@Override
-	public void stop(Promise<Void> startFuture) {
-		.close();
-	}*/
+	
 }

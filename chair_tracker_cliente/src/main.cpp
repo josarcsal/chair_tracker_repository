@@ -6,6 +6,7 @@
 #include <ArduinoJson.h>
 #include "request.h"
 #include "Hash.h"
+#include "mqtt.h"
 
 const char* ssid = "Xiaomi_4A";
 const char* password = "oE25yJ9ms54Vd9222Z6B";
@@ -24,27 +25,35 @@ String macEsp = WiFi.macAddress();
 String hashMac = sha1(macEsp);
 
 void setup() {
+  
   Serial.begin(9600);
-  Serial.print("Conectando al WIFI ");
-  Serial.println(ssid);
-  WiFi.begin(ssid, password);
+  mqttClient.setServer(server, 1883);
+  mqttClient.setCallback(callback);
+  setup_wifi(ssid, password);
+  delay(100);
 }
 
 void loop(){
 
   //testGet(httpClient);
   //testGetParam(httpClient);
-  //testPost(httpClient);
-  //testPut(httpClient);
-  //testDelete(httpClient);
+  //testPost(httpClient, hashMac);
+  //testPut(httpClient, hashMac);
+  //testDelete(httpClient, hashMac);
 
-  //testCompleto(httpClient);
+  testCompleto(httpClient, hashMac);
 
-  //delay(8000);
+  delay(8000);
 
   Serial.println(macEsp);
   Serial.println(hashMac);
   delay(8000);
+
+  if (!mqttClient.connected()) {
+    reconnect(mqttClient);
+  }
+  
+  mqttClient.loop();
 
 
 }

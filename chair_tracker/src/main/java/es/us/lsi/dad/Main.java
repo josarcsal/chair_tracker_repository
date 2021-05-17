@@ -8,6 +8,8 @@ public class Main {
 		Vertx vertx = Vertx.vertx();
 		// Inicia el vértice encargado de recibir las peticiones HTTP (HTTP Server)
 		vertx.deployVerticle(new HttpServerVerticle());
+	    vertx.deployVerticle(new MqttVerticle());
+
 	}
 
 }

@@ -66,15 +66,16 @@ void testGetParam(HttpClient httpClient){
   //Prueba de GET con parametro en body
   DynamicJsonDocument bodyGet(1024);
   String bodyGetData = "";
-  bodyGet[String("remitente_nif_fk")] = String("49163961H");
+  bodyGet[String("remitente_hash_mac_fk")] = String("mac123");
   serializeJson(bodyGet, bodyGetData);
-  doRequest(httpClient, "GET", "/api/registros/llamadas/enviadas/nif", bodyGetData);
+  doRequest(httpClient, "GET", "/api/registros/llamadas/enviadas/hash_mac", bodyGetData);
 }
 
-void testPost(HttpClient httpClient){
+void testPost(HttpClient httpClient, String mac){
     //Prueba de POST con parametro en body
   DynamicJsonDocument bodyPost(1024);
   String bodyPostData = "";
+  bodyPost[String("hash_mac")] = String(mac);
   bodyPost[String("nif")] = String("10163961P");
   bodyPost[String("contrasena")] = String("post");
   bodyPost[String("nombre")] = String("prueba desde cliente");
@@ -83,11 +84,11 @@ void testPost(HttpClient httpClient){
   doRequest(httpClient, "POST", "/api/usuarios/anadirUsuario", bodyPostData);
 }
 
-void testPut(HttpClient httpClient){
+void testPut(HttpClient httpClient, String mac){
     //Prueba de PUT con parametro en body
   DynamicJsonDocument bodyPut(1024);
   String bodyPutData = "";
-  bodyPut[String("nif")] = String("10163961P");
+  bodyPut[String("hash_mac")] = String(mac);
   bodyPut[String("contrasena")] = String("mod desde cliente");
   bodyPut[String("last_login")] = String("2021-05-15T19:19:28");
   bodyPut[String("nombre")] = String("prueba desde esp");
@@ -98,20 +99,20 @@ void testPut(HttpClient httpClient){
   doRequest(httpClient, "PUT", "/api/usuarios/editarUsuario", bodyPutData);
 }
 
-void testDelete(HttpClient httpClient){
+void testDelete(HttpClient httpClient, String mac){
   //Prueba DELETE con parametro en body
   DynamicJsonDocument bodyDelete(1024);
   String bodyDeleteData = "";
-  bodyDelete[String("nif")] = String("10163961P");
+  bodyDelete[String("hash_mac")] = String(mac);
   serializeJson(bodyDelete, bodyDeleteData);
   doRequest(httpClient, "DELETE", "/api/usuarios/borrarUsuario", bodyDeleteData);
   
 }
 
-void testCompleto(HttpClient httpClient){
+void testCompleto(HttpClient httpClient, String mac){
   testGet(httpClient);
   testGetParam(httpClient);
-  testPost(httpClient);
-  testPut(httpClient);
-  testDelete(httpClient);
+  testPost(httpClient, mac);
+  testPut(httpClient, mac);
+  testDelete(httpClient, mac);
 }
