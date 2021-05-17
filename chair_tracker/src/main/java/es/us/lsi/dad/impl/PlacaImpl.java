@@ -1,17 +1,17 @@
 package es.us.lsi.dad.impl;
 
 public class PlacaImpl {
-	
+
 	protected Short oid_placa;
 	protected String nombre;
-	protected String nif_fk;
+	protected String hash_mac_fk;
 	protected String estado;
-	
-	public PlacaImpl(Short oid_placa, String nombre, String nif_fk, String estado) {
+
+	public PlacaImpl(Short oid_placa, String nombre, String hash_mac_fk, String estado) {
 		super();
 		this.oid_placa = oid_placa;
 		this.nombre = nombre;
-		this.nif_fk = nif_fk;
+		this.hash_mac_fk = hash_mac_fk;
 		this.estado = estado;
 	}
 
@@ -36,12 +36,12 @@ public class PlacaImpl {
 		this.nombre = nombre;
 	}
 
-	public String getNif_fk() {
-		return nif_fk;
+	public String getHash_mac_fk() {
+		return hash_mac_fk;
 	}
 
-	public void setNif_fk(String nif_fk) {
-		this.nif_fk = nif_fk;
+	public void setHash_mac_fk(String hash_mac_fk) {
+		this.hash_mac_fk = hash_mac_fk;
 	}
 
 	public String getEstado() {
@@ -54,8 +54,8 @@ public class PlacaImpl {
 
 	@Override
 	public String toString() {
-		return "PlacaImpl [oid_placa=" + oid_placa + ", nombre=" + nombre + ", nif_fk=" + nif_fk + ", estado=" + estado
-				+ "]";
+		return "PlacaImpl [oid_placa=" + oid_placa + ", nombre=" + nombre + ", hash_mac_fk=" + hash_mac_fk + ", estado="
+				+ estado + "]";
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class PlacaImpl {
 		int result = 1;
 		result = prime * result + ((estado == null) ? 0 : estado.hashCode());
 		result = prime * result + ((oid_placa == null) ? 0 : oid_placa.hashCode());
-		result = prime * result + ((nif_fk == null) ? 0 : nif_fk.hashCode());
+		result = prime * result + ((hash_mac_fk == null) ? 0 : hash_mac_fk.hashCode());
 		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
 		return result;
 	}
@@ -88,10 +88,10 @@ public class PlacaImpl {
 				return false;
 		} else if (!oid_placa.equals(other.oid_placa))
 			return false;
-		if (nif_fk == null) {
-			if (other.nif_fk != null)
+		if (hash_mac_fk == null) {
+			if (other.hash_mac_fk != null)
 				return false;
-		} else if (!nif_fk.equals(other.nif_fk))
+		} else if (!hash_mac_fk.equals(other.hash_mac_fk))
 			return false;
 		if (nombre == null) {
 			if (other.nombre != null)

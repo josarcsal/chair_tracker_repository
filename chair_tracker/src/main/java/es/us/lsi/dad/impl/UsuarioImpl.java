@@ -3,7 +3,8 @@ package es.us.lsi.dad.impl;
 import java.time.LocalDateTime;
 
 public class UsuarioImpl {
-	 
+
+	protected String hash_mac;
 	protected String nif;
 	protected String contrasena;
 	protected LocalDateTime last_login;
@@ -11,32 +12,31 @@ public class UsuarioImpl {
 	protected String apellidos;
 	protected String rol;
 	protected String nif_jefe;
-		
+
 	public static LocalDateTime ParseaLocalDateTimeFromJson(String v) {
 		LocalDateTime res;
-				
-		if(v.contains("null")) {
-			res = LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(),
-					LocalDateTime.now().getHour(), LocalDateTime.now().getMinute(), LocalDateTime.now().getSecond());
-		}
-		else {
-			String [] trozos = v.split("T");
-			
+
+		if (v.contains("null")) {
+			res = LocalDateTime.of(LocalDateTime.now().getYear(), LocalDateTime.now().getMonth(),
+					LocalDateTime.now().getDayOfMonth(), LocalDateTime.now().getHour(), LocalDateTime.now().getMinute(),
+					LocalDateTime.now().getSecond());
+		} else {
+			String[] trozos = v.split("T");
+
 			String fecha = trozos[0].trim();
 			String hora = trozos[trozos.length - 1].trim();
-									
-			String [] trozosFecha = fecha.split("-");
+
+			String[] trozosFecha = fecha.split("-");
 			Integer anyo = Integer.valueOf(trozosFecha[0].trim());
 			Integer mes = Integer.valueOf(trozosFecha[1].trim());
 			Integer dia = Integer.valueOf(trozosFecha[2].trim());
-			
 
-			String [] trozosHora = hora.split(":");
+			String[] trozosHora = hora.split(":");
 			Integer horas = Integer.valueOf(trozosHora[0].trim());
 			Integer minutos = Integer.valueOf(trozosHora[0].trim());
 			Integer segundos = 00;
-			
-			if(trozosHora.length == 3) {
+
+			if (trozosHora.length == 3) {
 				segundos = Integer.valueOf(trozosHora[2].trim());
 			}
 
@@ -45,9 +45,15 @@ public class UsuarioImpl {
 		return res;
 	}
 
-	public UsuarioImpl(String nif, String contrasena, LocalDateTime last_login, String nombre, String apellidos,
-			String rol, String nif_jefe) {
+	public UsuarioImpl() {
 		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	public UsuarioImpl(String hash_mac, String nif, String contrasena, LocalDateTime last_login, String nombre,
+			String apellidos, String rol, String nif_jefe) {
+		super();
+		this.hash_mac = hash_mac;
 		this.nif = nif;
 		this.contrasena = contrasena;
 		this.last_login = last_login;
@@ -56,10 +62,13 @@ public class UsuarioImpl {
 		this.rol = rol;
 		this.nif_jefe = nif_jefe;
 	}
-	
-	public UsuarioImpl() {
-		super();
-		// TODO Auto-generated constructor stub
+
+	public String getHash_mac() {
+		return hash_mac;
+	}
+
+	public void setHash_mac(String hash_mac) {
+		this.hash_mac = hash_mac;
 	}
 
 	public String getNif() {
@@ -78,11 +87,11 @@ public class UsuarioImpl {
 		this.contrasena = contrasena;
 	}
 
-	public LocalDateTime getLastLogin() {
+	public LocalDateTime getLast_login() {
 		return last_login;
 	}
 
-	public void setLastLogin(LocalDateTime last_login) {
+	public void setLast_login(LocalDateTime last_login) {
 		this.last_login = last_login;
 	}
 
@@ -120,8 +129,9 @@ public class UsuarioImpl {
 
 	@Override
 	public String toString() {
-		return "UsuarioImpl [nif=" + nif + ", contrasena=" + contrasena + ", last_login=" + last_login + ", nombre="
-				+ nombre + ", apellidos=" + apellidos + ", rol=" + rol + ", nif_jefe=" + nif_jefe + "]";
+		return "UsuarioImpl [hash_mac=" + hash_mac + ", nif=" + nif + ", contrasena=" + contrasena + ", last_login="
+				+ last_login + ", nombre=" + nombre + ", apellidos=" + apellidos + ", rol=" + rol + ", nif_jefe="
+				+ nif_jefe + "]";
 	}
 
 	@Override
@@ -130,6 +140,7 @@ public class UsuarioImpl {
 		int result = 1;
 		result = prime * result + ((apellidos == null) ? 0 : apellidos.hashCode());
 		result = prime * result + ((contrasena == null) ? 0 : contrasena.hashCode());
+		result = prime * result + ((hash_mac == null) ? 0 : hash_mac.hashCode());
 		result = prime * result + ((last_login == null) ? 0 : last_login.hashCode());
 		result = prime * result + ((nif == null) ? 0 : nif.hashCode());
 		result = prime * result + ((nif_jefe == null) ? 0 : nif_jefe.hashCode());
@@ -156,6 +167,11 @@ public class UsuarioImpl {
 			if (other.contrasena != null)
 				return false;
 		} else if (!contrasena.equals(other.contrasena))
+			return false;
+		if (hash_mac == null) {
+			if (other.hash_mac != null)
+				return false;
+		} else if (!hash_mac.equals(other.hash_mac))
 			return false;
 		if (last_login == null) {
 			if (other.last_login != null)
@@ -184,4 +200,5 @@ public class UsuarioImpl {
 			return false;
 		return true;
 	}
+
 }

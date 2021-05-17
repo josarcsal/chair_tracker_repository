@@ -6,18 +6,18 @@ public class LlamadaImpl {
 	protected String estado;
 	protected String desde;
 	protected String descripcion;
-	protected String remitente_nif_fk;
-	protected String destinatario_nif_fk;
-	
-	public LlamadaImpl(Short oid_llamada, String estado, String desde, String descripcion, String remitente_nif_fk,
-			String destinatario_nif_fk) {
+	protected String remitente_hash_mac_fk;
+	protected String destinatario_hash_mac_fk;
+
+	public LlamadaImpl(Short oid_llamada, String estado, String desde, String descripcion, String remitente_hash_mac_fk,
+			String destinatario_hash_mac_fk) {
 		super();
 		this.oid_llamada = oid_llamada;
 		this.estado = estado;
 		this.desde = desde;
 		this.descripcion = descripcion;
-		this.remitente_nif_fk = remitente_nif_fk;
-		this.destinatario_nif_fk = destinatario_nif_fk;
+		this.remitente_hash_mac_fk = remitente_hash_mac_fk;
+		this.destinatario_hash_mac_fk = destinatario_hash_mac_fk;
 	}
 
 	public LlamadaImpl() {
@@ -57,27 +57,27 @@ public class LlamadaImpl {
 		this.descripcion = descripcion;
 	}
 
-	public String getRemitente_nif_fk() {
-		return remitente_nif_fk;
+	public String getRemitente_hash_mac_fk() {
+		return remitente_hash_mac_fk;
 	}
 
-	public void setRemitente_nif_fk(String remitente_nif_fk) {
-		this.remitente_nif_fk = remitente_nif_fk;
+	public void setRemitente_hash_mac_fk(String remitente_hash_mac_fk) {
+		this.remitente_hash_mac_fk = remitente_hash_mac_fk;
 	}
 
-	public String getDestinatario_nif_fk() {
-		return destinatario_nif_fk;
+	public String getDestinatario_hash_mac_fk() {
+		return destinatario_hash_mac_fk;
 	}
 
-	public void setDestinatario_nif_fk(String destinatario_nif_fk) {
-		this.destinatario_nif_fk = destinatario_nif_fk;
+	public void setDestinatario_hash_mac_fk(String destinatario_hash_mac_fk) {
+		this.destinatario_hash_mac_fk = destinatario_hash_mac_fk;
 	}
 
 	@Override
 	public String toString() {
 		return "LlamadaImpl [oid_llamada=" + oid_llamada + ", estado=" + estado + ", desde=" + desde + ", descripcion="
-				+ descripcion + ", remitente_nif_fk=" + remitente_nif_fk + ", destinatario_nif_fk="
-				+ destinatario_nif_fk + "]";
+				+ descripcion + ", remitente_hash_mac_fk=" + remitente_hash_mac_fk + ", destinatario_hash_mac_fk="
+				+ destinatario_hash_mac_fk + "]";
 	}
 
 	@Override
@@ -86,10 +86,10 @@ public class LlamadaImpl {
 		int result = 1;
 		result = prime * result + ((descripcion == null) ? 0 : descripcion.hashCode());
 		result = prime * result + ((desde == null) ? 0 : desde.hashCode());
-		result = prime * result + ((destinatario_nif_fk == null) ? 0 : destinatario_nif_fk.hashCode());
+		result = prime * result + ((destinatario_hash_mac_fk == null) ? 0 : destinatario_hash_mac_fk.hashCode());
 		result = prime * result + ((estado == null) ? 0 : estado.hashCode());
 		result = prime * result + ((oid_llamada == null) ? 0 : oid_llamada.hashCode());
-		result = prime * result + ((remitente_nif_fk == null) ? 0 : remitente_nif_fk.hashCode());
+		result = prime * result + ((remitente_hash_mac_fk == null) ? 0 : remitente_hash_mac_fk.hashCode());
 		return result;
 	}
 
@@ -112,10 +112,10 @@ public class LlamadaImpl {
 				return false;
 		} else if (!desde.equals(other.desde))
 			return false;
-		if (destinatario_nif_fk == null) {
-			if (other.destinatario_nif_fk != null)
+		if (destinatario_hash_mac_fk == null) {
+			if (other.destinatario_hash_mac_fk != null)
 				return false;
-		} else if (!destinatario_nif_fk.equals(other.destinatario_nif_fk))
+		} else if (!destinatario_hash_mac_fk.equals(other.destinatario_hash_mac_fk))
 			return false;
 		if (estado == null) {
 			if (other.estado != null)
@@ -127,11 +127,11 @@ public class LlamadaImpl {
 				return false;
 		} else if (!oid_llamada.equals(other.oid_llamada))
 			return false;
-		if (remitente_nif_fk == null) {
-			if (other.remitente_nif_fk != null)
+		if (remitente_hash_mac_fk == null) {
+			if (other.remitente_hash_mac_fk != null)
 				return false;
-		} else if (!remitente_nif_fk.equals(other.remitente_nif_fk))
+		} else if (!remitente_hash_mac_fk.equals(other.remitente_hash_mac_fk))
 			return false;
 		return true;
-	}	
+	}
 }

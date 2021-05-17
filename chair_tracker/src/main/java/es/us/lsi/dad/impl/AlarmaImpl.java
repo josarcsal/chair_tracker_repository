@@ -12,18 +12,17 @@ public class AlarmaImpl {
 	protected Short t_trabajo;
 	protected Short t_descanso;
 	protected Short ciclo;
-	protected String nif_fk;
+	protected String hash_mac_fk;
 
 	public static LocalTime ParseaLocalTimeFromJson(String v) {
 		LocalTime res;
-		
+
 		String[] trozosHoras = v.substring(2).split("H");
 		Integer horas = Integer.valueOf(trozosHoras[0].trim());
 
 		Integer minutos = 00;
 		Integer segundos = 00;
 
-		
 		if (v.contains("M")) {
 			String[] trozosMinutos = trozosHoras[1].split("M");
 			minutos = Integer.valueOf(trozosMinutos[0].trim());
@@ -32,7 +31,7 @@ public class AlarmaImpl {
 				segundos = Integer.valueOf(trozosSegundos[0].trim());
 			}
 		}
-		
+
 		res = LocalTime.of(horas, minutos, segundos);
 
 		return res;
@@ -44,7 +43,7 @@ public class AlarmaImpl {
 	}
 
 	public AlarmaImpl(Short oid_alarma, String dias, String estado, LocalTime t_inicio, LocalTime t_fin,
-			Short t_trabajo, Short t_descanso, Short ciclo, String nif_fk) {
+			Short t_trabajo, Short t_descanso, Short ciclo, String hash_mac_fk) {
 		super();
 		this.oid_alarma = oid_alarma;
 		this.dias = dias;
@@ -54,7 +53,7 @@ public class AlarmaImpl {
 		this.t_trabajo = t_trabajo;
 		this.t_descanso = t_descanso;
 		this.ciclo = ciclo;
-		this.nif_fk = nif_fk;
+		this.hash_mac_fk = hash_mac_fk;
 	}
 
 	public Short getOid_alarma() {
@@ -121,19 +120,19 @@ public class AlarmaImpl {
 		this.ciclo = ciclo;
 	}
 
-	public String getNif_fk() {
-		return nif_fk;
+	public String getHash_mac_fk() {
+		return hash_mac_fk;
 	}
 
-	public void setNif_fk(String nif_fk) {
-		this.nif_fk = nif_fk;
+	public void setHash_mac_fk(String hash_mac_fk) {
+		this.hash_mac_fk = hash_mac_fk;
 	}
 
 	@Override
 	public String toString() {
 		return "AlarmaImpl [oid_alarma=" + oid_alarma + ", dias=" + dias + ", estado=" + estado + ", t_inicio="
 				+ t_inicio + ", t_fin=" + t_fin + ", t_trabajo=" + t_trabajo + ", t_descanso=" + t_descanso + ", ciclo="
-				+ ciclo + ", nif_fk=" + nif_fk + "]";
+				+ ciclo + ", hash_mac_fk=" + hash_mac_fk + "]";
 	}
 
 	@Override
@@ -143,7 +142,7 @@ public class AlarmaImpl {
 		result = prime * result + ((ciclo == null) ? 0 : ciclo.hashCode());
 		result = prime * result + ((dias == null) ? 0 : dias.hashCode());
 		result = prime * result + ((estado == null) ? 0 : estado.hashCode());
-		result = prime * result + ((nif_fk == null) ? 0 : nif_fk.hashCode());
+		result = prime * result + ((hash_mac_fk == null) ? 0 : hash_mac_fk.hashCode());
 		result = prime * result + ((oid_alarma == null) ? 0 : oid_alarma.hashCode());
 		result = prime * result + ((t_descanso == null) ? 0 : t_descanso.hashCode());
 		result = prime * result + ((t_fin == null) ? 0 : t_fin.hashCode());
@@ -176,10 +175,10 @@ public class AlarmaImpl {
 				return false;
 		} else if (!estado.equals(other.estado))
 			return false;
-		if (nif_fk == null) {
-			if (other.nif_fk != null)
+		if (hash_mac_fk == null) {
+			if (other.hash_mac_fk != null)
 				return false;
-		} else if (!nif_fk.equals(other.nif_fk))
+		} else if (!hash_mac_fk.equals(other.hash_mac_fk))
 			return false;
 		if (oid_alarma == null) {
 			if (other.oid_alarma != null)
