@@ -39,7 +39,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 		// ALARMA
 		router.route("/api/alarmas/*").handler(BodyHandler.create());
 		router.get("/api/alarmas").handler(this::obtenerAlarmas);
-		router.get("/api/alarmas/nif").handler(this::obtenerAlarmasUsuario);
+		router.get("/api/alarmas/hash_mac").handler(this::obtenerAlarmasUsuario);
 		router.post("/api/alarmas/anadirAlarma").handler(this::anadirAlarma);
 		router.put("/api/alarmas/editarAlarma").handler(this::editarAlarma);
 		router.delete("/api/alarmas/borrarAlarma").handler(this::borrarAlarma);
@@ -47,8 +47,8 @@ public class HttpServerVerticle extends AbstractVerticle {
 		// LLAMADA
 		router.route("/api/llamadas/*").handler(BodyHandler.create());
 		router.get("/api/llamadas").handler(this::obtenerLlamadas);
-		router.get("/api/llamadas/enviadas/nif").handler(this::obtenerLlamadasEnviadasUsuario);
-		router.get("/api/llamadas/recibidas/nif").handler(this::obtenerLlamadasRecibidasUsuario);
+		router.get("/api/llamadas/enviadas/hash_mac").handler(this::obtenerLlamadasEnviadasUsuario);
+		router.get("/api/llamadas/recibidas/hash_mac").handler(this::obtenerLlamadasRecibidasUsuario);
 		router.post("/api/llamadas/anadirLlamada").handler(this::anadirLlamada);
 		router.put("/api/llamadas/editarLlamada").handler(this::editarLlamada);
 
@@ -57,9 +57,9 @@ public class HttpServerVerticle extends AbstractVerticle {
 		router.get("/api/registros").handler(this::obtenerRegistros);
 		router.get("/api/registros/llamadas").handler(this::obtenerRegistrosLlamadas);
 		router.get("/api/registros/alarmas").handler(this::obtenerRegistrosAlarmas);
-		router.get("/api/registros/alarmas/nif").handler(this::obtenerRegistrosAlarmasUsuario);
-		router.get("/api/registros/llamadas/enviadas/nif").handler(this::obtenerRegistrosLlamadasEnviadas);
-		router.get("/api/registros/llamadas/recibidas/nif").handler(this::obtenerRegistrosLlamadasRecibidas);
+		router.get("/api/registros/alarmas/hash_mac").handler(this::obtenerRegistrosAlarmasUsuario);
+		router.get("/api/registros/llamadas/enviadas/hash_mac").handler(this::obtenerRegistrosLlamadasEnviadas);
+		router.get("/api/registros/llamadas/recibidas/hash_mac").handler(this::obtenerRegistrosLlamadasRecibidas);
 
 		// Server HTTP
 		httpServer = vertx.createHttpServer();
@@ -99,7 +99,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 
 	private void borrarUsuario(RoutingContext routingContext) {
 		JsonObject json = routingContext.getBodyAsJson();
-		vertx.eventBus().request("borrarUsuario", json.getString("nif"), reply -> {
+		vertx.eventBus().request("borrarUsuario", json.getString("hash_mac"), reply -> {
 			if (reply.succeeded()) {
 				System.out.println(reply.result().body());
 				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
@@ -128,9 +128,9 @@ public class HttpServerVerticle extends AbstractVerticle {
 	private void editarUsuario(RoutingContext routingContext) {
 		// json de los datos a modificar del usuario
 		JsonObject json = routingContext.getBodyAsJson();
-		json.put("nif", json.getString("nif"));
+		json.put("hash_mac", json.getString("hash_mac"));
 		System.out.println(json.toString());
-		// Añadir el nif que identifica al usuario para su modificacion
+		// Añadir el hash_mac que identifica al usuario para su modificacion
 		vertx.eventBus().request("editarUsuario", json.toString(), reply -> {
 			if (reply.succeeded()) {
 				System.out.println(reply.result().body());
@@ -167,7 +167,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 
 	private void obtenerPlacasUsuario(RoutingContext routingContext) {
 		JsonObject json = routingContext.getBodyAsJson();
-		json.put("nif_fk", json.getString("nif_fk"));
+		json.put("hash_mac_fk", json.getString("hash_mac_fk"));
 		vertx.eventBus().request("obtenerPlacasUsuario", json.toString(), reply -> {
 			if (reply.succeeded()) {
 				System.out.println(reply.result().body());
@@ -247,7 +247,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 
 	private void obtenerAlarmasUsuario(RoutingContext routingContext) {
 		JsonObject json = routingContext.getBodyAsJson();
-		json.put("nif_fk", json.getString("nif_fk"));
+		json.put("hash_mac_fk", json.getString("hash_mac_fk"));
 		vertx.eventBus().request("obtenerAlarmasUsuario", json.toString(), reply -> {
 			if (reply.succeeded()) {
 				System.out.println(reply.result().body());
@@ -326,7 +326,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 
 	private void obtenerLlamadasRecibidasUsuario(RoutingContext routingContext) {
 		JsonObject json = routingContext.getBodyAsJson();
-		json.put("destinatario_nif_fk", json.getString("destinatario_nif_fk"));
+		json.put("destinatario_hash_mac_fk", json.getString("destinatario_hash_mac_fk"));
 		vertx.eventBus().request("obtenerLlamadasRecibidasUsuario", json.toString(), reply -> {
 			if (reply.succeeded()) {
 				System.out.println(reply.result().body());
@@ -341,7 +341,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 
 	private void obtenerLlamadasEnviadasUsuario(RoutingContext routingContext) {
 		JsonObject json = routingContext.getBodyAsJson();
-		json.put("remitente_nif_fk", json.getString("remitente_nif_fk"));
+		json.put("remitente_hash_mac_fk", json.getString("remitente_hash_mac_fk"));
 		vertx.eventBus().request("obtenerLlamadasEnviadasUsuario", json.toString(), reply -> {
 			if (reply.succeeded()) {
 				System.out.println(reply.result().body());
@@ -432,7 +432,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 
 	private void obtenerRegistrosAlarmasUsuario(RoutingContext routingContext) {
 		JsonObject json = routingContext.getBodyAsJson();
-		json.put("nif_fk", json.getString("nif_fk"));
+		json.put("hash_mac_fk", json.getString("hash_mac_fk"));
 		vertx.eventBus().request("obtenerRegistrosAlarmasUsuario", json.toString(), reply -> {
 			if (reply.succeeded()) {
 				System.out.println(reply.result().body());
@@ -447,7 +447,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 
 	private void obtenerRegistrosLlamadasEnviadas(RoutingContext routingContext) {
 		JsonObject json = routingContext.getBodyAsJson();
-		json.put("remitente_nif_fk", json.getString("remitente_nif_fk"));
+		json.put("remitente_hash_mac_fk", json.getString("remitente_hash_mac_fk"));
 		vertx.eventBus().request("obtenerRegistrosLlamadasEnviadas", json.toString(), reply -> {
 			if (reply.succeeded()) {
 				System.out.println(reply.result().body());
@@ -462,7 +462,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 
 	private void obtenerRegistrosLlamadasRecibidas(RoutingContext routingContext) {
 		JsonObject json = routingContext.getBodyAsJson();
-		json.put("destinatario_nif_fk", json.getString("destinatario_nif_fk"));
+		json.put("destinatario_hash_mac_fk", json.getString("destinatario_hash_mac_fk"));
 		vertx.eventBus().request("obtenerRegistrosLlamadasRecibidas", json.toString(), reply -> {
 			if (reply.succeeded()) {
 				System.out.println(reply.result().body());
