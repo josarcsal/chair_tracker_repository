@@ -4,7 +4,7 @@ USE proyectodad;
 DROP TABLE Registros;
 DROP TABLE Llamadas;
 DROP TABLE Alarmas;
-DROP TABLE Placas;
+/*DROP TABLE Placas;*/
 DROP TABLE Usuarios;
 
 CREATE TABLE Usuarios(

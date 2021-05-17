@@ -10,16 +10,16 @@ DELIMITER //
 CREATE TRIGGER Rellena_Registros_Llamadas_INSERT AFTER INSERT 
 	ON proyectodad.llamadas FOR EACH ROW
     BEGIN
-    INSERT INTO proyectodad.registros (tipo, fecha, trabajo, descanso, oid_llamada_fk, oid_alarma_fk, nif_fk, remitente_nif_fk, destinatario_nif_fk) 
-		VALUES ('L', NOW(), NULL, NULL, NEW.oid_llamada, NULL, NULL, NEW.remitente_nif_fk, NEW.destinatario_nif_fk);
+    INSERT INTO proyectodad.registros (tipo, fecha, trabajo, descanso, oid_llamada_fk, oid_alarma_fk, hash_mac_fk, remitente_hash_mac_fk, destinatario_hash_mac_fk) 
+		VALUES ('L', NOW(), NULL, NULL, NEW.oid_llamada, NULL, NULL, NEW.remitente_hash_mac_fk, NEW.destinatario_hash_mac_fk);
 END//
 
 DELIMITER //
 CREATE TRIGGER Rellena_Registros_Alarmas_INSERT AFTER INSERT
 	ON proyectodad.alarmas FOR EACH ROW
     BEGIN
-    INSERT INTO proyectodad.registros (tipo, fecha, trabajo, descanso, oid_llamada_fk, oid_alarma_fk, nif_fk, remitente_nif_fk, destinatario_nif_fk) 
-		VALUES ('A', NOW(), NEW.ciclo * NEW.t_trabajo, NEW.ciclo * NEW.t_descanso, NULL, NEW.oid_alarma, NEW.nif_fk, NULL, NULL);
+    INSERT INTO proyectodad.registros (tipo, fecha, trabajo, descanso, oid_llamada_fk, oid_alarma_fk, hash_mac_fk, remitente_hash_mac_fk, destinatario_hash_mac_fk) 
+		VALUES ('A', NOW(), NEW.ciclo * NEW.t_trabajo, NEW.ciclo * NEW.t_descanso, NULL, NEW.oid_alarma, NEW.hash_mac_fk, NULL, NULL);
 END//
 
 DELIMITER //
