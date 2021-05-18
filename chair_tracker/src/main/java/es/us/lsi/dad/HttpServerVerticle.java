@@ -56,7 +56,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 		// Server HTTP
 		httpServer = vertx.createHttpServer();
 		httpServer.requestHandler(router::handle).listen(8084, res -> {
-			System.out.println("Conectado");
+			System.out.println("Conectado servidor http");
 			if (res.succeeded()) {
 				startFuture.complete();
 			} else {

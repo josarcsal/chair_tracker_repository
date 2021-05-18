@@ -4,44 +4,54 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.Gson;
+
 import io.netty.handler.codec.mqtt.MqttQoS;
 import io.netty.handler.ssl.ClientAuth;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.mqtt.MqttClient;
+import io.vertx.mqtt.MqttClientOptions;
+import io.vertx.mysqlclient.MySQLConnectOptions;
+import io.vertx.mysqlclient.MySQLPool;
+import io.vertx.sqlclient.PoolOptions;
 
 public class MqttVerticle extends AbstractVerticle {
 
-	MqttClient client = MqttClient.create(vertx);
-
+	MqttClient mqttClient;
+	MqttClientOptions options;
+	
 	public void start(Promise<Void> startFuture) {
 
+		options = new MqttClientOptions();
+		options.setUsername("root");
+		options.setPassword("root");
+		options.setClientId("Vertx client");
+		
+		mqttClient = MqttClient.create(vertx, options);
 
-		client.connect(1883, "192.168.1.56", s -> {
-			client.disconnect();
+		mqttClient.connect(1883, "192.168.1.56", res -> {
+			 if (res.succeeded()) {
+				    System.out.println("Conectado a mqtt server");
+				    startFuture.complete();
+				   } else {
+				    System.out.println("Failed to connect to a server");
+				    System.out.println(res.cause());
+					startFuture.fail(res.cause());
+				   }
+			 //mqttClient.disconnect();
 		});
 		
-		client.publishHandler(s -> {
-			  System.out.println("There are new message in topic: " + s.topicName());
-			  System.out.println("Content(as string) of the message: " + s.payload().toString());
-			  System.out.println("QoS: " + s.qosLevel());
-			})
-			  .subscribe("$SYS/broker/publish/bytes/", 2);
-		
-		client.publish("bytes",
-				  Buffer.buffer("Desde vertx"),
+		mqttClient.publish("temperature",
+				  Buffer.buffer("hello"),
 				  MqttQoS.AT_LEAST_ONCE,
 				  false,
 				  false);
 		
-		client.publish("temperature",
-				  Buffer.buffer("Desde vertx"),
-				  MqttQoS.AT_LEAST_ONCE,
-				  false,
-				  false);
 
 
+		
 	}
 	
 }

@@ -1,7 +1,9 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <ArduinoHttpClient.h>
+#include <ESP8266WiFi.h>
 
+void setup_wifi(String ssid, String password);
 void doRequest(HttpClient httpClient, String tipo, const char* uri, String bodyData);
 
 //TESTS

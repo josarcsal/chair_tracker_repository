@@ -1,6 +1,30 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <ArduinoHttpClient.h>
+#include <ESP8266WiFi.h>
+
+void setup_wifi(String ssid, String password){
+  delay(10);
+  Serial.println();
+  Serial.print("Conectando a ");
+  Serial.println(ssid);
+  WiFi.begin(ssid, password);
+
+  WiFi.mode(WIFI_STA);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  randomSeed(micros());
+
+  Serial.println("");
+  Serial.println("WiFi Conectada");
+  Serial.println("IP: ");
+  Serial.println(WiFi.localIP());
+  Serial.println("MAC: ");
+  Serial.println(WiFi.macAddress());
+}
 
 //GET
 void doRequest(HttpClient httpClient, String tipo, const char* uri, String bodyData){
