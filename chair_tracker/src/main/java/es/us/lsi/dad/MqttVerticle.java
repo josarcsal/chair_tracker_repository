@@ -1,21 +1,11 @@
 package es.us.lsi.dad;
 
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.google.gson.Gson;
-
 import io.netty.handler.codec.mqtt.MqttQoS;
-import io.netty.handler.ssl.ClientAuth;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.mqtt.MqttClient;
 import io.vertx.mqtt.MqttClientOptions;
-import io.vertx.mysqlclient.MySQLConnectOptions;
-import io.vertx.mysqlclient.MySQLPool;
-import io.vertx.sqlclient.PoolOptions;
 
 public class MqttVerticle extends AbstractVerticle {
 
@@ -23,35 +13,48 @@ public class MqttVerticle extends AbstractVerticle {
 	MqttClientOptions options;
 	
 	public void start(Promise<Void> startFuture) {
-
-		options = new MqttClientOptions();
-		options.setUsername("root");
-		options.setPassword("root");
-		options.setClientId("Vertx client");
 		
-		mqttClient = MqttClient.create(vertx, options);
+		mqttClient = MqttClient.create(getVertx(),
+				new MqttClientOptions().setAutoKeepAlive(true).setClientId("mqtt").setUsername("root").setPassword("root"));
+		mqttClient.connect(1883, "localhost", connection -> {
+			if (connection.succeeded()) {
+				System.out.println("Client name: " + connection.result().code().name());
+				mqttClient.subscribe("topic_1", MqttQoS.AT_LEAST_ONCE.value(), handler -> {
+					if (handler.succeeded()) {
+						System.out.println("Client has been subscribed to topic_1");
+					}
+				});
 
-		mqttClient.connect(1883, "192.168.1.56", res -> {
-			 if (res.succeeded()) {
-				    System.out.println("Conectado a mqtt server");
-				    startFuture.complete();
-				   } else {
-				    System.out.println("Failed to connect to a server");
-				    System.out.println(res.cause());
-					startFuture.fail(res.cause());
-				   }
-			 //mqttClient.disconnect();
+				mqttClient.subscribe("father/topic_2", MqttQoS.AT_LEAST_ONCE.value(), handler -> {
+					if (handler.succeeded()) {
+						System.out.println("Client has been subscribed to topic_2");
+					}
+				});
+
+				mqttClient.subscribe("nuevo_topic", MqttQoS.AT_LEAST_ONCE.value(), handler -> {
+					if (handler.succeeded()) {
+						System.out.println("Client has been subscribed to nuevo_topic");
+					}
+				});
+
+				mqttClient.publishHandler(message -> {
+					System.out.println("Message published on topic: " + message.topicName());
+					System.out.println(message.payload().toString());
+				});
+
+				mqttClient.publish("father/topic_2", Buffer.buffer("hola desde vertx"), MqttQoS.AT_LEAST_ONCE,
+						false, false, publishHandler -> {
+							if (publishHandler.succeeded()) {
+								System.out.println("Message has been published");
+							} else {
+								System.out.println("Error while publishing message");
+							}
+						});
+			} else {
+				System.out.println("Se ha producido un error en la conexión al broker");
+			}
 		});
-		
-		mqttClient.publish("temperature",
-				  Buffer.buffer("hello"),
-				  MqttQoS.AT_LEAST_ONCE,
-				  false,
-				  false);
-		
-
-
-		
 	}
 	
 }
+
