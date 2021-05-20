@@ -17,16 +17,16 @@
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 
 //Declaracion de variables usadas
-const char* ssid = "Xiaomi_4A";
-const char* password = "oE25yJ9ms54Vd9222Z6B";
-const char* ipServer = "192.168.1.56";
+const char* ssid = "MiFibra-919C";//"Xiaomi_4A";
+const char* password = "9We7qZEF";//"oE25yJ9ms54Vd9222Z6B";
+const char* ipServer = "192.168.1.44";//"192.168.1.56";
 const int portHttp = 8084;
 const int portMqtt = 1883;
 const char* mqttUser = "root";
 const char* mqttPassword = "root";
 
 WiFiClient espClient;
-IPAddress server(192, 168, 1, 56);
+IPAddress server(192, 168, 1, 44);
 PubSubClient mqttClient(espClient);
 HttpClient httpClient = HttpClient(espClient, server, portHttp);
 
@@ -42,6 +42,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial.print((char)payload[i]);
   }
   Serial.println();
+
+  if(topic = "llamadas"){
+    //ENCENDER ALARMA POR LLAMADA
+    Serial.println("Estan llamando");
+  }
 }
 
 void reconnect() {
@@ -51,10 +56,8 @@ void reconnect() {
     // Attempt to connect
     if (mqttClient.connect("ESP8266Client", mqttUser, mqttPassword)) {
       Serial.println("connected");
-      // Once connected, publish an announcement...
-      mqttClient.publish("outTopic","hello world");
       // ... and resubscribe
-      mqttClient.subscribe("father/topic_2");
+      mqttClient.subscribe("llamadas");
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqttClient.state());

@@ -23,74 +23,49 @@ public class MqttVerticle extends AbstractVerticle {
 				.setUsername("root").setPassword("root"));
 		mqttClient.connect(1883, "localhost", connection -> {
 			if (connection.succeeded()) {
-				System.out.println("Client name: " + connection.result().code().name());
-				/* mqttClient.subscribe("topic_1", MqttQoS.AT_LEAST_ONCE.value(), handler -> {
-					if (handler.succeeded()) {
-						System.out.println("Client has been subscribed to topic_1");
-					}
-				});
-
-				mqttClient.subscribe("father/topic_2", MqttQoS.AT_LEAST_ONCE.value(), handler -> {
-					if (handler.succeeded()) {
-						System.out.println("Client has been subscribed to topic_2");
-					}
-				});
-
-				mqttClient.subscribe("nuevo_topic", MqttQoS.AT_LEAST_ONCE.value(), handler -> {
-					if (handler.succeeded()) {
-						System.out.println("Client has been subscribed to nuevo_topic");
-					}
-				});
-
-				mqttClient.publishHandler(message -> {
-					System.out.println("Message published on topic: " + message.topicName());
-					System.out.println(message.payload().toString());
-				});
-
-				mqttClient.publish("father/topic_2", Buffer.buffer("hola desde vertx"), MqttQoS.AT_LEAST_ONCE, false,
-						false, publishHandler -> {
-							if (publishHandler.succeeded()) {
-								System.out.println("Message has been published");
-							} else {
-								System.out.println("Error while publishing message");
-							}
-						});*/
+				System.out.println("Conectado cliente mqtt");
+				/*
+				 * mqttClient.subscribe("topic_1", MqttQoS.AT_LEAST_ONCE.value(), handler -> {
+				 * if (handler.succeeded()) {
+				 * System.out.println("Client has been subscribed to topic_1"); } });
+				 * 
+				 * mqttClient.subscribe("father/topic_2", MqttQoS.AT_LEAST_ONCE.value(), handler
+				 * -> { if (handler.succeeded()) {
+				 * System.out.println("Client has been subscribed to topic_2"); } });
+				 * 
+				 * mqttClient.subscribe("nuevo_topic", MqttQoS.AT_LEAST_ONCE.value(), handler ->
+				 * { if (handler.succeeded()) {
+				 * System.out.println("Client has been subscribed to nuevo_topic"); } });
+				 * 
+				 * mqttClient.publishHandler(message -> {
+				 * System.out.println("Message published on topic: " + message.topicName());
+				 * System.out.println(message.payload().toString()); });
+				 * 
+				 * mqttClient.publish("father/topic_2", Buffer.buffer("hola desde vertx"),
+				 * MqttQoS.AT_LEAST_ONCE, false, false, publishHandler -> { if
+				 * (publishHandler.succeeded()) {
+				 * System.out.println("Message has been published"); } else {
+				 * System.out.println("Error while publishing message"); } });
+				 */
 			} else {
 				System.out.println("Se ha producido un error en la conexión al broker");
 			}
 		});
-		
-		pruebaMqtt();
+
+		llamadaAUsuario();
 	}
 
-	private void pruebaMqtt() {
-		MessageConsumer<String> consumer = vertx.eventBus().consumer("pruebaMqtt");
+	private void llamadaAUsuario() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("llamadaAUsuario");
 
 		consumer.handler(message -> {
-			mqttClient.subscribe("topic_1", MqttQoS.AT_LEAST_ONCE.value(), handler -> {
-				if (handler.succeeded()) {
-					System.out.println("Client has been subscribed to topic_1");
-				}
-			});
-
-			mqttClient.subscribe("father/topic_2", MqttQoS.AT_LEAST_ONCE.value(), handler -> {
-				if (handler.succeeded()) {
-					System.out.println("Client has been subscribed to topic_2");
-				}
-			});
-
-			mqttClient.subscribe("nuevo_topic", MqttQoS.AT_LEAST_ONCE.value(), handler -> {
-				if (handler.succeeded()) {
-					System.out.println("Client has been subscribed to nuevo_topic");
-				}
-			});
 
 			mqttClient.publishHandler(messageMqtt -> {
 				System.out.println("Message published on topic: " + messageMqtt.topicName());
 				System.out.println(messageMqtt.payload().toString());
 			});
 
-			mqttClient.publish("father/topic_2", Buffer.buffer("hola desde vertx"), MqttQoS.AT_LEAST_ONCE, false, false,
+			mqttClient.publish("llamadas", Buffer.buffer("hash_mac"), MqttQoS.AT_LEAST_ONCE, false, false,
 					publishHandler -> {
 						if (publishHandler.succeeded()) {
 							System.out.println("Message has been published");
@@ -101,5 +76,5 @@ public class MqttVerticle extends AbstractVerticle {
 					});
 		});
 	}
-	
+
 }
