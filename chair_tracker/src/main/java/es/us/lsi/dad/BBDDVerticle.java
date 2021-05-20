@@ -40,6 +40,8 @@ public class BBDDVerticle extends AbstractVerticle {
 		// ALARMAS
 		obtenerAlarmas();
 		obtenerAlarmasUsuario();
+		//obtenerAlarmasPorHora --> para así en el cliente cuando sea X hora, poder seleccionar 
+									//la alarma que queramos actualizar t_descanso y t_trabajo
 		borrarAlarma();
 		anadirAlarma();
 		editarAlarma();
