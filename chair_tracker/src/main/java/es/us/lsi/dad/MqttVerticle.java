@@ -5,12 +5,9 @@ import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.core.eventbus.MessageConsumer;
-import io.vertx.ext.web.RoutingContext;
+import io.vertx.core.json.JsonObject;
 import io.vertx.mqtt.MqttClient;
 import io.vertx.mqtt.MqttClientOptions;
-import io.vertx.sqlclient.Query;
-import io.vertx.sqlclient.Row;
-import io.vertx.sqlclient.RowSet;
 
 public class MqttVerticle extends AbstractVerticle {
 
@@ -59,13 +56,14 @@ public class MqttVerticle extends AbstractVerticle {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("llamadaAUsuario");
 
 		consumer.handler(message -> {
-
+			
 			mqttClient.publishHandler(messageMqtt -> {
 				System.out.println("Message published on topic: " + messageMqtt.topicName());
 				System.out.println(messageMqtt.payload().toString());
 			});
-
-			mqttClient.publish("llamadas", Buffer.buffer("hash_mac"), MqttQoS.AT_LEAST_ONCE, false, false,
+			
+			JsonObject json = new JsonObject(message.body());
+			mqttClient.publish("placa/llamadas", Buffer.buffer("Llamando a " +json.getString("destinatario_hash_mac_fk")), MqttQoS.AT_LEAST_ONCE, false, false,
 					publishHandler -> {
 						if (publishHandler.succeeded()) {
 							System.out.println("Message has been published");

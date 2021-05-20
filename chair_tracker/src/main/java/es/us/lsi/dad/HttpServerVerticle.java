@@ -281,7 +281,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 			}
 		});
 
-		vertx.eventBus().request("llamadaAUsuario", "llamadaAUsuario", replyMqtt ->{
+		vertx.eventBus().request("llamadaAUsuario", routingContext.getBodyAsString(), replyMqtt ->{
 			if (replyMqtt.succeeded()) {
 				System.out.println(replyMqtt.result().body());
 				routingContext.response().setStatusCode(200);

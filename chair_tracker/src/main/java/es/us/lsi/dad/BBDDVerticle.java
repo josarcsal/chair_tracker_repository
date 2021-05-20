@@ -575,10 +575,10 @@ public class BBDDVerticle extends AbstractVerticle {
 							+ newLlamada.getDesde() + "','" + newLlamada.getDescripcion() + "','"
 							+ newLlamada.getRemitente_hash_mac_fk() + "','" + newLlamada.getDestinatario_hash_mac_fk()
 							+ "');");
-
+						
 			query.execute(res -> {
 				if (res.succeeded()) {
-					message.reply("Añadida la llamada desde: " + newLlamada.getDesde());
+					message.reply(jsonNewLlamada);
 				} else {
 					message.reply("ERROR AL AÑADIR LA LLAMADA " + res.cause());
 				}
