@@ -17,11 +17,14 @@
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 
 //Declaracion de variables usadas
-const char* ssid = "Xiaomi_4A"; 
+//const char* ssid = "Xiaomi_4A";
+const char* ssid = "OP8"; 
 //const char* ssid = "MiFibra-919C";
-const char* password = "oE25yJ9ms54Vd9222Z6B";
+//const char* password = "oE25yJ9ms54Vd9222Z6B";
+const char* password = "adda2020";
 //const char* password = "9We7qZEF";
-const char* ipServer = "192.168.1.56";
+const char* ipServer = "localhost";
+//const char* ipServer = "192.168.1.56";
 //const char* ipServer = "192.168.1.44";
 const int portHttp = 8084;
 const int portMqtt = 1883;
@@ -29,10 +32,11 @@ const char* mqttUser = "root";
 const char* mqttPassword = "root";
 
 WiFiClient espClient;
-IPAddress server(192, 168, 1, 56);
+IPAddress server(127, 0, 0, 1);
+//IPAddress server(192, 168, 1, 56);
 //IPAddress server(192, 168, 1, 44);
 PubSubClient mqttClient(espClient);
-HttpClient httpClient = HttpClient(espClient, server, portHttp);
+HttpClient httpClient = HttpClient(espClient, ipServer, portHttp);
 
 //Obtiene mac y realiza hash con algoritmo sha1 para mayor seguridad
 String macEsp = WiFi.macAddress();
@@ -75,6 +79,8 @@ void reconnect() {
 //Gestion alarmas
 
 String listaPuta[1024]; 
+DynamicJsonDocument  respuestaAlarmas(1024), respuestaAlarmasDes(1024);
+
 
 void setup() {
   
@@ -87,21 +93,17 @@ void setup() {
   setup_wifi(ssid, password);
   Serial.print("Hash MAC: ");
   Serial.println(hashMac);
-  //testPost(httpClient, hashMac);
-  DynamicJsonDocument  respuestaAlarmas(1024), respuestaAlarmasDes(1024);
+
+
   String alarmasUsuario = obtenerAlarmasUsuario(httpClient, hashMac);
-  //Serial.println(alarmasUsuario);
 
   deserializeJson(respuestaAlarmasDes, alarmasUsuario);
-  serializeJson(respuestaAlarmas, alarmasUsuario);
-
 
   JsonObject root = respuestaAlarmasDes.as<JsonObject>();
   byte i = 0;
   for ( JsonPair kv : root) {
-    listaPuta[i] = kv.key().c_str();
-    Serial.println(listaPuta[i]);
-
+    Serial.println(kv.key().c_str());
+    Serial.println(kv.value().as<char*>());
     i += 1;
 
 }
