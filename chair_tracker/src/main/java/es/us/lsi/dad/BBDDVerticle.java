@@ -362,7 +362,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			JsonObject jsonNewAlarma = new JsonObject(message.body());
 			AlarmaImpl newAlarma = new AlarmaImpl();
 
-			newAlarma.setOid_alarma(Short.valueOf(jsonNewAlarma.getString("oid_alarma")));
+			//newAlarma.setOid_alarma(Short.valueOf(jsonNewAlarma.getString("oid_alarma")));
 			newAlarma.setDias(jsonNewAlarma.getString("dias"));
 			newAlarma.setEstado(jsonNewAlarma.getString("estado"));
 			newAlarma.setT_inicio(AlarmaImpl.ParseaLocalTimeFromJson(jsonNewAlarma.getString("t_inicio")));
@@ -373,16 +373,15 @@ public class BBDDVerticle extends AbstractVerticle {
 			newAlarma.setHash_mac_fk(jsonNewAlarma.getString("hash_mac_fk"));
 
 			Query<RowSet<Row>> query = mySqlClient
-					.query("INSERT INTO proyectodad.alarmas(oid_alarma, dias, estado, t_inicio, t_fin,"
-							+ "t_trabajo, t_descanso, ciclo, hash_mac_fk) " + "VALUES ('" + newAlarma.getOid_alarma()
-							+ "','" + newAlarma.getDias() + "','" + newAlarma.getEstado() + "','"
+					.query("INSERT INTO proyectodad.alarmas(dias, estado, t_inicio, t_fin,"
+							+ "t_trabajo, t_descanso, ciclo, hash_mac_fk) " + "VALUES ('" + newAlarma.getDias() + "','" + newAlarma.getEstado() + "','"
 							+ newAlarma.getT_inicio() + "','" + newAlarma.getT_fin() + "','" + newAlarma.getT_trabajo()
 							+ "','" + newAlarma.getT_descanso() + "','" + newAlarma.getCiclo() + "','"
 							+ newAlarma.getHash_mac_fk() + "');");
 
 			query.execute(res -> {
 				if (res.succeeded()) {
-					message.reply("Añadida la alarma con ID: " + newAlarma.getOid_alarma());
+					message.reply("Añadida la alarma para el usuario " + newAlarma.getHash_mac_fk());
 				} else {
 					message.reply("ERROR AL AÑADIR LA ALARMA " + res.cause());
 				}

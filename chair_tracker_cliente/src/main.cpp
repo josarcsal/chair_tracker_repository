@@ -17,16 +17,20 @@
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 
 //Declaracion de variables usadas
-const char* ssid = "MiFibra-919C";//"Xiaomi_4A";
-const char* password = "9We7qZEF";//"oE25yJ9ms54Vd9222Z6B";
-const char* ipServer = "192.168.1.44";//"192.168.1.56";
+const char* ssid = "Xiaomi_4A"; 
+//const char* ssid = "MiFibra-919C";
+const char* password = "oE25yJ9ms54Vd9222Z6B";
+//const char* password = "9We7qZEF";
+const char* ipServer = "192.168.1.56";
+//const char* ipServer = "192.168.1.44";
 const int portHttp = 8084;
 const int portMqtt = 1883;
 const char* mqttUser = "root";
 const char* mqttPassword = "root";
 
 WiFiClient espClient;
-IPAddress server(192, 168, 1, 44);
+IPAddress server(192, 168, 1, 56);
+//IPAddress server(192, 168, 1, 44);
 PubSubClient mqttClient(espClient);
 HttpClient httpClient = HttpClient(espClient, server, portHttp);
 
@@ -43,7 +47,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   }
   Serial.println();
 
-  if(topic = "llamadas"){
+  if(topic = "placa/llamadas"){
     //ENCENDER ALARMA POR LLAMADA
     Serial.println("Estan llamando");
   }
@@ -57,7 +61,7 @@ void reconnect() {
     if (mqttClient.connect("ESP8266Client", mqttUser, mqttPassword)) {
       Serial.println("connected");
       // ... and resubscribe
-      mqttClient.subscribe("llamadas");
+      mqttClient.subscribe("placa/llamadas");
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqttClient.state());
@@ -68,6 +72,10 @@ void reconnect() {
   }
 }
 
+//Gestion alarmas
+
+String listaPuta[1024]; 
+
 void setup() {
   
   Serial.begin(9600);
@@ -77,6 +85,30 @@ void setup() {
   delay(100);
   //WIFI
   setup_wifi(ssid, password);
+  Serial.print("Hash MAC: ");
+  Serial.println(hashMac);
+  //testPost(httpClient, hashMac);
+  DynamicJsonDocument  respuestaAlarmas(1024), respuestaAlarmasDes(1024);
+  String alarmasUsuario = obtenerAlarmasUsuario(httpClient, hashMac);
+  //Serial.println(alarmasUsuario);
+
+  deserializeJson(respuestaAlarmasDes, alarmasUsuario);
+  serializeJson(respuestaAlarmas, alarmasUsuario);
+
+
+  JsonObject root = respuestaAlarmasDes.as<JsonObject>();
+  byte i = 0;
+  for ( JsonPair kv : root) {
+    listaPuta[i] = kv.key().c_str();
+    Serial.println(listaPuta[i]);
+
+    i += 1;
+
+}
+
+
+
+
 
 
   //Configuracion vibrador
@@ -87,8 +119,8 @@ void loop(){
 
   //Pruebas API
   //testGet(httpClient);
-  //testGetParam(httpClient);
   //testPost(httpClient, hashMac);
+  //testGetParam(httpClient);
   //testPut(httpClient, hashMac);
   //testDelete(httpClient, hashMac);
 

@@ -272,21 +272,15 @@ public class HttpServerVerticle extends AbstractVerticle {
 	private void anadirLlamada(RoutingContext routingContext) {
 		vertx.eventBus().request("anadirLlamada", routingContext.getBodyAsString(), reply -> {
 			if (reply.succeeded()) {
+				
+				vertx.eventBus().request("llamadaAUsuario", routingContext.getBodyAsString());
+				
 				System.out.println(reply.result().body());
 				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
 						.end(String.valueOf(reply.result().body()));
 			} else {
 				routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
 						.end(String.valueOf(reply.result().body()));
-			}
-		});
-
-		vertx.eventBus().request("llamadaAUsuario", routingContext.getBodyAsString(), replyMqtt ->{
-			if (replyMqtt.succeeded()) {
-				System.out.println(replyMqtt.result().body());
-				routingContext.response().setStatusCode(200);
-			} else {
-				routingContext.response().setStatusCode(500);
 			}
 		});
 	}

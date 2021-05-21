@@ -26,8 +26,8 @@ void setup_wifi(String ssid, String password){
   Serial.println(WiFi.macAddress());
 }
 
-//GET
-void doRequest(HttpClient httpClient, String tipo, const char* uri, String bodyData){
+//Request
+String doRequest(HttpClient httpClient, String tipo, const char* uri, String bodyData){
   //conversion uri
   String uriString = uri;
 
@@ -74,10 +74,21 @@ void doRequest(HttpClient httpClient, String tipo, const char* uri, String bodyD
   Serial.println(response);
   Serial.println("-----------------------------------------------------------------------------");
   Serial.println();
+
+  return response;
+}
+
+String obtenerAlarmasUsuario(HttpClient httpClient, String hash_mac){
+  //Prueba de GET con parametro en body
+  DynamicJsonDocument bodyGet(1024);
+  String bodyGetData = "";
+  bodyGet[String("hash_mac_fk")] = String(hash_mac);
+  serializeJson(bodyGet, bodyGetData);
+  return doRequest(httpClient, "GET", "/api/alarmas/hash_mac", bodyGetData);
 }
 
 //TESTS
-
+/*
 void testGet(HttpClient httpClient){
     //Prueba de GET basico
   DynamicJsonDocument bodyGetNull(1024);
@@ -94,6 +105,8 @@ void testGetParam(HttpClient httpClient){
   serializeJson(bodyGet, bodyGetData);
   doRequest(httpClient, "GET", "/api/registros/llamadas/enviadas/hash_mac", bodyGetData);
 }
+
+
 
 void testPost(HttpClient httpClient, String mac){
     //Prueba de POST con parametro en body
@@ -140,3 +153,4 @@ void testCompleto(HttpClient httpClient, String mac){
   testPut(httpClient, mac);
   testDelete(httpClient, mac);
 }
+*/

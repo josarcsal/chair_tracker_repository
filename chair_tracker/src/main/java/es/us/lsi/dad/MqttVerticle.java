@@ -57,10 +57,10 @@ public class MqttVerticle extends AbstractVerticle {
 
 		consumer.handler(message -> {
 			
-			mqttClient.publishHandler(messageMqtt -> {
+			/*mqttClient.publishHandler(messageMqtt -> {
 				System.out.println("Message published on topic: " + messageMqtt.topicName());
 				System.out.println(messageMqtt.payload().toString());
-			});
+			});*/
 			
 			JsonObject json = new JsonObject(message.body());
 			mqttClient.publish("placa/llamadas", Buffer.buffer("Llamando a " +json.getString("destinatario_hash_mac_fk")), MqttQoS.AT_LEAST_ONCE, false, false,
