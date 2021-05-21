@@ -18,23 +18,19 @@ NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 
 //Declaracion de variables usadas
 //const char* ssid = "Xiaomi_4A";
-const char* ssid = "OP8"; 
-//const char* ssid = "MiFibra-919C";
+const char* ssid = "MiFibra-919C";
 //const char* password = "oE25yJ9ms54Vd9222Z6B";
-const char* password = "adda2020";
-//const char* password = "9We7qZEF";
-const char* ipServer = "localhost";
+const char* password = "9We7qZEF";
 //const char* ipServer = "192.168.1.56";
-//const char* ipServer = "192.168.1.44";
+const char* ipServer = "192.168.1.44";
 const int portHttp = 8084;
 const int portMqtt = 1883;
 const char* mqttUser = "root";
 const char* mqttPassword = "root";
 
 WiFiClient espClient;
-IPAddress server(127, 0, 0, 1);
 //IPAddress server(192, 168, 1, 56);
-//IPAddress server(192, 168, 1, 44);
+IPAddress server(192, 168, 1, 44);
 PubSubClient mqttClient(espClient);
 HttpClient httpClient = HttpClient(espClient, ipServer, portHttp);
 
@@ -100,19 +96,12 @@ void setup() {
   deserializeJson(respuestaAlarmasDes, alarmasUsuario);
 
   JsonObject root = respuestaAlarmasDes.as<JsonObject>();
-  byte i = 0;
+  
   for ( JsonPair kv : root) {
-    Serial.println(kv.key().c_str());
-    Serial.println(kv.value().as<char*>());
-    i += 1;
-
-}
-
-
-
-
-
-
+    String alarma = root.getMember(kv.key());
+    //Serial.println(kv.key().c_str());
+    Serial.println("Prueba = " + alarma);
+  }
   //Configuracion vibrador
   //pinMode(pinAlarma, OUTPUT);
 }
