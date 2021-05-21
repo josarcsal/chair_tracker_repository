@@ -5,9 +5,20 @@
 #include <ArduinoHttpClient.h>
 #include <ArduinoJson.h>
 #include <NewPing.h>
+#include <ListLib.h>
+#include <NTPClient.h>
+#include "WiFiUdp.h"
+#include <TimeLib.h>
+
+
+
 #include "request.h"
 #include "Hash.h"
 #include "alarma.h"
+
+//Obtener hora
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "europe.pool.ntp.org");
 
 //Sensor proximidad
 #define TRIGGER_PIN D1
@@ -17,20 +28,20 @@
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 
 //Declaracion de variables usadas
-//const char* ssid = "Xiaomi_4A";
-const char* ssid = "MiFibra-919C";
-//const char* password = "oE25yJ9ms54Vd9222Z6B";
-const char* password = "9We7qZEF";
-//const char* ipServer = "192.168.1.56";
-const char* ipServer = "192.168.1.44";
+const char* ssid = "Xiaomi_4A";
+//const char* ssid = "MiFibra-919C";
+const char* password = "oE25yJ9ms54Vd9222Z6B";
+//const char* password = "9We7qZEF";
+const char* ipServer = "192.168.1.56";
+//const char* ipServer = "192.168.1.44";
 const int portHttp = 8084;
 const int portMqtt = 1883;
 const char* mqttUser = "root";
 const char* mqttPassword = "root";
 
 WiFiClient espClient;
-//IPAddress server(192, 168, 1, 56);
-IPAddress server(192, 168, 1, 44);
+IPAddress server(192, 168, 1, 56);
+//IPAddress server(192, 168, 1, 44);
 PubSubClient mqttClient(espClient);
 HttpClient httpClient = HttpClient(espClient, ipServer, portHttp);
 
@@ -74,8 +85,10 @@ void reconnect() {
 
 //Gestion alarmas
 
-String listaPuta[1024]; 
-DynamicJsonDocument  respuestaAlarmas(1024), respuestaAlarmasDes(1024);
+
+List<List<String>> res(100);
+
+
 
 
 void setup() {
@@ -89,24 +102,25 @@ void setup() {
   setup_wifi(ssid, password);
   Serial.print("Hash MAC: ");
   Serial.println(hashMac);
+  //TIEMPO
+  timeClient.begin();
+  String lista = obtenerListaHoras(httpClient, hashMac);
+  Serial.println(lista);
+  String proxima = obtenerProximaAlarma(httpClient, timeClient,  hashMac);
+  Serial.print("La proxima alarma es ");
+  Serial.println(proxima);
 
 
-  String alarmasUsuario = obtenerAlarmasUsuario(httpClient, hashMac);
-
-  deserializeJson(respuestaAlarmasDes, alarmasUsuario);
-
-  JsonObject root = respuestaAlarmasDes.as<JsonObject>();
-  
-  for ( JsonPair kv : root) {
-    String alarma = root.getMember(kv.key());
-    //Serial.println(kv.key().c_str());
-    Serial.println("Prueba = " + alarma);
-  }
   //Configuracion vibrador
   //pinMode(pinAlarma, OUTPUT);
 }
 
 void loop(){
+  timeClient.update();
+
+
+  //Serial.print(daysOfTheWeek[timeClient.getDay()]);
+
 
   //Pruebas API
   //testGet(httpClient);
@@ -124,9 +138,22 @@ void loop(){
   if (!mqttClient.connected()) {
     reconnect();
   }
-  
+
   mqttClient.loop();
 
+  delay(3000);
+
+  /*Serial.print(daysOfTheWeek[timeClient.getDay()]);
+  Serial.print(", ");
+  Serial.print(timeClient.getHours());
+  Serial.print(":");
+  Serial.print(timeClient.getMinutes());
+  Serial.print(":");
+  Serial.println(timeClient.getSeconds());*/
+
+  Serial.println(timeClient.getFormattedTime());
+
+  
   //PRUEBAS SENSOR
   /*delay(500); // Esperar medio segundo entre mediciones
   // Muestra la distancia medida a la consola serial
@@ -141,3 +168,9 @@ void loop(){
 
 //------------------------------------------------------------------------------------------------------
 //Metodos MQTT
+
+
+//Metodos alarma 
+
+
+

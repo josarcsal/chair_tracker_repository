@@ -33,7 +33,7 @@ public class AlarmaImpl {
 		}
 
 		res = LocalTime.of(horas, minutos, segundos);
-
+		
 		return res;
 	}
 

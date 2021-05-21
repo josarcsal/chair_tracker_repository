@@ -1,2 +1,3 @@
-void playTone(int tone_, int duration);
-void playFor(int tone_, int duration, int beat);
+String formateaHoras(String str);
+String obtenerListaHoras(HttpClient httpClient, String hashMac);
+String obtenerProximaAlarma(HttpClient httpClient, NTPClient timeClient, String hashMac);
