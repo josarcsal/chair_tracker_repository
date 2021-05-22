@@ -10,8 +10,6 @@
 #include "WiFiUdp.h"
 #include <TimeLib.h>
 
-
-
 #include "request.h"
 #include "Hash.h"
 #include "alarma.h"
@@ -28,20 +26,20 @@ NTPClient timeClient(ntpUDP, "europe.pool.ntp.org");
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 
 //Declaracion de variables usadas
-const char* ssid = "Xiaomi_4A";
-//const char* ssid = "MiFibra-919C";
-const char* password = "oE25yJ9ms54Vd9222Z6B";
-//const char* password = "9We7qZEF";
-const char* ipServer = "192.168.1.56";
-//const char* ipServer = "192.168.1.44";
+//const char* ssid = "Xiaomi_4A";
+const char *ssid = "MiFibra-919C";
+//const char* password = "oE25yJ9ms54Vd9222Z6B";
+const char *password = "9We7qZEF";
+//const char* ipServer = "192.168.1.56";
+const char *ipServer = "192.168.1.44";
 const int portHttp = 8084;
 const int portMqtt = 1883;
-const char* mqttUser = "root";
-const char* mqttPassword = "root";
+const char *mqttUser = "root";
+const char *mqttPassword = "root";
 
 WiFiClient espClient;
-IPAddress server(192, 168, 1, 56);
-//IPAddress server(192, 168, 1, 44);
+//IPAddress server(192, 168, 1, 56);
+IPAddress server(192, 168, 1, 44);
 PubSubClient mqttClient(espClient);
 HttpClient httpClient = HttpClient(espClient, ipServer, portHttp);
 
@@ -49,31 +47,39 @@ HttpClient httpClient = HttpClient(espClient, ipServer, portHttp);
 String macEsp = WiFi.macAddress();
 String hashMac = sha1(macEsp);
 
-void callback(char* topic, byte* payload, unsigned int length) {
+void callback(char *topic, byte *payload, unsigned int length)
+{
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
-  for (unsigned int i=0; i<length; i++) {
+  for (unsigned int i = 0; i < length; i++)
+  {
     Serial.print((char)payload[i]);
   }
   Serial.println();
 
-  if(topic = "placa/llamadas"){
+  if (topic = "placa/llamadas")
+  {
     //ENCENDER ALARMA POR LLAMADA
     Serial.println("Estan llamando");
   }
 }
 
-void reconnect() {
+void reconnect()
+{
   // Loop until we're reconnected
-  while (!mqttClient.connected()) {
+  while (!mqttClient.connected())
+  {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
-    if (mqttClient.connect("ESP8266Client", mqttUser, mqttPassword)) {
+    if (mqttClient.connect("ESP8266Client", mqttUser, mqttPassword))
+    {
       Serial.println("connected");
       // ... and resubscribe
       mqttClient.subscribe("placa/llamadas");
-    } else {
+    }
+    else
+    {
       Serial.print("failed, rc=");
       Serial.print(mqttClient.state());
       Serial.println(" try again in 5 seconds");
@@ -85,14 +91,11 @@ void reconnect() {
 
 //Gestion alarmas
 
-
 List<List<String>> res(100);
 
+void setup()
+{
 
-
-
-void setup() {
-  
   Serial.begin(9600);
   //MQTT
   mqttClient.setServer(server, 1883);
@@ -106,21 +109,19 @@ void setup() {
   timeClient.begin();
   String lista = obtenerListaHoras(httpClient, hashMac);
   Serial.println(lista);
-  String proxima = obtenerProximaAlarma(httpClient, timeClient,  hashMac);
+  String proxima = obtenerProximaAlarma(httpClient, timeClient, hashMac);
   Serial.print("La proxima alarma es ");
   Serial.println(proxima);
-
 
   //Configuracion vibrador
   //pinMode(pinAlarma, OUTPUT);
 }
 
-void loop(){
+void loop()
+{
   timeClient.update();
 
-
   //Serial.print(daysOfTheWeek[timeClient.getDay()]);
-
 
   //Pruebas API
   //testGet(httpClient);
@@ -135,7 +136,8 @@ void loop(){
 
   //Pruebas MQTT
 
-  if (!mqttClient.connected()) {
+  if (!mqttClient.connected())
+  {
     reconnect();
   }
 
@@ -151,9 +153,8 @@ void loop(){
   Serial.print(":");
   Serial.println(timeClient.getSeconds());*/
 
-  Serial.println(timeClient.getFormattedTime());
+  //Serial.println(timeClient.getFormattedTime());
 
-  
   //PRUEBAS SENSOR
   /*delay(500); // Esperar medio segundo entre mediciones
   // Muestra la distancia medida a la consola serial
@@ -163,14 +164,9 @@ void loop(){
   //distancia = tiempo * 10 / 292/ 2;
   Serial.print(sonar.ping_cm());
   Serial.println("cm.");*/
-
 }
 
 //------------------------------------------------------------------------------------------------------
 //Metodos MQTT
 
-
-//Metodos alarma 
-
-
-
+//Metodos alarma

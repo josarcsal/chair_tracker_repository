@@ -3,7 +3,8 @@
 #include <ArduinoHttpClient.h>
 #include <ESP8266WiFi.h>
 
-void setup_wifi(String ssid, String password){
+void setup_wifi(String ssid, String password)
+{
   delay(10);
   Serial.println();
   Serial.print("Conectando a ");
@@ -12,7 +13,8 @@ void setup_wifi(String ssid, String password){
 
   WiFi.mode(WIFI_STA);
 
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(500);
     Serial.print(".");
   }
@@ -27,32 +29,37 @@ void setup_wifi(String ssid, String password){
 }
 
 //Request
-String doRequest(HttpClient httpClient, String tipo, const char* uri, String bodyData){
+String doRequest(HttpClient httpClient, String tipo, const char *uri, String bodyData)
+{
   //conversion uri
   String uriString = uri;
 
-  Serial.println("--------------Realizando " + tipo + " " + uriString + "------------------------");
-  
-  Serial.println("cuerpo de la peticion");
-  Serial.println(bodyData);
+  //Serial.println("--------------Realizando " + tipo + " " + uriString + "------------------------");
+
+  //Serial.println("cuerpo de la peticion");
+  //Serial.println(bodyData);
 
   //comienzo de request
   httpClient.beginRequest();
 
   //Realiza la peticion segun el tipo indicado por parametro
-  if(tipo == "GET"){
+  if (tipo == "GET")
+  {
     httpClient.get(uri);
   }
 
-  if(tipo == "POST"){
+  if (tipo == "POST")
+  {
     httpClient.post(uri);
   }
 
-  if(tipo == "PUT"){
+  if (tipo == "PUT")
+  {
     httpClient.put(uri);
   }
 
-  if(tipo == "DELETE"){
+  if (tipo == "DELETE")
+  {
     httpClient.del(uri);
   }
 
@@ -68,17 +75,18 @@ String doRequest(HttpClient httpClient, String tipo, const char* uri, String bod
   int statusCode = httpClient.responseStatusCode();
   String response = httpClient.responseBody();
 
-  Serial.print("Status code: ");
-  Serial.println(statusCode);
-  Serial.print("Response: ");
-  Serial.println(response);
-  Serial.println("-----------------------------------------------------------------------------");
-  Serial.println();
+  //Serial.print("Status code: ");
+  //Serial.println(statusCode);
+  //Serial.print("Response: ");
+  //Serial.println(response);
+  //Serial.println("-----------------------------------------------------------------------------");
+  //Serial.println();
 
   return response;
 }
 
-String obtenerAlarmasUsuario(HttpClient httpClient, String hash_mac){
+String obtenerAlarmasUsuario(HttpClient httpClient, String hash_mac)
+{
   //Prueba de GET con parametro en body
   DynamicJsonDocument bodyGet(1024);
   String bodyGetData = "";
