@@ -36,8 +36,8 @@ String doRequest(HttpClient httpClient, String tipo, const char *uri, String bod
 
   //Serial.println("--------------Realizando " + tipo + " " + uriString + "------------------------");
 
-  //Serial.println("cuerpo de la peticion");
-  //Serial.println(bodyData);
+  Serial.println("cuerpo de la peticion");
+  Serial.println(bodyData);
 
   //comienzo de request
   httpClient.beginRequest();
@@ -75,12 +75,12 @@ String doRequest(HttpClient httpClient, String tipo, const char *uri, String bod
   int statusCode = httpClient.responseStatusCode();
   String response = httpClient.responseBody();
 
-  //Serial.print("Status code: ");
-  //Serial.println(statusCode);
-  //Serial.print("Response: ");
-  //Serial.println(response);
-  //Serial.println("-----------------------------------------------------------------------------");
-  //Serial.println();
+  Serial.print("Status code: ");
+  Serial.println(statusCode);
+  Serial.print("Response: ");
+  Serial.println(response);
+  Serial.println("-----------------------------------------------------------------------------");
+  Serial.println();
 
   return response;
 }

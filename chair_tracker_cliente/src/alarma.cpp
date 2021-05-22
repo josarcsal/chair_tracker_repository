@@ -39,9 +39,11 @@ String obtenerListaHoras(HttpClient httpClient, String hashMac)
     String t_trabajo = root.getMember(kv.key()).getMember("t_trabajo");
     String t_descanso = root.getMember(kv.key()).getMember("t_descanso");
     String oid_alarma = root.getMember(kv.key()).getMember("oid_alarma");
-    String ciclo = root.getMember(kv.key()).getMember("ciclo");
+    String ciclo_trabajo = root.getMember(kv.key()).getMember("ciclo_trabajo");
+    String ciclo_descanso = root.getMember(kv.key()).getMember("ciclo_descanso");
 
-    String aux = formateaHoras(root.getMember(kv.key()).getMember("t_inicio")) + "|" + formateaHoras(root.getMember(kv.key()).getMember("t_fin")) + "|" + dias + "|" + t_trabajo + "|" + t_descanso + "|" + ciclo + "|" + oid_alarma;
+    String aux = formateaHoras(root.getMember(kv.key()).getMember("t_inicio")) + "|" + formateaHoras(root.getMember(kv.key()).getMember("t_fin")) + "|" + dias +
+                 "|" + t_trabajo + "|" + t_descanso + "|" + ciclo_trabajo + "|" + ciclo_trabajo + "|" + oid_alarma;
     //Serial.print("aux con clave ");
     //Serial.println(kv.key().c_str());
     //Serial.print(" con valor ");
@@ -96,7 +98,7 @@ String obtenerProximaAlarma(HttpClient httpClient, NTPClient timeClient, String 
 
   char *diaCheck;
 
-  for (int j = 0; j <= (maxIndex / 15); j++)
+  for (int j = 0; j <= (maxIndex / 16); j++)
   {
     String horaAux = getValue(listaHoras, ',', j);
     if (horaAux != "")
@@ -139,11 +141,13 @@ String obtenerProximaAlarma(HttpClient httpClient, NTPClient timeClient, String 
   return res;
 }
 
-int StringToIntAlarma(String alarma, String valor){
+int StringToIntAlarma(String alarma, String valor)
+{
 
   int res;
 
-  if(valor == "t_inicio"){
+  if (valor == "t_inicio")
+  {
     String tiempoFinAlarmaAux = getValue(alarma, '|', 0);
     String tiempoFinAlarmaAuxHString = getValue(tiempoFinAlarmaAux, ':', 0);
     String tiempoFinAlarmaAuxMString = getValue(tiempoFinAlarmaAux, ':', 1);
@@ -151,7 +155,8 @@ int StringToIntAlarma(String alarma, String valor){
     res = tiempoFinAlarmaAuxHString.toInt() * 3600 + tiempoFinAlarmaAuxMString.toInt() * 60 + tiempoFinAlarmaAuxSString.toInt();
   }
 
-  if(valor == "t_final"){
+  if (valor == "t_final")
+  {
     String tiempoFinAlarmaAux = getValue(alarma, '|', 1);
     String tiempoFinAlarmaAuxHString = getValue(tiempoFinAlarmaAux, ':', 0);
     String tiempoFinAlarmaAuxMString = getValue(tiempoFinAlarmaAux, ':', 1);
@@ -159,22 +164,42 @@ int StringToIntAlarma(String alarma, String valor){
     res = tiempoFinAlarmaAuxHString.toInt() * 3600 + tiempoFinAlarmaAuxMString.toInt() * 60 + tiempoFinAlarmaAuxSString.toInt();
   }
 
-  if(valor == "t_trabajo"){
-    res= getValue(alarma, '|', 3).toInt();
+  if (valor == "t_trabajo")
+  {
+    res = getValue(alarma, '|', 3).toInt();
   }
 
-  if(valor == "t_descanso"){
-    res= getValue(alarma, '|', 4).toInt();
+  if (valor == "t_descanso")
+  {
+    res = getValue(alarma, '|', 4).toInt();
   }
 
-  if(valor == "oid_alarma"){
-    res = getValue(alarma, '|', 6).toInt();
+  if (valor == "oid_alarma")
+  {
+    res = getValue(alarma, '|', 7).toInt();
   }
 
-  if(valor == "ciclos"){
+  if (valor == "ciclos_trabajo")
+  {
     res = getValue(alarma, '|', 5).toInt();
   }
 
+  if (valor == "ciclos_descanso")
+  {
+    res = getValue(alarma, '|', 6).toInt();
+  }
+
+  return res;
+}
+
+String timeFromClientToBBDD(String hora)
+{
+  char res[10];
+  int HourF = 0;
+  int MinuteF = 0;
+  int SecondF = 0;
+  sscanf(hora.c_str(), "%d:%d:%d", &HourF, &MinuteF, &SecondF);
+  sprintf(res, "PT%dH%dM%dS", HourF, MinuteF, SecondF);
   return res;
 }
 
