@@ -36,7 +36,13 @@ String obtenerListaHoras(HttpClient httpClient, String hashMac)
   for (JsonPair kv : root)
   {
     String dias = root.getMember(kv.key()).getMember("dias");
-    String aux = formateaHoras(root.getMember(kv.key()).getMember("t_inicio")) + "|" + formateaHoras(root.getMember(kv.key()).getMember("t_fin")) + "|" + dias;
+    String t_trabajo = root.getMember(kv.key()).getMember("t_trabajo");
+    String t_descanso = root.getMember(kv.key()).getMember("t_descanso");
+    String oid_alarma = root.getMember(kv.key()).getMember("oid_alarma");
+    String ciclo = root.getMember(kv.key()).getMember("ciclo");
+
+    String aux = formateaHoras(root.getMember(kv.key()).getMember("t_inicio")) + "|" + formateaHoras(root.getMember(kv.key()).getMember("t_fin")) + "|" + dias
+    + "|" + t_trabajo + "|" + t_descanso + "|" +  ciclo + "|" + oid_alarma;
     //Serial.print("aux con clave ");
     //Serial.println(kv.key().c_str());
     //Serial.print(" con valor ");
@@ -82,12 +88,12 @@ String obtenerProximaAlarma(HttpClient httpClient, NTPClient timeClient, String 
   //Serial.print("diaActual en   ");
   //Serial.println(diaActual);
 
-  //Serial.print("tiempoActual en  s ");
-  //Serial.println(tiempoActualS);
+  Serial.print("tiempoActual en  s ");
+  Serial.println(tiempoActualS);
 
   char *diaCheck;
 
-  for (int j = 0; j <= (maxIndex / 5); j++)
+  for (int j = 0; j <= (maxIndex / 15); j++)
   {
     String horaAux = getValue(listaHoras, ',', j);
     if (horaAux != "")
@@ -128,4 +134,51 @@ String obtenerProximaAlarma(HttpClient httpClient, NTPClient timeClient, String 
     }
   }
   return res;
+}
+
+int levantado;
+int contadorTrabajo;
+int contadorDescanso;
+int cicloTrabajo;
+int cicloDescanso;
+int nCiclos;
+
+void obtenerContador(String alarmaActual){
+  
+  int oidAlarmaActual = getValue(alarmaActual, '|', 6).toInt();
+  int t_trabajo = getValue(alarmaActual, '|', 3).toInt();
+  int t_descanso = getValue(alarmaActual, '|', 4).toInt();
+  //int nCiclos = getValue(alarmaActual, '|', 5).toInt();
+  
+  if(levantado = 0){
+      if(contadorTrabajo < t_trabajo){
+        contadorTrabajo += 1;
+      }
+      if(contadorTrabajo = t_trabajo){
+        contadorTrabajo = 0;
+        cicloTrabajo += 1;
+      }
+  }
+
+  if(levantado = 1 && (contadorTrabajo != 0)){
+    if(contadorDescanso < t_descanso){
+      contadorDescanso += 1;
+    }
+    if(contadorDescanso = t_descanso){
+      contadorDescanso = 0;
+      cicloDescanso += 1;
+    }
+  }
+
+  if(contadorDescanso = contadorTrabajo && (contadorDescanso != 0)){
+    nCiclos += 1;
+  }
+
+  DynamicJsonDocument bodyPost(1024);
+  String bodyPostData = "";
+  bodyPost[String("oid_alarma")] = String(oidAlarmaActual);
+  bodyPost[String("ciclo")] = String(nCiclos);
+
+
+
 }

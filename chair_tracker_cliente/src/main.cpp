@@ -26,20 +26,20 @@ NTPClient timeClient(ntpUDP, "europe.pool.ntp.org");
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 
 //Declaracion de variables usadas
-//const char* ssid = "Xiaomi_4A";
-const char *ssid = "MiFibra-919C";
-//const char* password = "oE25yJ9ms54Vd9222Z6B";
-const char *password = "9We7qZEF";
-//const char* ipServer = "192.168.1.56";
-const char *ipServer = "192.168.1.44";
+const char* ssid = "Xiaomi_4A";
+//const char *ssid = "MiFibra-919C";
+const char* password = "oE25yJ9ms54Vd9222Z6B";
+//const char *password = "9We7qZEF";
+const char* ipServer = "192.168.1.56";
+//const char *ipServer = "192.168.1.44";
 const int portHttp = 8084;
 const int portMqtt = 1883;
 const char *mqttUser = "root";
 const char *mqttPassword = "root";
 
 WiFiClient espClient;
-//IPAddress server(192, 168, 1, 56);
-IPAddress server(192, 168, 1, 44);
+IPAddress server(192, 168, 1, 56);
+//IPAddress server(192, 168, 1, 44);
 PubSubClient mqttClient(espClient);
 HttpClient httpClient = HttpClient(espClient, ipServer, portHttp);
 
