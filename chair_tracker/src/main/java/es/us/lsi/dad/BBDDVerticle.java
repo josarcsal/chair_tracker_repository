@@ -40,8 +40,9 @@ public class BBDDVerticle extends AbstractVerticle {
 		// ALARMAS
 		obtenerAlarmas();
 		obtenerAlarmasUsuario();
-		//obtenerAlarmasPorHora --> para así en el cliente cuando sea X hora, poder seleccionar 
-									//la alarma que queramos actualizar t_descanso y t_trabajo
+		// obtenerAlarmasPorHora --> para así en el cliente cuando sea X hora, poder
+		// seleccionar
+		// la alarma que queramos actualizar t_descanso y t_trabajo
 		borrarAlarma();
 		anadirAlarma();
 		editarAlarma();
@@ -260,12 +261,12 @@ public class BBDDVerticle extends AbstractVerticle {
 						AlarmaImpl alarma = new AlarmaImpl();
 						alarma.setOid_alarma(v.getShort("oid_alarma"));
 						alarma.setDias(v.getString("dias"));
-						alarma.setEstado("estado");
 						alarma.setT_inicio(AlarmaImpl.ParseaLocalTimeFromJson(String.valueOf(v.getValue("t_inicio"))));
 						alarma.setT_fin(AlarmaImpl.ParseaLocalTimeFromJson(String.valueOf(v.getValue("t_fin"))));
 						alarma.setT_trabajo(v.getShort("t_trabajo"));
 						alarma.setT_descanso(v.getShort("t_descanso"));
-						alarma.setCiclo(v.getShort("ciclo"));
+						alarma.setCiclo_trabajo(v.getShort("ciclo_trabajo"));
+						alarma.setCiclo_descanso(v.getShort("ciclo_descanso"));
 						alarma.setHash_mac_fk(v.getString("hash_mac_fk"));
 						System.out.println(json);
 						json.put(String.valueOf(v.getValue("oid_alarma")), v.toJson());
@@ -298,12 +299,12 @@ public class BBDDVerticle extends AbstractVerticle {
 						AlarmaImpl alarma = new AlarmaImpl();
 						alarma.setOid_alarma(v.getShort("oid_alarma"));
 						alarma.setDias(v.getString("dias"));
-						alarma.setEstado("estado");
 						alarma.setT_inicio(AlarmaImpl.ParseaLocalTimeFromJson(String.valueOf(v.getValue("t_inicio"))));
 						alarma.setT_fin(AlarmaImpl.ParseaLocalTimeFromJson(String.valueOf(v.getValue("t_fin"))));
 						alarma.setT_trabajo(v.getShort("t_trabajo"));
 						alarma.setT_descanso(v.getShort("t_descanso"));
-						alarma.setCiclo(v.getShort("ciclo"));
+						alarma.setCiclo_trabajo(v.getShort("ciclo_trabajo"));
+						alarma.setCiclo_descanso(v.getShort("ciclo_descanso"));
 						alarma.setHash_mac_fk(v.getString("hash_mac_fk"));
 						System.out.println(json);
 						json.put(String.valueOf(v.getValue("oid_alarma")), v.toJson());
@@ -362,21 +363,22 @@ public class BBDDVerticle extends AbstractVerticle {
 			JsonObject jsonNewAlarma = new JsonObject(message.body());
 			AlarmaImpl newAlarma = new AlarmaImpl();
 
-			//newAlarma.setOid_alarma(Short.valueOf(jsonNewAlarma.getString("oid_alarma")));
+			// newAlarma.setOid_alarma(Short.valueOf(jsonNewAlarma.getString("oid_alarma")));
 			newAlarma.setDias(jsonNewAlarma.getString("dias"));
-			newAlarma.setEstado(jsonNewAlarma.getString("estado"));
 			newAlarma.setT_inicio(AlarmaImpl.ParseaLocalTimeFromJson(jsonNewAlarma.getString("t_inicio")));
 			newAlarma.setT_fin(AlarmaImpl.ParseaLocalTimeFromJson(jsonNewAlarma.getString("t_fin")));
 			newAlarma.setT_trabajo(Short.valueOf(jsonNewAlarma.getString("t_trabajo")));
 			newAlarma.setT_descanso(Short.valueOf(jsonNewAlarma.getString("t_descanso")));
-			newAlarma.setCiclo(Short.valueOf(jsonNewAlarma.getString("ciclo")));
+			newAlarma.setCiclo_trabajo(Short.valueOf(jsonNewAlarma.getString("ciclo_trabajo")));
+			newAlarma.setCiclo_descanso(Short.valueOf(jsonNewAlarma.getString("ciclo_descanso")));
 			newAlarma.setHash_mac_fk(jsonNewAlarma.getString("hash_mac_fk"));
 
 			Query<RowSet<Row>> query = mySqlClient
 					.query("INSERT INTO proyectodad.alarmas(dias, estado, t_inicio, t_fin,"
-							+ "t_trabajo, t_descanso, ciclo, hash_mac_fk) " + "VALUES ('" + newAlarma.getDias() + "','" + newAlarma.getEstado() + "','"
-							+ newAlarma.getT_inicio() + "','" + newAlarma.getT_fin() + "','" + newAlarma.getT_trabajo()
-							+ "','" + newAlarma.getT_descanso() + "','" + newAlarma.getCiclo() + "','"
+							+ "t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk) " + "VALUES ('"
+							+ newAlarma.getDias() + "','" + newAlarma.getT_inicio() + "','" + newAlarma.getT_fin()
+							+ "','" + newAlarma.getT_trabajo() + "','" + newAlarma.getT_descanso() + "','"
+							+ newAlarma.getCiclo_trabajo() + "','" + newAlarma.getCiclo_descanso() + "','"
 							+ newAlarma.getHash_mac_fk() + "');");
 
 			query.execute(res -> {
@@ -401,12 +403,12 @@ public class BBDDVerticle extends AbstractVerticle {
 
 			editAlarma.setOid_alarma(Short.valueOf(jsonEditAlarma.getString("oid_alarma")));
 			editAlarma.setDias(jsonEditAlarma.getString("dias"));
-			editAlarma.setEstado(jsonEditAlarma.getString("estado"));
 			editAlarma.setT_inicio(AlarmaImpl.ParseaLocalTimeFromJson(jsonEditAlarma.getString("t_inicio")));
 			editAlarma.setT_fin(AlarmaImpl.ParseaLocalTimeFromJson(jsonEditAlarma.getString("t_fin")));
 			editAlarma.setT_trabajo(Short.valueOf(jsonEditAlarma.getString("t_trabajo")));
 			editAlarma.setT_descanso(Short.valueOf(jsonEditAlarma.getString("t_descanso")));
-			editAlarma.setCiclo(Short.valueOf(jsonEditAlarma.getString("ciclo")));
+			editAlarma.setCiclo_trabajo(Short.valueOf(jsonEditAlarma.getString("ciclo_trabajo")));
+			editAlarma.setCiclo_descanso(Short.valueOf(jsonEditAlarma.getString("ciclo_descanso")));
 			editAlarma.setHash_mac_fk(jsonEditAlarma.getString("hash_mac_fk"));
 
 			Query<RowSet<Row>> queryCount = mySqlClient.query(
@@ -421,10 +423,10 @@ public class BBDDVerticle extends AbstractVerticle {
 
 						Query<RowSet<Row>> query = mySqlClient.query("UPDATE proyectodad.alarmas SET "
 								+ "oid_alarma = '" + editAlarma.getOid_alarma() + "', dias = '" + editAlarma.getDias()
-								+ "', estado = '" + editAlarma.getEstado() + "', t_inicio = '"
-								+ editAlarma.getT_inicio() + "', t_fin = '" + editAlarma.getT_fin() + "', t_trabajo = '"
-								+ editAlarma.getT_trabajo() + "', t_descanso = '" + editAlarma.getT_descanso()
-								+ "', ciclo = '" + editAlarma.getCiclo() + "', hash_mac_fk = '"
+								+ "', t_inicio = '" + editAlarma.getT_inicio() + "', t_fin = '" + editAlarma.getT_fin()
+								+ "', t_trabajo = '" + editAlarma.getT_trabajo() + "', t_descanso = '"
+								+ editAlarma.getT_descanso() + "', ciclo_trabajo = '" + editAlarma.getCiclo_trabajo()
+								+ "', ciclo_descanso = '" + editAlarma.getCiclo_descanso() + "', hash_mac_fk = '"
 								+ editAlarma.getHash_mac_fk() + "' WHERE oid_alarma = '" + oid_alarma + "';");
 
 						query.execute(resQuery -> {
@@ -572,11 +574,10 @@ public class BBDDVerticle extends AbstractVerticle {
 
 			Query<RowSet<Row>> query = mySqlClient.query(
 					"INSERT INTO proyectodad.llamadas(estado, desde, descripcion, remitente_hash_mac_fk, destinatario_hash_mac_fk) "
-							+ "VALUES ('" + newLlamada.getEstado() + "','"
-							+ newLlamada.getDesde() + "','" + newLlamada.getDescripcion() + "','"
-							+ newLlamada.getRemitente_hash_mac_fk() + "','" + newLlamada.getDestinatario_hash_mac_fk()
-							+ "');");
-						
+							+ "VALUES ('" + newLlamada.getEstado() + "','" + newLlamada.getDesde() + "','"
+							+ newLlamada.getDescripcion() + "','" + newLlamada.getRemitente_hash_mac_fk() + "','"
+							+ newLlamada.getDestinatario_hash_mac_fk() + "');");
+
 			query.execute(res -> {
 				if (res.succeeded()) {
 					message.reply(jsonNewLlamada);

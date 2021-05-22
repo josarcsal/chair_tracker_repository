@@ -6,12 +6,12 @@ public class AlarmaImpl {
 
 	protected Short oid_alarma;
 	protected String dias;
-	protected String estado;
 	protected LocalTime t_inicio;
 	protected LocalTime t_fin;
 	protected Short t_trabajo;
 	protected Short t_descanso;
-	protected Short ciclo;
+	protected Short ciclo_trabajo;
+	protected Short ciclo_descanso;
 	protected String hash_mac_fk;
 
 	public static LocalTime ParseaLocalTimeFromJson(String v) {
@@ -33,7 +33,7 @@ public class AlarmaImpl {
 		}
 
 		res = LocalTime.of(horas, minutos, segundos);
-		
+
 		return res;
 	}
 
@@ -42,17 +42,17 @@ public class AlarmaImpl {
 		// TODO Auto-generated constructor stub
 	}
 
-	public AlarmaImpl(Short oid_alarma, String dias, String estado, LocalTime t_inicio, LocalTime t_fin,
-			Short t_trabajo, Short t_descanso, Short ciclo, String hash_mac_fk) {
+	public AlarmaImpl(Short oid_alarma, String dias, LocalTime t_inicio, LocalTime t_fin, Short t_trabajo,
+			Short t_descanso, Short ciclo_trabajo, Short ciclo_descanso, String hash_mac_fk) {
 		super();
 		this.oid_alarma = oid_alarma;
 		this.dias = dias;
-		this.estado = estado;
 		this.t_inicio = t_inicio;
 		this.t_fin = t_fin;
 		this.t_trabajo = t_trabajo;
 		this.t_descanso = t_descanso;
-		this.ciclo = ciclo;
+		this.ciclo_trabajo = ciclo_trabajo;
+		this.ciclo_descanso = ciclo_descanso;
 		this.hash_mac_fk = hash_mac_fk;
 	}
 
@@ -70,14 +70,6 @@ public class AlarmaImpl {
 
 	public void setDias(String dias) {
 		this.dias = dias;
-	}
-
-	public String getEstado() {
-		return estado;
-	}
-
-	public void setEstado(String estado) {
-		this.estado = estado;
 	}
 
 	public LocalTime getT_inicio() {
@@ -112,12 +104,20 @@ public class AlarmaImpl {
 		this.t_descanso = t_descanso;
 	}
 
-	public Short getCiclo() {
-		return ciclo;
+	public Short getCiclo_trabajo() {
+		return ciclo_trabajo;
 	}
 
-	public void setCiclo(Short ciclo) {
-		this.ciclo = ciclo;
+	public void setCiclo_trabajo(Short ciclo_trabajo) {
+		this.ciclo_trabajo = ciclo_trabajo;
+	}
+
+	public Short getCiclo_descanso() {
+		return ciclo_descanso;
+	}
+
+	public void setCiclo_descanso(Short ciclo_descanso) {
+		this.ciclo_descanso = ciclo_descanso;
 	}
 
 	public String getHash_mac_fk() {
@@ -130,18 +130,18 @@ public class AlarmaImpl {
 
 	@Override
 	public String toString() {
-		return "AlarmaImpl [oid_alarma=" + oid_alarma + ", dias=" + dias + ", estado=" + estado + ", t_inicio="
-				+ t_inicio + ", t_fin=" + t_fin + ", t_trabajo=" + t_trabajo + ", t_descanso=" + t_descanso + ", ciclo="
-				+ ciclo + ", hash_mac_fk=" + hash_mac_fk + "]";
+		return "AlarmaImpl [oid_alarma=" + oid_alarma + ", dias=" + dias + ", t_inicio=" + t_inicio + ", t_fin=" + t_fin
+				+ ", t_trabajo=" + t_trabajo + ", t_descanso=" + t_descanso + ", ciclo_trabajo=" + ciclo_trabajo
+				+ ", ciclo_descanso=" + ciclo_descanso + ", hash_mac_fk=" + hash_mac_fk + "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((ciclo == null) ? 0 : ciclo.hashCode());
+		result = prime * result + ((ciclo_descanso == null) ? 0 : ciclo_descanso.hashCode());
+		result = prime * result + ((ciclo_trabajo == null) ? 0 : ciclo_trabajo.hashCode());
 		result = prime * result + ((dias == null) ? 0 : dias.hashCode());
-		result = prime * result + ((estado == null) ? 0 : estado.hashCode());
 		result = prime * result + ((hash_mac_fk == null) ? 0 : hash_mac_fk.hashCode());
 		result = prime * result + ((oid_alarma == null) ? 0 : oid_alarma.hashCode());
 		result = prime * result + ((t_descanso == null) ? 0 : t_descanso.hashCode());
@@ -160,20 +160,20 @@ public class AlarmaImpl {
 		if (getClass() != obj.getClass())
 			return false;
 		AlarmaImpl other = (AlarmaImpl) obj;
-		if (ciclo == null) {
-			if (other.ciclo != null)
+		if (ciclo_descanso == null) {
+			if (other.ciclo_descanso != null)
 				return false;
-		} else if (!ciclo.equals(other.ciclo))
+		} else if (!ciclo_descanso.equals(other.ciclo_descanso))
+			return false;
+		if (ciclo_trabajo == null) {
+			if (other.ciclo_trabajo != null)
+				return false;
+		} else if (!ciclo_trabajo.equals(other.ciclo_trabajo))
 			return false;
 		if (dias == null) {
 			if (other.dias != null)
 				return false;
 		} else if (!dias.equals(other.dias))
-			return false;
-		if (estado == null) {
-			if (other.estado != null)
-				return false;
-		} else if (!estado.equals(other.estado))
 			return false;
 		if (hash_mac_fk == null) {
 			if (other.hash_mac_fk != null)
