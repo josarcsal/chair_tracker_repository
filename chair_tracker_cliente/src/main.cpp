@@ -26,11 +26,11 @@ NTPClient timeClient(ntpUDP, "europe.pool.ntp.org");
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 
 //Declaracion de variables usadas
-const char* ssid = "Xiaomi_4A";
+const char *ssid = "Xiaomi_4A";
 //const char *ssid = "MiFibra-919C";
-const char* password = "oE25yJ9ms54Vd9222Z6B";
+const char *password = "oE25yJ9ms54Vd9222Z6B";
 //const char *password = "9We7qZEF";
-const char* ipServer = "192.168.1.56";
+const char *ipServer = "192.168.1.56";
 //const char *ipServer = "192.168.1.44";
 const int portHttp = 8084;
 const int portMqtt = 1883;
@@ -92,6 +92,10 @@ void reconnect()
 //Gestion alarmas
 
 List<List<String>> res(100);
+int distanciaAnterior = 50;
+int lev = 0;
+int marcaTiempo = 0;
+String proxima;
 
 void setup()
 {
@@ -109,7 +113,7 @@ void setup()
   timeClient.begin();
   String lista = obtenerListaHoras(httpClient, hashMac);
   Serial.println(lista);
-  String proxima = obtenerProximaAlarma(httpClient, timeClient, hashMac);
+  proxima = obtenerProximaAlarma(httpClient, timeClient, hashMac);
   Serial.print("La proxima alarma es ");
   Serial.println(proxima);
 
@@ -156,14 +160,51 @@ void loop()
   //Serial.println(timeClient.getFormattedTime());
 
   //PRUEBAS SENSOR
-  /*delay(500); // Esperar medio segundo entre mediciones
+  delay(500); // Esperar medio segundo entre mediciones
   // Muestra la distancia medida a la consola serial
   Serial.print("Ping: ");
   // Calcular la distancia con base en una constante
-  //tiempo = sonar.ping_median();
-  //distancia = tiempo * 10 / 292/ 2;
-  Serial.print(sonar.ping_cm());
-  Serial.println("cm.");*/
+  //Serial.print(sonar.ping_cm());
+  //Serial.println("cm.");
+  int distanciaActual = sonar.ping_cm();
+
+  if (distanciaActual < 20 && distanciaAnterior > 80)
+  {
+    lev = 0;
+    marcaTiempo = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
+  }
+
+  if (distanciaAnterior < 20 && distanciaActual > 80)
+  {
+    lev = 1;
+    marcaTiempo = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
+  }
+
+  distanciaAnterior = distanciaActual;
+
+  String tiempoFinAlarmaAux = getValue(proxima, '|', 0);
+  String tiempoFinAlarmaAuxHString = getValue(tiempoFinAlarmaAux, ':', 0);
+  String tiempoFinAlarmaAuxMString = getValue(tiempoFinAlarmaAux, ':', 1);
+  String tiempoFinAlarmaAuxSString = getValue(tiempoFinAlarmaAux, ':', 2);
+  int tiempoFinAlarmaAuxInt = tiempoFinAlarmaAuxHString.toInt() * 3600 + tiempoFinAlarmaAuxMString.toInt() * 60 + tiempoFinAlarmaAuxSString.toInt();
+
+  if (tiempoFinAlarmaAuxInt < timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds())
+  {
+    proxima = obtenerProximaAlarma(httpClient, timeClient, hashMac);
+  }
+
+  int aviso = obtenerAviso(proxima, lev, marcaTiempo, timeClient);
+
+  if (aviso == 1)
+  {
+    //pita
+    Serial.println("Alarma sonando");
+    delay(3000);
+  }
+  if (aviso == 0)
+  {
+    //no pita
+  }
 }
 
 //------------------------------------------------------------------------------------------------------

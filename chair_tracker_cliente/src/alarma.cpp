@@ -41,8 +41,7 @@ String obtenerListaHoras(HttpClient httpClient, String hashMac)
     String oid_alarma = root.getMember(kv.key()).getMember("oid_alarma");
     String ciclo = root.getMember(kv.key()).getMember("ciclo");
 
-    String aux = formateaHoras(root.getMember(kv.key()).getMember("t_inicio")) + "|" + formateaHoras(root.getMember(kv.key()).getMember("t_fin")) + "|" + dias
-    + "|" + t_trabajo + "|" + t_descanso + "|" +  ciclo + "|" + oid_alarma;
+    String aux = formateaHoras(root.getMember(kv.key()).getMember("t_inicio")) + "|" + formateaHoras(root.getMember(kv.key()).getMember("t_fin")) + "|" + dias + "|" + t_trabajo + "|" + t_descanso + "|" + ciclo + "|" + oid_alarma;
     //Serial.print("aux con clave ");
     //Serial.println(kv.key().c_str());
     //Serial.print(" con valor ");
@@ -141,44 +140,54 @@ int contadorTrabajo;
 int contadorDescanso;
 int cicloTrabajo;
 int cicloDescanso;
-int nCiclos;
+int ciclos;
 
-void obtenerContador(String alarmaActual){
-  
+int obtenerAviso(String alarmaActual, int levantado, int marcaDeTiempo1, NTPClient timeClient)
+{
+  int res = 0;
+
+  timeClient.update();
+  int marcaDeTiempo2 = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
+
   int oidAlarmaActual = getValue(alarmaActual, '|', 6).toInt();
   int t_trabajo = getValue(alarmaActual, '|', 3).toInt();
   int t_descanso = getValue(alarmaActual, '|', 4).toInt();
   //int nCiclos = getValue(alarmaActual, '|', 5).toInt();
-  
-  if(levantado = 0){
-      if(contadorTrabajo < t_trabajo){
-        contadorTrabajo += 1;
-      }
-      if(contadorTrabajo = t_trabajo){
-        contadorTrabajo = 0;
-        cicloTrabajo += 1;
-      }
+
+  //main
+  //sensor -> te sientas -> marcadetiempo1 (4000)
+  //funcion -> trabajando -> marcadetiempo2 (40)
+  if (levantado == 0)
+  {
+    contadorTrabajo = marcaDeTiempo2 - marcaDeTiempo1;
   }
 
-  if(levantado = 1 && (contadorTrabajo != 0)){
-    if(contadorDescanso < t_descanso){
-      contadorDescanso += 1;
-    }
-    if(contadorDescanso = t_descanso){
-      contadorDescanso = 0;
-      cicloDescanso += 1;
-    }
+  if (levantado == 1)
+  {
+    contadorDescanso = marcaDeTiempo2 - marcaDeTiempo1;
   }
 
-  if(contadorDescanso = contadorTrabajo && (contadorDescanso != 0)){
-    nCiclos += 1;
+  if (contadorTrabajo >= t_trabajo)
+  {
+    contadorTrabajo = 0;
+    int res = 1;
   }
 
+  if (contadorDescanso >= t_descanso)
+  {
+    contadorDescanso = 0;
+    int res = 1;
+  }
+
+  if (contadorDescanso = contadorTrabajo && (contadorDescanso != 0))
+  {
+    ciclos += 1;
+  }
+  return res;
+
+  /*
   DynamicJsonDocument bodyPost(1024);
   String bodyPostData = "";
   bodyPost[String("oid_alarma")] = String(oidAlarmaActual);
-  bodyPost[String("ciclo")] = String(nCiclos);
-
-
-
+  bodyPost[String("ciclo")] = String(nCiclos);*/
 }
