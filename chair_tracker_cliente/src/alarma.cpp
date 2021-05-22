@@ -150,8 +150,8 @@ int obtenerAviso(String alarmaActual, int levantado, int marcaDeTiempo1, NTPClie
   int marcaDeTiempo2 = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
 
   int oidAlarmaActual = getValue(alarmaActual, '|', 6).toInt();
-  int t_trabajo = getValue(alarmaActual, '|', 3).toInt();
-  int t_descanso = getValue(alarmaActual, '|', 4).toInt();
+  int t_trabajo = getValue(alarmaActual, '|', 3).toInt() * 60;
+  int t_descanso = getValue(alarmaActual, '|', 4).toInt() * 60;
   //int nCiclos = getValue(alarmaActual, '|', 5).toInt();
 
   //main
@@ -159,30 +159,35 @@ int obtenerAviso(String alarmaActual, int levantado, int marcaDeTiempo1, NTPClie
   //funcion -> trabajando -> marcadetiempo2 (40)
   if (levantado == 0)
   {
-    contadorTrabajo = marcaDeTiempo2 - marcaDeTiempo1;
+    contadorTrabajo += marcaDeTiempo2 - marcaDeTiempo1;
   }
 
   if (levantado == 1)
   {
-    contadorDescanso = marcaDeTiempo2 - marcaDeTiempo1;
+    contadorDescanso += marcaDeTiempo2 - marcaDeTiempo1;
   }
 
   if (contadorTrabajo >= t_trabajo)
   {
     contadorTrabajo = 0;
-    int res = 1;
+    res = 1;
   }
 
   if (contadorDescanso >= t_descanso)
   {
     contadorDescanso = 0;
-    int res = 1;
+    res = 1;
   }
 
   if (contadorDescanso = contadorTrabajo && (contadorDescanso != 0))
   {
     ciclos += 1;
   }
+
+  Serial.print("Contador Trabajo: ");
+  Serial.println(contadorTrabajo);
+  Serial.print("Contador Descanso :");
+  Serial.println(contadorDescanso);
   return res;
 
   /*

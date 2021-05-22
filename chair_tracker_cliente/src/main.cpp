@@ -167,18 +167,21 @@ void loop()
   //Serial.print(sonar.ping_cm());
   //Serial.println("cm.");
   int distanciaActual = sonar.ping_cm();
+  Serial.println(distanciaActual);
 
   if (distanciaActual < 20 && distanciaAnterior > 80)
   {
     lev = 0;
-    marcaTiempo = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
+    //marcaTiempo = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
   }
 
   if (distanciaAnterior < 20 && distanciaActual > 80)
   {
     lev = 1;
-    marcaTiempo = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
+    //marcaTiempo = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
   }
+
+  marcaTiempo = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
 
   distanciaAnterior = distanciaActual;
 
@@ -192,6 +195,8 @@ void loop()
   {
     proxima = obtenerProximaAlarma(httpClient, timeClient, hashMac);
   }
+  
+  delay(1000);
 
   int aviso = obtenerAviso(proxima, lev, marcaTiempo, timeClient);
 
