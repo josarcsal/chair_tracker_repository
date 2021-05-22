@@ -30,12 +30,12 @@ CREATE TABLE Usuarios(
 CREATE TABLE Alarmas(
 	oid_alarma	SMALLINT PRIMARY KEY AUTO_INCREMENT,
     dias		VARCHAR(9),
-    estado 		VARCHAR(10) CHECK(estado IN ('Pendiente', 'Activa', 'Contestada')) NOT NULL,
     t_inicio	TIME,
     t_fin		TIME,
     t_trabajo	SMALLINT,
     t_descanso	SMALLINT,
-    ciclo		SMALLINT,
+    ciclo_trabajo		SMALLINT,
+    ciclo_descanso SMALLINT,
     hash_mac_fk VARCHAR(40),
     FOREIGN KEY (hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE
 );

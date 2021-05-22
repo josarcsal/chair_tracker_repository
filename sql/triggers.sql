@@ -5,6 +5,9 @@ DROP TRIGGER Rellena_Registros_Alarmas_INSERT;
 DROP TRIGGER Rellena_Registros_Alarmas_UPDATE;
 DROP TRIGGER control_rol;
 DROP TRIGGER control_nif;
+DROP TRIGGER alarmas_por_usuario;
+DROP TRIGGER alarmas_inicio_fin;
+
 
 DELIMITER //
 CREATE TRIGGER Rellena_Registros_Llamadas_INSERT AFTER INSERT 
@@ -19,14 +22,14 @@ CREATE TRIGGER Rellena_Registros_Alarmas_INSERT AFTER INSERT
 	ON proyectodad.alarmas FOR EACH ROW
     BEGIN
     INSERT INTO proyectodad.registros (tipo, fecha, trabajo, descanso, oid_llamada_fk, oid_alarma_fk, hash_mac_fk, remitente_hash_mac_fk, destinatario_hash_mac_fk) 
-		VALUES ('A', NOW(), NEW.ciclo * NEW.t_trabajo, NEW.ciclo * NEW.t_descanso, NULL, NEW.oid_alarma, NEW.hash_mac_fk, NULL, NULL);
+		VALUES ('A', NOW(), NEW.ciclo_trabajo * NEW.t_trabajo, NEW.ciclo_descanso * NEW.t_descanso, NULL, NEW.oid_alarma, NEW.hash_mac_fk, NULL, NULL);
 END//
 
 DELIMITER //
 CREATE TRIGGER Rellena_Registros_Alarmas_UPDATE AFTER UPDATE
 	ON proyectodad.alarmas FOR EACH ROW
     BEGIN
-    UPDATE proyectodad.registros SET fecha = NOW(), trabajo = NEW.ciclo * NEW.t_trabajo, descanso = NEW.ciclo * NEW.t_descanso WHERE oid_alarma_fk = OLD.oid_alarma;
+    UPDATE proyectodad.registros SET fecha = NOW(), trabajo = NEW.ciclo_trabajo * NEW.t_trabajo, descanso = NEW.ciclo_descanso * NEW.t_descanso WHERE oid_alarma_fk = OLD.oid_alarma;
 END//
 
 DELIMITER //
@@ -51,6 +54,30 @@ CREATE TRIGGER control_nif BEFORE INSERT
     IF (NEW.nif NOT REGEXP '([0-9]{8}[A-z]{1})') 
 		THEN
 		signal sqlstate '47000' set message_text = 'El nif debe estar formado por 8 numeros y una letra';  
+	END IF;
+END//
+
+DELIMITER //
+CREATE TRIGGER alarmas_por_usuario BEFORE INSERT
+	ON proyectodad.alarmas FOR EACH ROW
+    BEGIN
+        DECLARE n_alarmas SMALLINT;
+		SELECT COUNT(*) INTO n_alarmas FROM proyectodad.alarmas WHERE hash_mac_fk = NEW.hash_mac_fk;
+    IF (n_alarmas = 5) 
+		THEN
+		signal sqlstate '48000' set message_text = 'Un usuario solo puede tener un maximo de cinco alarmas programadas';  
+	END IF;
+END//
+
+DELIMITER //
+CREATE TRIGGER alarmas_inicio_fin BEFORE INSERT
+	ON proyectodad.alarmas FOR EACH ROW
+    BEGIN
+		DECLARE bandera SMALLINT;
+		SELECT COUNT(*) INTO bandera FROM proyectodad.alarmas WHERE t_fin > NEW.t_inicio;
+    IF (bandera > 0) 
+		THEN
+		signal sqlstate '49000' set message_text = 'Una alarma no puede comenzar antes de que otra termine';  
 	END IF;
 END//
 
