@@ -1,35 +1,255 @@
 #include <Arduino.h>
-#include "doGetPostDelete.h"
+#include <PubSubClient.h>
+#include <Ethernet.h>
+#include <ESP8266WiFi.h>
+#include <ArduinoHttpClient.h>
+#include <ArduinoJson.h>
+#include <NewPing.h>
+#include <ListLib.h>
+#include <NTPClient.h>
+#include "WiFiUdp.h"
+#include <TimeLib.h>
 
-const char* ssid = "Xiaomi_4A";
-const char* password = "oE25yJ9ms54Vd9222Z6B";
-const char* ipServer = "192.168.1.56";
+#include "request.h"
+#include "Hash.h"
+#include "alarma.h"
+
+//Obtener hora
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "europe.pool.ntp.org");
+
+//Sensor proximidad
+#define TRIGGER_PIN D1
+#define ECHO_PIN D2
+#define MAX_DISTANCE 200 // Distancia máxima
+
+NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
+
+//Declaracion de variables usadas
+const char *ssid = "Xiaomi_4A";
+//const char *ssid = "MiFibra-919C";
+const char *password = "oE25yJ9ms54Vd9222Z6B";
+//const char *password = "9We7qZEF";
+const char *ipServer = "192.168.1.56";
+//const char *ipServer = "192.168.1.44";
 const int portHttp = 8084;
 const int portMqtt = 1883;
-String placaId = "";
+const char *mqttUser = "root";
+const char *mqttPassword = "root";
 
-RestClient client = RestClient(ipServer, portHttp);
+WiFiClient espClient;
+IPAddress server(192, 168, 1, 56);
+//IPAddress server(192, 168, 1, 44);
+PubSubClient mqttClient(espClient);
+HttpClient httpClient = HttpClient(espClient, ipServer, portHttp);
 
-//Setup
-void setup() {
+//Obtiene mac y realiza hash con algoritmo sha1 para mayor seguridad
+String macEsp = WiFi.macAddress();
+String hashMac = sha1(macEsp);
+
+void callback(char *topic, byte *payload, unsigned int length)
+{
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
+  for (unsigned int i = 0; i < length; i++)
+  {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+
+  if (topic = "placa/llamadas")
+  {
+    //ENCENDER ALARMA POR LLAMADA
+    Serial.println("Estan llamando");
+  }
+}
+
+void reconnect()
+{
+  // Loop until we're reconnected
+  while (!mqttClient.connected())
+  {
+    Serial.print("Attempting MQTT connection...");
+    // Attempt to connect
+    if (mqttClient.connect("ESP8266Client", mqttUser, mqttPassword))
+    {
+      Serial.println("connected");
+      // ... and resubscribe
+      mqttClient.subscribe("placa/llamadas");
+    }
+    else
+    {
+      Serial.print("failed, rc=");
+      Serial.print(mqttClient.state());
+      Serial.println(" try again in 5 seconds");
+      // Wait 5 seconds before retrying
+      delay(5000);
+    }
+  }
+}
+
+//Gestion alarmas
+
+List<List<String>> res(100);
+int distanciaAnterior = 50;
+int lev;
+int marcaTiempo = 0;
+String proxima;
+
+void setup()
+{
+
   Serial.begin(9600);
-  Serial.println("connect to WiFi network");
-  client.begin(ssid, password);
-  Serial.println("Setup!");
+  //MQTT
+  mqttClient.setServer(server, 1883);
+  mqttClient.setCallback(callback);
+  delay(100);
+  //WIFI
+  setup_wifi(ssid, password);
+  Serial.print("Hash MAC: ");
+  Serial.println(hashMac);
+  //TIEMPO
+  timeClient.begin();
+  String lista = obtenerListaHoras(httpClient, hashMac);
+  Serial.println(lista);
+  proxima = obtenerProximaAlarma(httpClient, timeClient, hashMac);
+  Serial.print("La proxima alarma es ");
+  Serial.println(proxima);
+
+  //Configuracion vibrador
+  //pinMode(pinAlarma, OUTPUT);
 }
 
-String response;
-void loop(){
+int levantado;
+int contadorTrabajo;
+int contadorDescanso;
+int cicloTrabajo;
+int cicloDescanso;
+int ciclos;
 
-  /*response = "";
-  int statusCode = client.get("/api/usuarios", &response);
-  Serial.print("Status code from server: ");
-  Serial.println(statusCode);
-  Serial.print("Response body from server: ");
-  Serial.println(response);
-  delay(10000);*/
 
-  //doGet(client, "/api/usuarios");
-  doGet(client, "/api/placas");
+void loop()
+{
+  timeClient.update();
+
+  marcaTiempo = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
+
+  //Serial.print(daysOfTheWeek[timeClient.getDay()]);
+
+  //Pruebas API
+  //testGet(httpClient);
+  //testPost(httpClient, hashMac);
+  //testGetParam(httpClient);
+  //testPut(httpClient, hashMac);
+  //testDelete(httpClient, hashMac);
+
+  //testCompleto(httpClient, hashMac);
+
+  //delay(8000);
+
+  //Pruebas MQTT
+
+  if (!mqttClient.connected())
+  {
+    reconnect();
+  }
+
+  mqttClient.loop();
+
+  delay(3000);
+
+  /*Serial.print(daysOfTheWeek[timeClient.getDay()]);
+  Serial.print(", ");
+  Serial.print(timeClient.getHours());
+  Serial.print(":");
+  Serial.print(timeClient.getMinutes());
+  Serial.print(":");
+  Serial.println(timeClient.getSeconds());*/
+
+  //Serial.println(timeClient.getFormattedTime());
+
+  //PRUEBAS SENSOR
+  delay(500); // Esperar medio segundo entre mediciones
+  // Muestra la distancia medida a la consola serial
+  Serial.print("Ping: ");
+  // Calcular la distancia con base en una constante
+  //Serial.print(sonar.ping_cm());
+  //Serial.println("cm.");
+  int distanciaActual = sonar.ping_cm();
+  Serial.println(distanciaActual);
+
+  if (distanciaActual < 20 && distanciaAnterior > 80)
+  {
+    lev = 0;
+    marcaTiempo = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
+  }
+
+  if (distanciaAnterior < 20 && distanciaActual > 80)
+  {
+    lev = 1;
+    marcaTiempo = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
+  }
+
+
+  distanciaAnterior = distanciaActual;
+
+  String tiempoFinAlarmaAux = getValue(proxima, '|', 0);
+  String tiempoFinAlarmaAuxHString = getValue(tiempoFinAlarmaAux, ':', 0);
+  String tiempoFinAlarmaAuxMString = getValue(tiempoFinAlarmaAux, ':', 1);
+  String tiempoFinAlarmaAuxSString = getValue(tiempoFinAlarmaAux, ':', 2);
+  int tiempoFinAlarmaAuxInt = tiempoFinAlarmaAuxHString.toInt() * 3600 + tiempoFinAlarmaAuxMString.toInt() * 60 + tiempoFinAlarmaAuxSString.toInt();
+   
+    
+    delay(1000);
+
+    int marcaTiempo2 = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
+
+
+  if (tiempoFinAlarmaAuxInt < timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds())
+  {
+    proxima = obtenerProximaAlarma(httpClient, timeClient, hashMac);
+  }
+  
+
+  //int aviso = obtenerAviso(proxima, lev, marcaTiempo, timeClient);
+
+  if (lev == 0)
+  {
+    contadorTrabajo += marcaTiempo2 - marcaTiempo;
+  }
+
+  if (lev == 1)
+  {
+
+    contadorDescanso += marcaTiempo2 - marcaTiempo;
+  }
+
+  if (contadorTrabajo >= 30)
+  {
+    contadorTrabajo = 0;
+    res = 1;
+  }
+
+  if (contadorDescanso >= 10)
+  {
+    contadorDescanso = 0;
+    res = 1;
+  }
+
+  if (contadorDescanso = contadorTrabajo && (contadorDescanso != 0))
+  {
+    ciclos += 1;
+  }
+
+  Serial.print("Contador Trabajo: ");
+  Serial.println(contadorTrabajo);
+  Serial.print("Contador Descanso :");
+  Serial.println(contadorDescanso);
 
 }
+
+//------------------------------------------------------------------------------------------------------
+//Metodos MQTT
+
+//Metodos alarma

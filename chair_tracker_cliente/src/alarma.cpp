@@ -87,8 +87,12 @@ String obtenerProximaAlarma(HttpClient httpClient, NTPClient timeClient, String 
   //Serial.print("diaActual en   ");
   //Serial.println(diaActual);
 
-  Serial.print("tiempoActual en  s ");
-  Serial.println(tiempoActualS);
+  Serial.print("Tiempo Actual ");
+  Serial.print(timeClient.getHours());
+  Serial.print(":");
+  Serial.print(timeClient.getMinutes());
+  Serial.print(":");
+  Serial.println(timeClient.getSeconds());
 
   char *diaCheck;
 
@@ -135,13 +139,46 @@ String obtenerProximaAlarma(HttpClient httpClient, NTPClient timeClient, String 
   return res;
 }
 
-int levantado;
-int contadorTrabajo;
-int contadorDescanso;
-int cicloTrabajo;
-int cicloDescanso;
-int ciclos;
+int StringToIntAlarma(String alarma, String valor){
 
+  int res;
+
+  if(valor == "t_inicio"){
+    String tiempoFinAlarmaAux = getValue(alarma, '|', 0);
+    String tiempoFinAlarmaAuxHString = getValue(tiempoFinAlarmaAux, ':', 0);
+    String tiempoFinAlarmaAuxMString = getValue(tiempoFinAlarmaAux, ':', 1);
+    String tiempoFinAlarmaAuxSString = getValue(tiempoFinAlarmaAux, ':', 2);
+    res = tiempoFinAlarmaAuxHString.toInt() * 3600 + tiempoFinAlarmaAuxMString.toInt() * 60 + tiempoFinAlarmaAuxSString.toInt();
+  }
+
+  if(valor == "t_final"){
+    String tiempoFinAlarmaAux = getValue(alarma, '|', 1);
+    String tiempoFinAlarmaAuxHString = getValue(tiempoFinAlarmaAux, ':', 0);
+    String tiempoFinAlarmaAuxMString = getValue(tiempoFinAlarmaAux, ':', 1);
+    String tiempoFinAlarmaAuxSString = getValue(tiempoFinAlarmaAux, ':', 2);
+    res = tiempoFinAlarmaAuxHString.toInt() * 3600 + tiempoFinAlarmaAuxMString.toInt() * 60 + tiempoFinAlarmaAuxSString.toInt();
+  }
+
+  if(valor == "t_trabajo"){
+    res= getValue(alarma, '|', 3).toInt();
+  }
+
+  if(valor == "t_descanso"){
+    res= getValue(alarma, '|', 4).toInt();
+  }
+
+  if(valor == "oid_alarma"){
+    res = getValue(alarma, '|', 6).toInt();
+  }
+
+  if(valor == "ciclos"){
+    res = getValue(alarma, '|', 5).toInt();
+  }
+
+  return res;
+}
+
+/*
 int obtenerAviso(String alarmaActual, int levantado, int marcaDeTiempo1, NTPClient timeClient)
 {
   int res = 0;
@@ -150,44 +187,23 @@ int obtenerAviso(String alarmaActual, int levantado, int marcaDeTiempo1, NTPClie
   int marcaDeTiempo2 = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
 
   int oidAlarmaActual = getValue(alarmaActual, '|', 6).toInt();
-  int t_trabajo = getValue(alarmaActual, '|', 3).toInt();
-  int t_descanso = getValue(alarmaActual, '|', 4).toInt();
+  int t_trabajo = getValue(alarmaActual, '|', 3).toInt() * 60;
+  int t_descanso = getValue(alarmaActual, '|', 4).toInt() * 60;
   //int nCiclos = getValue(alarmaActual, '|', 5).toInt();
 
   //main
   //sensor -> te sientas -> marcadetiempo1 (4000)
   //funcion -> trabajando -> marcadetiempo2 (40)
-  if (levantado == 0)
-  {
-    contadorTrabajo = marcaDeTiempo2 - marcaDeTiempo1;
-  }
 
-  if (levantado == 1)
-  {
-    contadorDescanso = marcaDeTiempo2 - marcaDeTiempo1;
-  }
-
-  if (contadorTrabajo >= t_trabajo)
-  {
-    contadorTrabajo = 0;
-    int res = 1;
-  }
-
-  if (contadorDescanso >= t_descanso)
-  {
-    contadorDescanso = 0;
-    int res = 1;
-  }
-
-  if (contadorDescanso = contadorTrabajo && (contadorDescanso != 0))
-  {
-    ciclos += 1;
-  }
+  Serial.print("Contador Trabajo: ");
+  Serial.println(contadorTrabajo);
+  Serial.print("Contador Descanso :");
+  Serial.println(contadorDescanso);
   return res;
 
-  /*
+  
   DynamicJsonDocument bodyPost(1024);
   String bodyPostData = "";
   bodyPost[String("oid_alarma")] = String(oidAlarmaActual);
-  bodyPost[String("ciclo")] = String(nCiclos);*/
-}
+  bodyPost[String("ciclo")] = String(nCiclos);
+}*/
