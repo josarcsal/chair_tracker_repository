@@ -177,64 +177,61 @@ void loop()
   int proximaCiclosTrabajo = StringToIntAlarma(proxima, "ciclos_trabajo");
   int proximaCiclosDescanso = StringToIntAlarma(proxima, "ciclos_descanso");
 
-  if (proxima != "No se ha encontrado alarma para el dia de hoy")
+  //if (proxima != "No se ha encontrado alarma para el dia de hoy")
+  //{
+  if (marcaTiempo1 >= proximaT_inicio && marcaTiempo1 <= proximaT_final)
   {
-    if (marcaTiempo1 >= proximaT_inicio && marcaTiempo1 <= proximaT_final)
+
+    if (distanciaActual < 20 && distanciaAnterior > 80)
     {
-
-      if (distanciaActual < 20 && distanciaAnterior > 80)
-      {
-        Serial.println("Me sente");
-        levantado = 0;
-      }
-
-      if (distanciaAnterior < 20 && distanciaActual > 80)
-      {
-        Serial.println("Me levante");
-        levantado = 1;
-      }
-
-      distanciaAnterior = distanciaActual;
-
-      marcaTiempo2 = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
-
-      if (levantado == 0)
-      {
-        contadorSentado += marcaTiempo2 - marcaTiempo1;
-      }
-
-      if (levantado == 1)
-      {
-        contadorLevantado += marcaTiempo2 - marcaTiempo1;
-      }
-
-      if (contadorSentado > 30) //(proximaT_trabajo * 60))
-      {
-        contadorSentado = 0;
-        ciclosTrabajo += 1;
-        Serial.println("Sonando a descansar");
-        sonarAlarma(ALARMA_PIN);
-      }
-
-      if (contadorLevantado > 10) //(proximaT_descanso * 60)
-      {
-        contadorLevantado = 0;
-        ciclosDescanso += 1;
-        Serial.println("Sonando a trabajar");
-        sonarAlarma(ALARMA_PIN);
-      }
-
-      Serial.print("contadorSentado ");
-      Serial.println(contadorSentado);
-      Serial.print("contadorLevantado ");
-      Serial.println(contadorLevantado);
+      Serial.println("Me sente");
+      levantado = 0;
     }
-    else
-    {
-      int ciclosTUpdate = proximaCiclosTrabajo + ciclosTrabajo;
-      int ciclosDUpdate = proximaCiclosDescanso + ciclosDescanso;
 
-      Serial.print("ciclosTUpdate ");
+    if (distanciaAnterior < 20 && distanciaActual > 80)
+    {
+      Serial.println("Me levante");
+      levantado = 1;
+    }
+
+    distanciaAnterior = distanciaActual;
+
+    marcaTiempo2 = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
+
+    if (levantado == 0)
+    {
+      contadorSentado += marcaTiempo2 - marcaTiempo1;
+    }
+
+    if (levantado == 1)
+    {
+      contadorLevantado += marcaTiempo2 - marcaTiempo1;
+    }
+
+    if (contadorSentado > 10) //(proximaT_trabajo * 60))
+    {
+      contadorSentado = 0;
+      ciclosTrabajo += 1;
+      Serial.println("Sonando a descansar");
+      sonarAlarma(ALARMA_PIN);
+    }
+
+    if (contadorLevantado > 10) //(proximaT_descanso * 60)
+    {
+      contadorLevantado = 0;
+      ciclosDescanso += 1;
+      Serial.println("Sonando a trabajar");
+      sonarAlarma(ALARMA_PIN);
+    }
+
+    Serial.print("contadorSentado ");
+    Serial.println(contadorSentado);
+    Serial.print("contadorLevantado ");
+    Serial.println(contadorLevantado);
+  }
+  else
+  {
+    /*Serial.print("ciclosTUpdate ");
       Serial.println(ciclosTUpdate);
 
       Serial.print("ciclosDUpdate ");
@@ -244,16 +241,20 @@ void loop()
       Serial.println(getValue(proxima, '|', 0));
 
       Serial.print("t_finSin ");
-      Serial.println(getValue(proxima, '|', 1));
+      Serial.println(getValue(proxima, '|', 1));*/
 
-      String t_inicioFormateado = timeFromClientToBBDD(getValue(proxima, '|', 0));
-      String t_finFormateado = timeFromClientToBBDD(getValue(proxima, '|', 1));
-
-      Serial.print("t_inicioFormateado ");
+    /*Serial.print("t_inicioFormateado ");
       Serial.println(t_inicioFormateado);
 
       Serial.print("t_FinFormateado ");
-      Serial.println(t_finFormateado);
+      Serial.println(t_finFormateado);*/
+    if (proxima != "No se ha encontrado alarma para el dia de hoy")
+    {
+      int ciclosTUpdate = proximaCiclosTrabajo + ciclosTrabajo;
+      int ciclosDUpdate = proximaCiclosDescanso + ciclosDescanso;
+
+      String t_inicioFormateado = timeFromClientToBBDD(getValue(proxima, '|', 0));
+      String t_finFormateado = timeFromClientToBBDD(getValue(proxima, '|', 1));
 
       DynamicJsonDocument bodyPut(1024);
       String bodyPutData = "";
@@ -271,14 +272,13 @@ void loop()
 
       //mqttClient.publish("alarmas/update/", bodyPutData.c_str());
       doRequest(httpClient, "PUT", "/alarmas/editarAlarma", bodyPutData);
-
-      distanciaAnterior = 50;
-      levantado = 10;
-      contadorLevantado = 0;
-      contadorSentado = 0;
-      ciclosTrabajo = 0;
-      ciclosDescanso = 0;
     }
+    distanciaAnterior = 50;
+    levantado = 10;
+    contadorLevantado = 0;
+    contadorSentado = 0;
+    ciclosTrabajo = 0;
+    ciclosDescanso = 0;
   }
 }
 
