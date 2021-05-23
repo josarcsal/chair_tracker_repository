@@ -207,6 +207,8 @@ public class HttpServerVerticle extends AbstractVerticle {
 		json.put("oid_alarma", json.getString("oid_alarma"));
 		vertx.eventBus().request("editarAlarma", json.toString(), reply -> {
 			if (reply.succeeded()) {
+				vertx.eventBus().request("actualizacionAlarmas", routingContext.getBodyAsString());
+
 				System.out.println(reply.result().body());
 				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
 						.end(String.valueOf(reply.result().body()));

@@ -203,6 +203,20 @@ String timeFromClientToBBDD(String hora)
   return res;
 }
 
+void sonarAlarma(uint8_t ALARMA_PIN){
+      digitalWrite(ALARMA_PIN, HIGH);
+      delay(500);
+      digitalWrite(ALARMA_PIN, LOW);
+      delay(500);
+      digitalWrite(ALARMA_PIN, HIGH);
+      delay(500);
+      digitalWrite(ALARMA_PIN, LOW);
+      delay(500);
+      digitalWrite(ALARMA_PIN, HIGH);
+      delay(500);
+      digitalWrite(ALARMA_PIN, LOW);
+}
+
 /*
 int obtenerAviso(String alarmaActual, int levantado, int marcaDeTiempo1, NTPClient timeClient)
 {

@@ -5,3 +5,4 @@ int obtenerAviso(String alarmaActual, int levantado, int marcaDeTiempo1, NTPClie
 String getValue(String data, char separator, int index);
 int StringToIntAlarma(String alarma, String valor);
 String timeFromClientToBBDD(String hora);
+void sonarAlarma(uint8_t ALARMA_PIN);
