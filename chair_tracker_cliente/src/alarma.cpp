@@ -43,7 +43,7 @@ String obtenerListaHoras(HttpClient httpClient, String hashMac)
     String ciclo_descanso = root.getMember(kv.key()).getMember("ciclo_descanso");
 
     String aux = formateaHoras(root.getMember(kv.key()).getMember("t_inicio")) + "|" + formateaHoras(root.getMember(kv.key()).getMember("t_fin")) + "|" + dias +
-                 "|" + t_trabajo + "|" + t_descanso + "|" + ciclo_trabajo + "|" + ciclo_trabajo + "|" + oid_alarma;
+                 "|" + t_trabajo + "|" + t_descanso + "|" + ciclo_trabajo + "|" + ciclo_descanso + "|" + oid_alarma;
     //Serial.print("aux con clave ");
     //Serial.println(kv.key().c_str());
     //Serial.print(" con valor ");

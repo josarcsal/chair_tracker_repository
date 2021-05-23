@@ -22,16 +22,6 @@ public class MqttVerticle extends AbstractVerticle {
 			if (connection.succeeded()) {
 				System.out.println("Conectado cliente mqtt");
 				
-				mqttClient.publishHandler(s -> {
-					  System.out.println("There are new message in topic: " + s.topicName());
-					  System.out.println("Content(as string) of the message: " + s.payload().toString());
-					  System.out.println("QoS: " + s.qosLevel());
-					  
-					  vertx.eventBus().request("editarAlarma", s.payload().toString());
-					  
-					})
-					  .subscribe("alarmas/update/#", 2);
-				
 				/*
 				 * mqttClient.subscribe("topic_1", MqttQoS.AT_LEAST_ONCE.value(), handler -> {
 				 * if (handler.succeeded()) {
@@ -59,9 +49,9 @@ public class MqttVerticle extends AbstractVerticle {
 				System.out.println("Se ha producido un error en la conexión al broker");
 			}
 		});
-
-		llamadaAUsuario();
+		
 		actualizacionAlarmas();
+		llamadaAUsuario();
 	}
 
 	private void llamadaAUsuario() {
@@ -75,7 +65,7 @@ public class MqttVerticle extends AbstractVerticle {
 			});*/
 			
 			JsonObject json = new JsonObject(message.body());
-			mqttClient.publish("placa/llamadas", Buffer.buffer("Llamando a " +json.getString("destinatario_hash_mac_fk")), MqttQoS.AT_LEAST_ONCE, false, false,
+			mqttClient.publish(json.getString("destinatario_hash_mac_fk") + "/llamadas", Buffer.buffer("Llamada desde " +json.getString("remitente_hash_mac_fk")), MqttQoS.AT_LEAST_ONCE, false, false,
 					publishHandler -> {
 						if (publishHandler.succeeded()) {
 							System.out.println("Message has been published");
@@ -92,12 +82,10 @@ public class MqttVerticle extends AbstractVerticle {
 
 		consumer.handler(message -> {
 			
-			/*mqttClient.publishHandler(messageMqtt -> {
-				System.out.println("Message published on topic: " + messageMqtt.topicName());
-				System.out.println(messageMqtt.payload().toString());
-			});*/
+			JsonObject json = new JsonObject(message.body());
+
 			
-			mqttClient.publish("alarmas/refresh", Buffer.buffer("Alarmas han sido actualizadas"), MqttQoS.AT_LEAST_ONCE, false, false,
+			mqttClient.publish(json.getString("hash_mac_fk") + "/alarmas/refresh", Buffer.buffer("Alarmas han sido actualizadas"), MqttQoS.AT_LEAST_ONCE, false, false,
 					publishHandler -> {
 						if (publishHandler.succeeded()) {
 							System.out.println("Message has been published");

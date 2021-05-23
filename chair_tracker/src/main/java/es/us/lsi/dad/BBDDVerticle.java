@@ -324,6 +324,8 @@ public class BBDDVerticle extends AbstractVerticle {
 
 		consumer.handler(message -> {
 			String oid_alarma = message.body();
+			JsonObject json = new JsonObject();
+
 
 			Query<RowSet<Row>> queryCount = mySqlClient.query(
 					"SELECT COUNT(*) AS cuenta FROM proyectodad.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
@@ -334,13 +336,39 @@ public class BBDDVerticle extends AbstractVerticle {
 					Row rowCount = res.result().iterator().next();
 
 					if (rowCount.getInteger("cuenta") > 0) {
+						
+						Query<RowSet<Row>> queryUser = mySqlClient.query(
+								"SELECT * FROM proyectodad.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
+						
+						queryUser.execute(resQueryUser -> {
+							if (resQueryUser.succeeded()) {
+
+								resQueryUser.result().forEach(v -> {
+									AlarmaImpl alarma = new AlarmaImpl();
+									alarma.setOid_alarma(v.getShort("oid_alarma"));
+									alarma.setDias(v.getString("dias"));
+									alarma.setT_inicio(AlarmaImpl.ParseaLocalTimeFromJson(String.valueOf(v.getValue("t_inicio"))));
+									alarma.setT_fin(AlarmaImpl.ParseaLocalTimeFromJson(String.valueOf(v.getValue("t_fin"))));
+									alarma.setT_trabajo(v.getShort("t_trabajo"));
+									alarma.setT_descanso(v.getShort("t_descanso"));
+									alarma.setCiclo_trabajo(v.getShort("ciclo_trabajo"));
+									alarma.setCiclo_descanso(v.getShort("ciclo_descanso"));
+									alarma.setHash_mac_fk(v.getString("hash_mac_fk"));
+									System.out.println(json);
+									json.put(String.valueOf(v.getValue("oid_alarma")), v.toJson());
+								});
+							} else {
+								message.reply("ERROR AL OBTENER EL USUARIO PARA BORRAR LA ALARMA");
+							}
+						});
+						
 
 						Query<RowSet<Row>> query = mySqlClient
 								.query("DELETE FROM proyectodad.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
 
 						query.execute(resQuery -> {
 							if (resQuery.succeeded()) {
-								message.reply("Borrado la alarma " + oid_alarma);
+								message.reply(json);
 							} else {
 								message.reply("ERROR AL BORRAR LA ALARMA");
 							}
@@ -374,7 +402,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			newAlarma.setHash_mac_fk(jsonNewAlarma.getString("hash_mac_fk"));
 
 			Query<RowSet<Row>> query = mySqlClient
-					.query("INSERT INTO proyectodad.alarmas(dias, estado, t_inicio, t_fin,"
+					.query("INSERT INTO proyectodad.alarmas(dias, t_inicio, t_fin,"
 							+ "t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk) " + "VALUES ('"
 							+ newAlarma.getDias() + "','" + newAlarma.getT_inicio() + "','" + newAlarma.getT_fin()
 							+ "','" + newAlarma.getT_trabajo() + "','" + newAlarma.getT_descanso() + "','"
@@ -383,7 +411,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 			query.execute(res -> {
 				if (res.succeeded()) {
-					message.reply("Añadida la alarma para el usuario " + newAlarma.getHash_mac_fk());
+					message.reply(jsonNewAlarma);
 				} else {
 					message.reply("ERROR AL AÑADIR LA ALARMA " + res.cause());
 				}
@@ -431,7 +459,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 						query.execute(resQuery -> {
 							if (resQuery.succeeded()) {
-								message.reply("Editada la alarma con ID: " + editAlarma.getOid_alarma());
+								message.reply(jsonEditAlarma);
 							} else {
 								message.reply("ERROR AL EDITAR LA ALARMA " + resQuery.cause());
 							}

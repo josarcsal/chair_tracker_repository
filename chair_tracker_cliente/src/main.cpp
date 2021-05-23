@@ -53,6 +53,7 @@ String hashMac = sha1(macEsp);
 
 //Gestion alarmas
 String proxima;
+int alarmaActiva = 0;
 
 //Metodos MQTT
 void callback(char *topic, byte *payload, unsigned int length)
@@ -66,16 +67,24 @@ void callback(char *topic, byte *payload, unsigned int length)
   }
   Serial.println();
 
-  if (topic = "placa/llamadas")
+  String topicCmp1 = hashMac + "/llamadas";
+  String topicCmp2 = hashMac + "/alarmas/refresh";
+
+  int topicLlamada = strcmp( topic, topicCmp1.c_str());
+  int topicAlarma = strcmp( topic, topicCmp2.c_str());
+
+  if (topicLlamada == 0)
   {
     //ENCENDER ALARMA POR LLAMADA
     Serial.println("Estan llamando");
   }
 
-  /*if (topic = "alarmas/refresh")
+  if ((topicAlarma == 0) && (alarmaActiva == 0))
   {
     proxima = obtenerProximaAlarma(httpClient, timeClient, hashMac);
-  }*/
+    Serial.print("Se han actualizacos las alarmas y la proxima es ");
+    Serial.println(proxima);
+  }
 }
 
 void reconnect()
@@ -89,7 +98,8 @@ void reconnect()
     {
       Serial.println("connected");
       // ... and resubscribe
-      mqttClient.subscribe("placa/llamadas");
+      String topic1 = hashMac + "/#";
+      mqttClient.subscribe(topic1.c_str());
     }
     else
     {
@@ -157,17 +167,6 @@ void loop()
   //Serial.println(distanciaActual);
 
   //ALARMA
-  int proximaT_finalBefore = StringToIntAlarma(proxima, "t_final");
-
-  if (proximaT_finalBefore < marcaTiempo1 && proxima != "No se ha encontrado alarma para el dia de hoy")
-  {
-    proxima = obtenerProximaAlarma(httpClient, timeClient, hashMac);
-    Serial.println("Actualizada alarma siguiente");
-    Serial.print("Nuevo inicio ");
-    Serial.println(StringToIntAlarma(proxima, "t_inicio"));
-    Serial.print("Nuevo final ");
-    Serial.println(StringToIntAlarma(proxima, "t_final"));
-  }
 
   int proximaT_inicio = StringToIntAlarma(proxima, "t_inicio");
   int proximaT_final = StringToIntAlarma(proxima, "t_final");
@@ -181,7 +180,7 @@ void loop()
   //{
   if (marcaTiempo1 >= proximaT_inicio && marcaTiempo1 <= proximaT_final)
   {
-
+    alarmaActiva = 1;
     if (distanciaActual < 20 && distanciaAnterior > 80)
     {
       Serial.println("Me sente");
@@ -231,24 +230,7 @@ void loop()
   }
   else
   {
-    /*Serial.print("ciclosTUpdate ");
-      Serial.println(ciclosTUpdate);
-
-      Serial.print("ciclosDUpdate ");
-      Serial.println(ciclosDUpdate);
-
-      Serial.print("t_inicioSin ");
-      Serial.println(getValue(proxima, '|', 0));
-
-      Serial.print("t_finSin ");
-      Serial.println(getValue(proxima, '|', 1));*/
-
-    /*Serial.print("t_inicioFormateado ");
-      Serial.println(t_inicioFormateado);
-
-      Serial.print("t_FinFormateado ");
-      Serial.println(t_finFormateado);*/
-    if (proxima != "No se ha encontrado alarma para el dia de hoy")
+    if (proxima != "No se ha encontrado alarma para el dia de hoy" && marcaTiempo1 > proximaT_final)
     {
       int ciclosTUpdate = proximaCiclosTrabajo + ciclosTrabajo;
       int ciclosDUpdate = proximaCiclosDescanso + ciclosDescanso;
@@ -271,7 +253,15 @@ void loop()
       serializeJson(bodyPut, bodyPutData);
 
       //mqttClient.publish("alarmas/update/", bodyPutData.c_str());
-      doRequest(httpClient, "PUT", "/alarmas/editarAlarma", bodyPutData);
+
+      doRequest(httpClient, "PUT", "/api/alarmas/editarAlarma", bodyPutData);
+
+      proxima = obtenerProximaAlarma(httpClient, timeClient, hashMac);
+      Serial.println("Actualizada alarma siguiente");
+      Serial.print("Nuevo inicio ");
+      Serial.println(StringToIntAlarma(proxima, "t_inicio"));
+      Serial.print("Nuevo final ");
+      Serial.println(StringToIntAlarma(proxima, "t_final"));
     }
     distanciaAnterior = 50;
     levantado = 10;
@@ -279,7 +269,18 @@ void loop()
     contadorSentado = 0;
     ciclosTrabajo = 0;
     ciclosDescanso = 0;
+    alarmaActiva = 0;
   }
+
+  /* if (proximaT_final < marcaTiempo1 && proxima != "No se ha encontrado alarma para el dia de hoy")
+  {
+    proxima = obtenerProximaAlarma(httpClient, timeClient, hashMac);
+    Serial.println("Actualizada alarma siguiente");
+    Serial.print("Nuevo inicio ");
+    Serial.println(StringToIntAlarma(proxima, "t_inicio"));
+    Serial.print("Nuevo final ");
+    Serial.println(StringToIntAlarma(proxima, "t_final"));
+  }*/
 }
 
 //------------------------------------------------------------------------------------------------------

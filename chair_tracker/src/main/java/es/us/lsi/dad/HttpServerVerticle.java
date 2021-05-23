@@ -179,6 +179,8 @@ public class HttpServerVerticle extends AbstractVerticle {
 		JsonObject json = routingContext.getBodyAsJson();
 		vertx.eventBus().request("borrarAlarma", json.getString("oid_alarma"), reply -> {
 			if (reply.succeeded()) {
+				vertx.eventBus().request("actualizacionAlarmas", routingContext.getBodyAsString());
+
 				System.out.println(reply.result().body());
 				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
 						.end(String.valueOf(reply.result().body()));
@@ -192,6 +194,8 @@ public class HttpServerVerticle extends AbstractVerticle {
 	private void anadirAlarma(RoutingContext routingContext) {
 		vertx.eventBus().request("anadirAlarma", routingContext.getBodyAsString(), reply -> {
 			if (reply.succeeded()) {
+				vertx.eventBus().request("actualizacionAlarmas", routingContext.getBodyAsString());
+
 				System.out.println(reply.result().body());
 				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
 						.end(String.valueOf(reply.result().body()));
