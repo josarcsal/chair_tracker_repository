@@ -4,7 +4,6 @@ USE proyectodad;
 DROP TABLE Registros;
 DROP TABLE Llamadas;
 DROP TABLE Alarmas;
-/*DROP TABLE Placas;*/
 DROP TABLE Usuarios;
 
 CREATE TABLE Usuarios(
@@ -17,15 +16,6 @@ CREATE TABLE Usuarios(
     rol			VARCHAR(20) CHECK(rol IN ('J', 'E')) NOT NULL,
     nif_jefe         VARCHAR(9)
 );
-
-/*CREATE TABLE Placas(
-	oid_placa SMALLINT PRIMARY KEY AUTO_INCREMENT,
-	nombre	VARCHAR(20),
-    nif_fk VARCHAR(9),
-    estado		VARCHAR(20) CHECK(estado IN ('OFF', 'ON')),
-	FOREIGN KEY (nif_fk) REFERENCES Usuarios (nif) ON DELETE CASCADE
-);*/
-
 
 CREATE TABLE Alarmas(
 	oid_alarma	SMALLINT PRIMARY KEY AUTO_INCREMENT,
