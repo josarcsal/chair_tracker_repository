@@ -14,7 +14,7 @@ INSERT INTO Alarmas     (dias, t_inicio, t_fin, t_trabajo, t_descanso, ciclo_tra
     VALUES ('L', '20:12:30', '21:15', 30, 10, 0, 0, 'mac123');
 
 INSERT INTO Alarmas     (dias, t_inicio, t_fin, t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk)
-    VALUES ('L', '18:30', '22:00', 50, 20, 0, 0, 'mac123');
+    VALUES ('L', '18:30', '19:00', 50, 20, 0, 0, 'mac123');
         
 INSERT INTO Alarmas     (dias, t_inicio, t_fin, t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk)
     VALUES ('L', '19:30', '22:22:05', 50, 20, 0, 0, 'mac789');
