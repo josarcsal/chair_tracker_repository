@@ -9,9 +9,6 @@ char daysOfTheWeek[7][12] = {"D", "L", "M", "X", "J", "V", "S"};
 String formateaHoras(String str)
 {
   char horaFormateada[10];
-  int Year = 0;
-  int Month = 0;
-  int Day = 0;
   int Hour = 0;
   int Minute = 0;
   int Second = 0;
@@ -44,15 +41,10 @@ String obtenerListaHoras(HttpClient httpClient, String hashMac)
 
     String aux = formateaHoras(root.getMember(kv.key()).getMember("t_inicio")) + "|" + formateaHoras(root.getMember(kv.key()).getMember("t_fin")) + "|" + dias +
                  "|" + t_trabajo + "|" + t_descanso + "|" + ciclo_trabajo + "|" + ciclo_descanso + "|" + oid_alarma;
-    //Serial.print("aux con clave ");
-    //Serial.println(kv.key().c_str());
-    //Serial.print(" con valor ");
-    //Serial.println(aux);
 
     res = res + "," + aux;
   }
   res = res.substring(1, res.length());
-  //res = res + " hola que pasa estoy mirando el numero maximo de caracteres";
   return res;
 }
 
@@ -71,7 +63,6 @@ String getValue(String data, char separator, int index)
       strIndex[1] = (i == maxIndex) ? i + 1 : i;
     }
   }
-
   return found > index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
@@ -83,11 +74,8 @@ String obtenerProximaAlarma(HttpClient httpClient, NTPClient timeClient, String 
   String res = "No se ha encontrado alarma para el dia de hoy";
   int tiempoActualS = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
   int mejorDiferencia = -86400; //Diferencia maxima
-  //int exiteSiguiente = 0;
 
   char *diaActual = daysOfTheWeek[timeClient.getDay()];
-  //Serial.print("diaActual en   ");
-  //Serial.println(diaActual);
 
   Serial.print("Tiempo Actual ");
   Serial.print(timeClient.getHours());
@@ -118,23 +106,13 @@ String obtenerProximaAlarma(HttpClient httpClient, NTPClient timeClient, String 
       if (diaCheck)
       {
         if (ActualMenosAlarma < 0)
-        { //significa que exite una hora siguiente y nos quedamos con la mas cercana(menor diferencia), tienen prioridad a las anteriores en el ciclo
-          //exiteSiguiente = 1;
+        {
           if (ActualMenosAlarma > mejorDiferencia)
           {
             mejorDiferencia = ActualMenosAlarma;
             res = horaAux;
           }
         }
-        /*if(ActualMenosAlarma > 0){ //significa que no hay hora siguiente sino solo anterior, entonces, la mas cercana sera la de mayor diferencia
-                    if(exiteSiguiente = 0){
-                        if(ActualMenosAlarma > mejorDiferencia){
-                            Serial.println("Entra ActualMenosAlarma > mejorDiferencia");
-                            mejorDiferencia = ActualMenosAlarma;
-                            res = horaAux;
-                        }
-                    }   
-                }*/
       }
     }
   }
@@ -144,7 +122,7 @@ String obtenerProximaAlarma(HttpClient httpClient, NTPClient timeClient, String 
 int StringToIntAlarma(String alarma, String valor)
 {
 
-  int res;
+  int res = 0;
 
   if (valor == "t_inicio")
   {
@@ -203,46 +181,36 @@ String timeFromClientToBBDD(String hora)
   return res;
 }
 
-void sonarAlarma(uint8_t ALARMA_PIN){
-      digitalWrite(ALARMA_PIN, HIGH);
-      delay(500);
-      digitalWrite(ALARMA_PIN, LOW);
-      delay(500);
-      digitalWrite(ALARMA_PIN, HIGH);
-      delay(500);
-      digitalWrite(ALARMA_PIN, LOW);
-      delay(500);
-      digitalWrite(ALARMA_PIN, HIGH);
-      delay(500);
-      digitalWrite(ALARMA_PIN, LOW);
+void sonarAlarma(uint8_t ALARMA_PIN)
+{
+  digitalWrite(ALARMA_PIN, HIGH);
+  delay(500);
+  digitalWrite(ALARMA_PIN, LOW);
+  delay(500);
+  digitalWrite(ALARMA_PIN, HIGH);
+  delay(500);
+  digitalWrite(ALARMA_PIN, LOW);
+  delay(500);
+  digitalWrite(ALARMA_PIN, HIGH);
+  delay(500);
+  digitalWrite(ALARMA_PIN, LOW);
 }
 
-/*
-int obtenerAviso(String alarmaActual, int levantado, int marcaDeTiempo1, NTPClient timeClient)
+void sonarVibrador(uint8_t VIBRADOR_PIN)
 {
-  int res = 0;
-
-  timeClient.update();
-  int marcaDeTiempo2 = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
-
-  int oidAlarmaActual = getValue(alarmaActual, '|', 6).toInt();
-  int t_trabajo = getValue(alarmaActual, '|', 3).toInt() * 60;
-  int t_descanso = getValue(alarmaActual, '|', 4).toInt() * 60;
-  //int nCiclos = getValue(alarmaActual, '|', 5).toInt();
-
-  //main
-  //sensor -> te sientas -> marcadetiempo1 (4000)
-  //funcion -> trabajando -> marcadetiempo2 (40)
-
-  Serial.print("Contador Trabajo: ");
-  Serial.println(contadorTrabajo);
-  Serial.print("Contador Descanso :");
-  Serial.println(contadorDescanso);
-  return res;
-
-  
-  DynamicJsonDocument bodyPost(1024);
-  String bodyPostData = "";
-  bodyPost[String("oid_alarma")] = String(oidAlarmaActual);
-  bodyPost[String("ciclo")] = String(nCiclos);
-}*/
+  digitalWrite(VIBRADOR_PIN, HIGH);
+  delay(2000);
+  digitalWrite(VIBRADOR_PIN, LOW);
+  delay(1000);
+  digitalWrite(VIBRADOR_PIN, HIGH);
+  delay(2000);
+  digitalWrite(VIBRADOR_PIN, LOW);
+  delay(1000);
+  digitalWrite(VIBRADOR_PIN, HIGH);
+  delay(2000);
+  digitalWrite(VIBRADOR_PIN, LOW);
+  delay(1000);
+  digitalWrite(VIBRADOR_PIN, HIGH);
+  delay(2000);
+  digitalWrite(VIBRADOR_PIN, LOW);
+}

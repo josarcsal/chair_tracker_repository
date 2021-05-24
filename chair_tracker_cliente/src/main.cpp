@@ -29,6 +29,10 @@ NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 #define ALARMA_PIN D5
 #define VIBRADOR_PIN D0
 
+//Funciones mqtt
+void callback(char *topic, byte *payload, unsigned int length);
+void reconnect();
+
 //Declaracion de variables usadas
 const char *ssid = "Xiaomi_4A";
 //const char *ssid = "MiFibra-919C";
@@ -54,7 +58,159 @@ String hashMac = sha1(macEsp);
 //Gestion alarmas
 String proxima;
 int alarmaActiva = 0;
+int distanciaAnterior = 50;
+int levantado = 10;
+int marcaTiempo1;
+int marcaTiempo2;
+int contadorLevantado;
+int contadorSentado;
+int ciclosTrabajo;
+int ciclosDescanso;
 
+void setup()
+{
+  Serial.begin(9600);
+
+  //MQTT
+  mqttClient.setServer(server, 1883);
+  mqttClient.setCallback(callback);
+  delay(100);
+
+  //WIFI
+  setup_wifi(ssid, password);
+  Serial.print("Hash MAC: ");
+  Serial.println(hashMac);
+
+  //TIEMPO
+  timeClient.begin();
+  String lista = obtenerListaHoras(httpClient, hashMac);
+  Serial.println(lista);
+  proxima = obtenerProximaAlarma(httpClient, timeClient, hashMac);
+  Serial.print("La proxima alarma es ");
+  Serial.println(proxima);
+
+  //Alarma y vibrador
+  pinMode(ALARMA_PIN, OUTPUT);
+  pinMode(VIBRADOR_PIN, OUTPUT);
+}
+
+void loop()
+{
+  timeClient.update();
+  marcaTiempo1 = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
+
+  //MQTT
+  if (!mqttClient.connected())
+  {
+    reconnect();
+  }
+
+  mqttClient.loop();
+
+  delay(3000);
+
+  //SENSOR
+  int distanciaActual = sonar.ping_cm();
+
+  //ALARMA
+  int proximaT_inicio = StringToIntAlarma(proxima, "t_inicio");
+  int proximaT_final = StringToIntAlarma(proxima, "t_final");
+  int proximaT_trabajo = StringToIntAlarma(proxima, "t_trabajo");
+  int proximaT_descanso = StringToIntAlarma(proxima, "t_descanso");
+  int proximaOid = StringToIntAlarma(proxima, "oid_alarma");
+  int proximaCiclosTrabajo = StringToIntAlarma(proxima, "ciclos_trabajo");
+  int proximaCiclosDescanso = StringToIntAlarma(proxima, "ciclos_descanso");
+
+  if (marcaTiempo1 >= proximaT_inicio && marcaTiempo1 <= proximaT_final)
+  {
+    alarmaActiva = 1;
+    if (distanciaActual < 20 && distanciaAnterior > 80)
+    {
+      Serial.println("Me siento");
+      levantado = 0;
+    }
+
+    if (distanciaAnterior < 20 && distanciaActual > 80)
+    {
+      Serial.println("Me levanto");
+      levantado = 1;
+    }
+
+    distanciaAnterior = distanciaActual;
+
+    marcaTiempo2 = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
+
+    if (levantado == 0)
+    {
+      contadorSentado += marcaTiempo2 - marcaTiempo1;
+    }
+
+    if (levantado == 1)
+    {
+      contadorLevantado += marcaTiempo2 - marcaTiempo1;
+    }
+
+    if (contadorSentado > (proximaT_trabajo * 60))
+    {
+      contadorSentado = 0;
+      ciclosTrabajo += 1;
+      Serial.println("Alarma sonando es tiempo de descansar");
+      sonarAlarma(ALARMA_PIN);
+    }
+
+    if (contadorLevantado > (proximaT_descanso * 60))
+    {
+      contadorLevantado = 0;
+      ciclosDescanso += 1;
+      Serial.println("Alarma sonando es tiempo de trabajar");
+      sonarAlarma(ALARMA_PIN);
+    }
+  }
+  else
+  {
+    if (proxima != "No se ha encontrado alarma para el dia de hoy" && marcaTiempo1 > proximaT_final)
+    {
+      int ciclosTUpdate = proximaCiclosTrabajo + ciclosTrabajo;
+      int ciclosDUpdate = proximaCiclosDescanso + ciclosDescanso;
+
+      String t_inicioFormateado = timeFromClientToBBDD(getValue(proxima, '|', 0));
+      String t_finFormateado = timeFromClientToBBDD(getValue(proxima, '|', 1));
+
+      DynamicJsonDocument bodyPut(1024);
+      String bodyPutData = "";
+      bodyPut[String("oid_alarma")] = String(proximaOid);
+      bodyPut[String("dias")] = String(getValue(proxima, '|', 2));
+      bodyPut[String("t_inicio")] = String(t_inicioFormateado);
+      bodyPut[String("t_fin")] = String(t_finFormateado);
+      bodyPut[String("t_trabajo")] = String(proximaT_trabajo);
+      bodyPut[String("t_descanso")] = String(proximaT_descanso);
+      bodyPut[String("ciclo_trabajo")] = String(ciclosTUpdate);
+      bodyPut[String("ciclo_descanso")] = String(ciclosDUpdate);
+      bodyPut[String("hash_mac_fk")] = String(hashMac);
+
+      serializeJson(bodyPut, bodyPutData);
+
+      doRequest(httpClient, "PUT", "/api/alarmas/editarAlarma", bodyPutData);
+
+      proxima = obtenerProximaAlarma(httpClient, timeClient, hashMac);
+      Serial.println("Actualizada alarma siguiente");
+      Serial.print("Nuevo inicio ");
+      Serial.println(StringToIntAlarma(proxima, "t_inicio"));
+      Serial.print("Nuevo final ");
+      Serial.println(StringToIntAlarma(proxima, "t_final"));
+    }
+
+    distanciaAnterior = 50;
+    levantado = 10;
+    contadorLevantado = 0;
+    contadorSentado = 0;
+    ciclosTrabajo = 0;
+    ciclosDescanso = 0;
+    alarmaActiva = 0;
+  }
+}
+
+//------------------------------------------------------------------------------------------------------
 //Metodos MQTT
 void callback(char *topic, byte *payload, unsigned int length)
 {
@@ -70,19 +226,20 @@ void callback(char *topic, byte *payload, unsigned int length)
   String topicCmp1 = hashMac + "/llamadas";
   String topicCmp2 = hashMac + "/alarmas/refresh";
 
-  int topicLlamada = strcmp( topic, topicCmp1.c_str());
-  int topicAlarma = strcmp( topic, topicCmp2.c_str());
+  int topicLlamada = strcmp(topic, topicCmp1.c_str());
+  int topicAlarma = strcmp(topic, topicCmp2.c_str());
 
   if (topicLlamada == 0)
   {
     //ENCENDER ALARMA POR LLAMADA
     Serial.println("Estan llamando");
+    sonarVibrador(VIBRADOR_PIN);
   }
 
   if ((topicAlarma == 0) && (alarmaActiva == 0))
   {
     proxima = obtenerProximaAlarma(httpClient, timeClient, hashMac);
-    Serial.print("Se han actualizacos las alarmas y la proxima es ");
+    Serial.print("Se han actualizado las alarmas y la proxima es ");
     Serial.println(proxima);
   }
 }
@@ -111,178 +268,3 @@ void reconnect()
     }
   }
 }
-
-void setup()
-{
-  Serial.begin(9600);
-  //MQTT
-  mqttClient.setServer(server, 1883);
-  mqttClient.setCallback(callback);
-  delay(100);
-  //WIFI
-  setup_wifi(ssid, password);
-  Serial.print("Hash MAC: ");
-  Serial.println(hashMac);
-  //TIEMPO
-  timeClient.begin();
-  String lista = obtenerListaHoras(httpClient, hashMac);
-  Serial.println(lista);
-  proxima = obtenerProximaAlarma(httpClient, timeClient, hashMac);
-  Serial.print("La proxima alarma es ");
-  Serial.println(proxima);
-  //Alarma y vibrador
-  pinMode(ALARMA_PIN, OUTPUT);
-  pinMode(VIBRADOR_PIN, OUTPUT);
-}
-
-int distanciaAnterior = 50;
-int levantado = 10;
-int marcaTiempo1;
-int marcaTiempo2;
-int contadorLevantado;
-int contadorSentado;
-int ciclosTrabajo;
-int ciclosDescanso;
-
-void loop()
-{
-  timeClient.update();
-  marcaTiempo1 = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
-
-  //Pruebas MQTT
-
-  if (!mqttClient.connected())
-  {
-    reconnect();
-  }
-
-  mqttClient.loop();
-
-  delay(3000);
-
-  //PRUEBAS SENSOR
-  // Muestra la distancia medida a la consola serial
-  //Serial.print("Ping: ");
-  int distanciaActual = sonar.ping_cm();
-  //Serial.println(distanciaActual);
-
-  //ALARMA
-
-  int proximaT_inicio = StringToIntAlarma(proxima, "t_inicio");
-  int proximaT_final = StringToIntAlarma(proxima, "t_final");
-  int proximaT_trabajo = StringToIntAlarma(proxima, "t_trabajo");
-  int proximaT_descanso = StringToIntAlarma(proxima, "t_descanso");
-  int proximaOid = StringToIntAlarma(proxima, "oid_alarma");
-  int proximaCiclosTrabajo = StringToIntAlarma(proxima, "ciclos_trabajo");
-  int proximaCiclosDescanso = StringToIntAlarma(proxima, "ciclos_descanso");
-
-  //if (proxima != "No se ha encontrado alarma para el dia de hoy")
-  //{
-  if (marcaTiempo1 >= proximaT_inicio && marcaTiempo1 <= proximaT_final)
-  {
-    alarmaActiva = 1;
-    if (distanciaActual < 20 && distanciaAnterior > 80)
-    {
-      Serial.println("Me sente");
-      levantado = 0;
-    }
-
-    if (distanciaAnterior < 20 && distanciaActual > 80)
-    {
-      Serial.println("Me levante");
-      levantado = 1;
-    }
-
-    distanciaAnterior = distanciaActual;
-
-    marcaTiempo2 = timeClient.getHours() * 3600 + timeClient.getMinutes() * 60 + timeClient.getSeconds();
-
-    if (levantado == 0)
-    {
-      contadorSentado += marcaTiempo2 - marcaTiempo1;
-    }
-
-    if (levantado == 1)
-    {
-      contadorLevantado += marcaTiempo2 - marcaTiempo1;
-    }
-
-    if (contadorSentado > 10) //(proximaT_trabajo * 60))
-    {
-      contadorSentado = 0;
-      ciclosTrabajo += 1;
-      Serial.println("Sonando a descansar");
-      sonarAlarma(ALARMA_PIN);
-    }
-
-    if (contadorLevantado > 10) //(proximaT_descanso * 60)
-    {
-      contadorLevantado = 0;
-      ciclosDescanso += 1;
-      Serial.println("Sonando a trabajar");
-      sonarAlarma(ALARMA_PIN);
-    }
-
-    Serial.print("contadorSentado ");
-    Serial.println(contadorSentado);
-    Serial.print("contadorLevantado ");
-    Serial.println(contadorLevantado);
-  }
-  else
-  {
-    if (proxima != "No se ha encontrado alarma para el dia de hoy" && marcaTiempo1 > proximaT_final)
-    {
-      int ciclosTUpdate = proximaCiclosTrabajo + ciclosTrabajo;
-      int ciclosDUpdate = proximaCiclosDescanso + ciclosDescanso;
-
-      String t_inicioFormateado = timeFromClientToBBDD(getValue(proxima, '|', 0));
-      String t_finFormateado = timeFromClientToBBDD(getValue(proxima, '|', 1));
-
-      DynamicJsonDocument bodyPut(1024);
-      String bodyPutData = "";
-      bodyPut[String("oid_alarma")] = String(proximaOid);
-      bodyPut[String("dias")] = String(getValue(proxima, '|', 2));
-      bodyPut[String("t_inicio")] = String(t_inicioFormateado);
-      bodyPut[String("t_fin")] = String(t_finFormateado);
-      bodyPut[String("t_trabajo")] = String(proximaT_trabajo);
-      bodyPut[String("t_descanso")] = String(proximaT_descanso);
-      bodyPut[String("ciclo_trabajo")] = String(ciclosTUpdate);
-      bodyPut[String("ciclo_descanso")] = String(ciclosDUpdate);
-      bodyPut[String("hash_mac_fk")] = String(hashMac);
-
-      serializeJson(bodyPut, bodyPutData);
-
-      //mqttClient.publish("alarmas/update/", bodyPutData.c_str());
-
-      doRequest(httpClient, "PUT", "/api/alarmas/editarAlarma", bodyPutData);
-
-      proxima = obtenerProximaAlarma(httpClient, timeClient, hashMac);
-      Serial.println("Actualizada alarma siguiente");
-      Serial.print("Nuevo inicio ");
-      Serial.println(StringToIntAlarma(proxima, "t_inicio"));
-      Serial.print("Nuevo final ");
-      Serial.println(StringToIntAlarma(proxima, "t_final"));
-    }
-    distanciaAnterior = 50;
-    levantado = 10;
-    contadorLevantado = 0;
-    contadorSentado = 0;
-    ciclosTrabajo = 0;
-    ciclosDescanso = 0;
-    alarmaActiva = 0;
-  }
-
-  /* if (proximaT_final < marcaTiempo1 && proxima != "No se ha encontrado alarma para el dia de hoy")
-  {
-    proxima = obtenerProximaAlarma(httpClient, timeClient, hashMac);
-    Serial.println("Actualizada alarma siguiente");
-    Serial.print("Nuevo inicio ");
-    Serial.println(StringToIntAlarma(proxima, "t_inicio"));
-    Serial.print("Nuevo final ");
-    Serial.println(StringToIntAlarma(proxima, "t_final"));
-  }*/
-}
-
-//------------------------------------------------------------------------------------------------------
-
-//Metodos alarma

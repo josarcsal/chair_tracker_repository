@@ -72,7 +72,7 @@ String doRequest(HttpClient httpClient, String tipo, const char *uri, String bod
   httpClient.endRequest();
 
   //estado y cuerpo de la respuesta
-  int statusCode = httpClient.responseStatusCode();
+  //int statusCode = httpClient.responseStatusCode();
   String response = httpClient.responseBody();
 
   /*Serial.print("Status code: ");
@@ -85,6 +85,7 @@ String doRequest(HttpClient httpClient, String tipo, const char *uri, String bod
   return response;
 }
 
+//TESTS API REST
 String obtenerAlarmasUsuario(HttpClient httpClient, String hash_mac)
 {
   //Prueba de GET con parametro en body
@@ -96,7 +97,6 @@ String obtenerAlarmasUsuario(HttpClient httpClient, String hash_mac)
 }
 
 //TESTS
-/*
 void testGet(HttpClient httpClient){
     //Prueba de GET basico
   DynamicJsonDocument bodyGetNull(1024);
@@ -113,8 +113,6 @@ void testGetParam(HttpClient httpClient){
   serializeJson(bodyGet, bodyGetData);
   doRequest(httpClient, "GET", "/api/registros/llamadas/enviadas/hash_mac", bodyGetData);
 }
-
-
 
 void testPost(HttpClient httpClient, String mac){
     //Prueba de POST con parametro en body
@@ -161,4 +159,3 @@ void testCompleto(HttpClient httpClient, String mac){
   testPut(httpClient, mac);
   testDelete(httpClient, mac);
 }
-*/

@@ -42,6 +42,19 @@ INSERT INTO Alarmas     (dias, t_inicio, t_fin, t_trabajo, t_descanso, ciclo_tra
     VALUES ('L', '18:30', '22:00', 50, 20, 0, 0, 'mac123');
 INSERT INTO Alarmas     (dias, t_inicio, t_fin, t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk)
     VALUES ('L', '18:00', '22:00', 50, 20, 0, 0, 'mac123');
+    
+//ALARMAS SOLAPADAS
+INSERT INTO Alarmas     (dias, t_inicio, t_fin, t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk)
+    VALUES ('L', '18:30', '19:00', 50, 20, 0, 0, 'mac123');
+    
+INSERT INTO Alarmas     (dias, t_inicio, t_fin, t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk)
+    VALUES ('L', '18:45', '19:30', 50, 20, 0, 0, 'mac123');
+    
+INSERT INTO Alarmas     (dias, t_inicio, t_fin, t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk)
+    VALUES ('L', '14:45', '18:45', 50, 20, 0, 0, 'mac123');
+    
+INSERT INTO Alarmas     (dias, t_inicio, t_fin, t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk)
+    VALUES ('L', '18:45','14:45', 50, 20, 0, 0, 'mac123');
 
 INSERT INTO Usuarios     (hash_mac, contrasena, last_login, nombre, apellidos, rol, nif_jefe)
     VALUES ('09183961L', 'contrasenaprueba1', '2021-04-24 12:53:00', 'prueba', 'trigger', 'E', 'mac456');
