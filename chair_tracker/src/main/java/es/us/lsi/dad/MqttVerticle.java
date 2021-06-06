@@ -22,29 +22,6 @@ public class MqttVerticle extends AbstractVerticle {
 			if (connection.succeeded()) {
 				System.out.println("Conectado cliente mqtt");
 				
-				/*
-				 * mqttClient.subscribe("topic_1", MqttQoS.AT_LEAST_ONCE.value(), handler -> {
-				 * if (handler.succeeded()) {
-				 * System.out.println("Client has been subscribed to topic_1"); } });
-				 * 
-				 * mqttClient.subscribe("father/topic_2", MqttQoS.AT_LEAST_ONCE.value(), handler
-				 * -> { if (handler.succeeded()) {
-				 * System.out.println("Client has been subscribed to topic_2"); } });
-				 * 
-				 * mqttClient.subscribe("nuevo_topic", MqttQoS.AT_LEAST_ONCE.value(), handler ->
-				 * { if (handler.succeeded()) {
-				 * System.out.println("Client has been subscribed to nuevo_topic"); } });
-				 * 
-				 * mqttClient.publishHandler(message -> {
-				 * System.out.println("Message published on topic: " + message.topicName());
-				 * System.out.println(message.payload().toString()); });
-				 * 
-				 * mqttClient.publish("father/topic_2", Buffer.buffer("hola desde vertx"),
-				 * MqttQoS.AT_LEAST_ONCE, false, false, publishHandler -> { if
-				 * (publishHandler.succeeded()) {
-				 * System.out.println("Message has been published"); } else {
-				 * System.out.println("Error while publishing message"); } });
-				 */
 			} else {
 				System.out.println("Se ha producido un error en la conexión al broker");
 			}
@@ -58,11 +35,6 @@ public class MqttVerticle extends AbstractVerticle {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("llamadaAUsuario");
 
 		consumer.handler(message -> {
-			
-			/*mqttClient.publishHandler(messageMqtt -> {
-				System.out.println("Message published on topic: " + messageMqtt.topicName());
-				System.out.println(messageMqtt.payload().toString());
-			});*/
 			
 			JsonObject json = new JsonObject(message.body());
 			mqttClient.publish(json.getString("destinatario_hash_mac_fk") + "/llamadas", Buffer.buffer("Llamada desde " +json.getString("remitente_hash_mac_fk")), MqttQoS.AT_LEAST_ONCE, false, false,

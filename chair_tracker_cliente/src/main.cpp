@@ -26,7 +26,7 @@ NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 7200);
 NewPing sonar(TRIGGER_PIN, ECHO_PIN, MAX_DISTANCE);
 
 //Alarma y vibrador
-#define ALARMA_PIN D5
+#define ALARMA_PIN D3
 #define VIBRADOR_PIN D0
 
 //Funciones mqtt
@@ -111,6 +111,8 @@ void loop()
 
   //SENSOR
   int distanciaActual = sonar.ping_cm();
+  Serial.print("Distancia actual: ");
+  Serial.println(distanciaActual);
 
   //ALARMA
   int proximaT_inicio = StringToIntAlarma(proxima, "t_inicio");
@@ -124,13 +126,13 @@ void loop()
   if (marcaTiempo1 >= proximaT_inicio && marcaTiempo1 <= proximaT_final)
   {
     alarmaActiva = 1;
-    if (distanciaActual < 20 && distanciaAnterior > 80)
+    if (distanciaActual < 20 && distanciaAnterior > 40)
     {
       Serial.println("Me siento");
       levantado = 0;
     }
 
-    if (distanciaAnterior < 20 && distanciaActual > 80)
+    if (distanciaAnterior < 20 && distanciaActual > 40)
     {
       Serial.println("Me levanto");
       levantado = 1;
