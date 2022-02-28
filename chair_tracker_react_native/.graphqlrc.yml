@@ -1,0 +1,48 @@
+overwrite: true
+schema: ""
+documents: "src/apollo/**/*.gql"
+extensions:
+  codegen:
+    overwrite: true
+    hooks:
+      afterOneFileWrite:
+        - prettier --write
+    config:
+      scalars:
+        UUID: string
+        Time: string
+        DateTime: string
+        Date: string
+      defaultScalarType: string
+      gqlImport: '@apollo/client#gql'
+      apolloReactCommonImportFrom: '@apollo/client'
+      apolloReactHooksImportFrom: '@apollo/client'
+      addDocBlocks: false
+      maybeValue: T | undefined | null
+      identifierName: operations
+    generates:
+      src/apollo/generated/globalTypes.ts:
+        plugins:
+          - add: &notModify
+              content: '/* THIS IS A GENERATED FILE - DO NOT MODIFY */'
+          - add: &eslint
+              content: '/* eslint-disable */'
+          - typescript
+          - typescript-apollo-client-helpers
+          - named-operations-object
+      src/apollo/generated/fragmentMatcher.ts:
+        plugins:
+          - add: *notModify
+          - add: *eslint
+          - fragment-matcher
+      src/apollo/generated:
+        preset: near-operation-file
+        presetConfig:
+          baseTypesPath: globalTypes.ts
+          extension: '.ts'
+          folder: ../generated/
+        plugins:
+          - add: *notModify
+          - add: *eslint
+          - typescript-operations
+          - typescript-react-apollo
