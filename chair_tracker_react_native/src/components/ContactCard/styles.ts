@@ -9,6 +9,10 @@ export const Container = styled.View`
   height: 140px;
   width: ${({ theme }) => theme.device.width * 0.91}px;
   flex-direction: row;
+  shadow-color: '#000';
+  shadow-opacity: 0.1;
+  shadow-radius: 3.84px;
+  elevation: 5;
 `;
 
 export const SubContainer = styled.View`
@@ -25,6 +29,7 @@ export const Utils = styled.View`
 
 export const MainButton = styled.View`
   border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
   height: 100%;
   width: 100%;
   background-color: ${({ theme }) => theme.colors.carolinaBlue};

@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import React, { memo } from 'react';
-import { PlusIcon } from 'components';
+import CrossIcon from 'components/Icons/CrossIcon';
 import { CloseButton, Container, Information, Title } from './styles';
 import type { Props } from './types';
 
@@ -8,11 +8,11 @@ const AlarmCard: FC<Props> = () => (
   <Container>
     <Title>Alarm - XX</Title>
     <CloseButton>
-      <PlusIcon />
+      <CrossIcon />
     </CloseButton>
     <Information>L | M | X | J | V </Information>
     <Information>00:00 - 99:99 </Information>
-    <Information>Working: 99.99h </Information>
+    <Information>Work: 99.99h</Information>
     <Information>Break: 99.99h</Information>
   </Container>
 );

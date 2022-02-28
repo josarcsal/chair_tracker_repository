@@ -18,7 +18,6 @@ export const StadisticList = styled.FlatList.attrs({
   contentContainerStyle: {
     paddingTop: 10,
     paddingBottom: 70,
-    paddingLeft: 8,
-    paddingRight: 8,
+    alignItems: 'center',
   },
 })``;

@@ -17,6 +17,7 @@ const Alarms: FC<Props> = () => {
       </AddButton>
       <AlarmList
         data={['1', '2', '3', '4', '5']}
+        numColumns={2}
         renderItem={() => <AlarmCard />}
       />
     </Container>
