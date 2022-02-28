@@ -2,10 +2,11 @@ import styled from 'styled-components/native';
 
 export const Container = styled.ScrollView`
   flex: 1;
+  background-color: ${({ theme }) => theme.colors.fdWhite};
 `;
 
 export const Header = styled.View`
-  background-color: cyan;
+  background-color: ${({ theme }) => theme.colors.carolinaBlue};
   height: 200px;
   padding: 55px 20px;
 `;
@@ -15,7 +16,7 @@ export const Title = styled.Text`
   font-weight: 700;
   line-height: 41px;
   letter-spacing: 0.41px;
-  color: white;
+  color: ${({ theme }) => theme.colors.white};
 `;
 
 export const Subtitle = styled.Text`
@@ -23,7 +24,7 @@ export const Subtitle = styled.Text`
   font-weight: 400;
   line-height: 41px;
   letter-spacing: 0.41px;
-  color: white;
+  color: ${({ theme }) => theme.colors.white};
 `;
 
 export const LogOutButton = styled.TouchableOpacity`
@@ -35,8 +36,8 @@ export const LogOutButton = styled.TouchableOpacity`
 export const Workers = styled.TouchableOpacity`
   height: 75px;
   width: ${({ theme }) => theme.device.width * 0.8}px;
-  background-color: lightgray;
-  border: 1px solid grey;
+  background-color: ${({ theme }) => theme.colors.cultured};
+  border: 1px solid ${({ theme }) => theme.colors.grayX11};
   box-sizing: border-box;
   border-radius: 8px;
   flex-direction: row;

@@ -5,11 +5,11 @@ import { ThemeContext } from 'styled-components/native';
 const colors = {
   white: 'white',
   black: 'black',
-  red: 'red',
-  yellow: 'yellow',
-  blue: 'blue',
-  cyan: 'cyan',
-  transparent: 'rgba(0,0,0,0)',
+  carolinaBlue: '#00A1EB',
+  graniteGray: '#666666',
+  grayX11: '#bababa',
+  fdWhite: '#FDFDFD',
+  cultured: '#F5F5F5',
 };
 
 const { width, height } = Dimensions.get('window');
