@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DetailHeader from 'components/Header/DetailHeader';
 import MainHeader from 'components/Header/MainHeader';
 import useConnect from './connect';
@@ -7,8 +8,9 @@ import type { Props } from './types';
 
 const AboutUs: FC<Props> = () => {
   const { handleGoBack } = useConnect();
+  const { top: safeTop } = useSafeAreaInsets();
   return (
-    <Container>
+    <Container safeTop={safeTop}>
       <DetailHeader onPressBack={handleGoBack} />
       <MainHeader title="Chair Tracker" />
       <Content>

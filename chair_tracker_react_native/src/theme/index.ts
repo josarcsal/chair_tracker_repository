@@ -5,6 +5,10 @@ import { ThemeContext } from 'styled-components/native';
 const colors = {
   white: 'white',
   black: 'black',
+  red: 'red',
+  yellow: 'yellow',
+  blue: 'blue',
+  transparent: 'rgba(0,0,0,0)',
   carolinaBlue: '#00A1EB',
   graniteGray: '#666666',
   grayX11: '#bababa',
