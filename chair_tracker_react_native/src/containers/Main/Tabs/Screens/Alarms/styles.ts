@@ -1,8 +1,10 @@
 import styled from 'styled-components/native';
+import type { ContainerProps } from './types';
 
-export const Container = styled.SafeAreaView`
+export const Container = styled.SafeAreaView<ContainerProps>`
   flex: 1;
   align-items: center;
+  padding-top: ${({ safeTop }) => `${safeTop}px`};
   background-color: ${({ theme }) => theme.colors.fdWhite};
 `;
 
@@ -17,7 +19,6 @@ export const AlarmList = styled.FlatList.attrs({
   contentContainerStyle: {
     paddingTop: 10,
     paddingBottom: 70,
-    paddingLeft: 8,
-    paddingRight: 8,
+    alignItems: 'center',
   },
 })``;

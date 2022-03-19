@@ -8,6 +8,10 @@ export const Container = styled.View`
   border-radius: 8px;
   background-color: ${({ theme }) => theme.colors.fdWhite};
   width: ${({ theme }) => theme.device.width * 0.91}px;
+  shadow-color: '#000';
+  shadow-opacity: 0.1;
+  shadow-radius: 3.84px;
+  elevation: 5;
 `;
 
 export const Graph = styled.View`
@@ -20,5 +24,5 @@ export const Graph = styled.View`
 export const Title = styled.Text`
   margin: 10px 10px;
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 400;
 `;
