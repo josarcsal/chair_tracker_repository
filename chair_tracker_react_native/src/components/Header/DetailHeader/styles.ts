@@ -7,12 +7,13 @@ export const Container = styled.View`
 `;
 
 export const BackButton = styled.TouchableOpacity`
-  margin-right: 6px;
+  flex-direction: row;
+  margin-left: 10px;
 `;
 
 export const BackText = styled(TextBase)`
-  left: 20px;
   font-size: 17px;
   line-height: 22px;
+  padding-top: 1px;
   letter-spacing: -0.41px;
 `;

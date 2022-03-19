@@ -20,6 +20,7 @@ const AppNavigator: FC<Props> = () => {
       {ready ? (
         <Group screenOptions={generalStackScreenOptions}>
           <Screen name="Tabs" component={Tabs} />
+          <Screen name="NewAlarms" component={NewAlarms} />
           <Screen name="WorkersList" component={WorkersList} />
         </Group>
       ) : (
@@ -30,7 +31,6 @@ const AppNavigator: FC<Props> = () => {
         </Group>
       )}
       <Group screenOptions={modalStackScreenOptions}>
-        <Screen name="NewAlarms" component={NewAlarms} />
         <Screen name="AboutUs" component={AboutUs} />
       </Group>
     </Navigator>

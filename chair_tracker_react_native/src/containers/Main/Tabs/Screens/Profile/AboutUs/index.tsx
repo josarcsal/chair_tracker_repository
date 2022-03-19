@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DetailHeader from 'components/Header/DetailHeader';
 import MainHeader from 'components/Header/MainHeader';
 import useConnect from './connect';
@@ -7,11 +8,13 @@ import type { Props } from './types';
 
 const AboutUs: FC<Props> = () => {
   const { handleGoBack } = useConnect();
+  const { top: safeTop } = useSafeAreaInsets();
   return (
-    <Container>
+    <Container safeTop={safeTop}>
       <DetailHeader onPressBack={handleGoBack} />
       <MainHeader title="Chair Tracker" />
       <Content>
+        {' '}
         The aim of this project is to present a complete system, combining
         software and hardware, that offers the user a device with embedded
         sensors and actuators, together with a mobile app (available at Android
@@ -28,6 +31,7 @@ const AboutUs: FC<Props> = () => {
         order to ensure his health.
       </Content>
       <Content>
+        {' '}
         Not only these features are offered but also, we provide the users with
         proper tools to maintain their comfort and concentration during working
         cycles since they would be able to keep in touch with other users
@@ -35,6 +39,7 @@ const AboutUs: FC<Props> = () => {
         vibrating alarms in the physical device.
       </Content>
       <Content>
+        {' '}
         During this project many technologies have been use in the development
         of this app such as MySQL, Vert.x, ESP8266 and React Native, just to
         name a few. Resulting in final product almost ready to be placed on the

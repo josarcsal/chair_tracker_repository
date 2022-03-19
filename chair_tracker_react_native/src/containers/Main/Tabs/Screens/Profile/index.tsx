@@ -1,5 +1,9 @@
 import type { FC } from 'react';
-import { PlusIcon } from 'components';
+import GroupIcon from 'components/Icons/GroupIcon';
+import InfoIcon from 'components/Icons/InfoIcon';
+import LogoutIcon from 'components/Icons/LogoutIcon';
+import NextIcon from 'components/Icons/NextIcon';
+import QuestionIcon from 'components/Icons/QuestionIcon';
 import useConnect from './connect';
 import {
   Calendar,
@@ -9,6 +13,7 @@ import {
   Divider,
   Header,
   Information,
+  InfoView,
   LogOutButton,
   Subtitle,
   Text,
@@ -26,32 +31,34 @@ const Profile: FC<Props> = () => {
           <Title>Full name</Title>
           <Subtitle>Boss: </Subtitle>
           <LogOutButton>
-            <PlusIcon />
+            <LogoutIcon />
           </LogOutButton>
         </Header>
         <Workers onPress={handleToWorkersList}>
-          <Text>
-            <PlusIcon /> Workers List
-          </Text>
-          <PlusIcon />
+          <InfoView>
+            <GroupIcon size={30} />
+            <Text>Workers List</Text>
+          </InfoView>
+          <NextIcon size={27} />
         </Workers>
         <Information>My schedule</Information>
         <Calendar />
         <Information>Information</Information>
         <Card onPress={handleToAboutUs}>
-          <Detail>
-            <PlusIcon /> About us
-          </Detail>
-          <PlusIcon />
+          <InfoView>
+            <InfoIcon />
+            <Detail>About us</Detail>
+          </InfoView>
+          <NextIcon />
         </Card>
         <Divider />
         <Card>
-          <Detail>
-            <PlusIcon /> Terms and conditions
-          </Detail>
-          <PlusIcon />
+          <InfoView>
+            <QuestionIcon />
+            <Detail>Terms and conditions</Detail>
+          </InfoView>
+          <NextIcon />
         </Card>
-        {/* <InformationCard></InformationCard> */}
       </Container>
     </>
   );

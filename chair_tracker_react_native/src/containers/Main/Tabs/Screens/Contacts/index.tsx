@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import { useCallback } from 'react';
 import type { Usuario } from 'axios/types/usuario';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import ContactCard from 'components/ContactCard';
 import MainHeader from 'components/Header/MainHeader';
 import useConnect from './connect';
@@ -10,6 +11,7 @@ import type { Props } from './types';
 
 const Contacts: FC<Props> = () => {
   const { normalizedData } = useConnect();
+  const { top: safeTop } = useSafeAreaInsets();
   const handleKeyExtractor = (item: Usuario) => item.hash_mac;
   const handleRenderItem = useCallback(
     ({ item }: UserProps) => (
@@ -22,7 +24,7 @@ const Contacts: FC<Props> = () => {
     [],
   );
   return (
-    <Container>
+    <Container safeTop={safeTop}>
       <MainHeader title="Contacts" subtitle="Your workmates" />
       <ContactList
         data={normalizedData}

@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import { useCallback } from 'react';
 import type { Alarma } from 'axios/types/alarma';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { PlusIcon } from 'components';
 import AlarmCard from 'components/AlarmCard';
 import MainHeader from 'components/Header/MainHeader';
@@ -25,8 +26,10 @@ const Alarms: FC<Props> = () => {
     ),
     [],
   );
+  const { top: safeTop } = useSafeAreaInsets();
+
   return (
-    <Container>
+    <Container safeTop={safeTop}>
       <MainHeader title="Alarms" subtitle="Your schedule" />
       <AddButton onPress={handleToAddAlarms}>
         <PlusIcon />

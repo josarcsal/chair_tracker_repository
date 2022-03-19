@@ -7,3 +7,4 @@ export type UserProps = {
 };
 
 export type Props = MainStackScreenProps<'Contacts'> & {};
+export type ContainerProps = { safeTop: number };

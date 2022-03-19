@@ -1,7 +1,9 @@
 import styled from 'styled-components/native';
+import type { ContainerProps } from './types';
 
-export const Container = styled.SafeAreaView`
+export const Container = styled.SafeAreaView<ContainerProps>`
   flex: 1;
+  padding-top: ${({ safeTop }) => `${safeTop}px`};
   align-items: center;
 `;
 
@@ -10,7 +12,6 @@ export const Workers = styled.FlatList.attrs({
   contentContainerStyle: {
     paddingTop: 10,
     paddingBottom: 70,
-    paddingLeft: 8,
-    paddingRight: 8,
+    aligItems: 'center',
   },
 })``;

@@ -1,6 +1,10 @@
 import styled from 'styled-components/native';
 
-export const Container = styled.ScrollView`
+export const Container = styled.ScrollView.attrs({
+  contentContainerStyle: {
+    paddingBottom: 105,
+  },
+})`
   flex: 1;
   background-color: ${({ theme }) => theme.colors.fdWhite};
 `;
@@ -54,6 +58,7 @@ export const Text = styled.Text`
   font-weight: 500;
   line-height: 41px;
   letter-spacing: 0.41px;
+  margin-left: 10px;
 `;
 
 export const Information = styled.Text`
@@ -68,7 +73,7 @@ export const Calendar = styled.View`
   align-self: center;
   width: ${({ theme }) => theme.device.width * 0.85}px;
   height: ${({ theme }) => theme.device.width * 0.85}px;
-  background-color: white;
+  background-color: ${({ theme }) => theme.colors.white};
   margin-top: 10px;
   margin-bottom: 20px;
 `;
@@ -82,15 +87,21 @@ export const Card = styled.TouchableOpacity`
 `;
 
 export const Detail = styled.Text`
-  font-size: 18px;
+  font-size: 17px;
   line-height: 41px;
   letter-spacing: 0.41px;
-  margin: 10px 20px;
+  font-weight: 300;
+  margin-left: 15px;
 `;
 
 export const Divider = styled.View`
   height: 1px;
   width: ${({ theme }) => theme.device.width * 0.91}px;
   align-self: center;
-  background-color: gray;
+  background-color: ${({ theme }) => theme.colors.grayX11};
+`;
+
+export const InfoView = styled.View`
+  flex-direction: row;
+  align-items: center;
 `;

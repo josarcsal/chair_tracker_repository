@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import React, { memo } from 'react';
-import { PlusIcon } from 'components';
+import AlarmClockIcon from 'components/Icons/AlarmClockIcon';
+import CallIcon from 'components/Icons/CallIcon';
 import {
   CallButton,
   Container,
@@ -25,15 +26,15 @@ const ContactCard: FC<Props> = ({ isBoss, nombre, apellidos, last_login }) => (
       {isBoss ? (
         <>
           <CallButton>
-            <PlusIcon />
+            <CallIcon size={55} />
           </CallButton>
           <ControlButton>
-            <PlusIcon />
+            <AlarmClockIcon size={50} />
           </ControlButton>
         </>
       ) : (
         <MainButton>
-          <PlusIcon />
+          <CallIcon />
         </MainButton>
       )}
     </Utils>

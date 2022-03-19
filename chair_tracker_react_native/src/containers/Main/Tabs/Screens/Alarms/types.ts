@@ -7,3 +7,4 @@ export type AlarmProps = {
 };
 
 export type Props = MainStackScreenProps<'Alarms'> & {};
+export type ContainerProps = { safeTop: number };

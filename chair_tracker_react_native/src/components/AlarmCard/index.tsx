@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import React, { memo } from 'react';
-import { PlusIcon } from 'components';
+import CrossIcon from 'components/Icons/CrossIcon';
 import { CloseButton, Container, Information, Title } from './styles';
 import type { Props } from './types';
 
@@ -15,7 +15,7 @@ const AlarmCard: FC<Props> = ({
   <Container>
     <Title>Alarm - {oid_alarma}</Title>
     <CloseButton>
-      <PlusIcon />
+      <CrossIcon />
     </CloseButton>
     <Information>{dias}</Information>
     <Information>
