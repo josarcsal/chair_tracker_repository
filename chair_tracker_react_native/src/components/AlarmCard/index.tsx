@@ -4,16 +4,25 @@ import { PlusIcon } from 'components';
 import { CloseButton, Container, Information, Title } from './styles';
 import type { Props } from './types';
 
-const AlarmCard: FC<Props> = () => (
+const AlarmCard: FC<Props> = ({
+  oid_alarma,
+  dias,
+  t_inicio,
+  t_fin,
+  t_trabajo,
+  t_descanso,
+}) => (
   <Container>
-    <Title>Alarm - XX</Title>
+    <Title>Alarm - {oid_alarma}</Title>
     <CloseButton>
       <PlusIcon />
     </CloseButton>
-    <Information>L | M | X | J | V </Information>
-    <Information>00:00 - 99:99 </Information>
-    <Information>Working: 99.99h </Information>
-    <Information>Break: 99.99h</Information>
+    <Information>{dias}</Information>
+    <Information>
+      {t_inicio} - {t_fin}
+    </Information>
+    <Information>Working: {t_trabajo} min</Information>
+    <Information>Break: {t_descanso} min</Information>
   </Container>
 );
 

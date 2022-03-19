@@ -1,3 +1,3 @@
 declare module '@env' {
-  export const GRAPHQL_ENDPOINT: string;
+  export const AXIOS_ENDPOINT: string;
 }

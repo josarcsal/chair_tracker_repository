@@ -14,12 +14,12 @@ import {
 } from './styles';
 import type { Props } from './types';
 
-const ContactCard: FC<Props> = ({ isBoss }) => (
+const ContactCard: FC<Props> = ({ isBoss, nombre, apellidos, last_login }) => (
   <Container>
     <SubContainer>
-      <Title>Name</Title>
-      <Subtitle>Lastname</Subtitle>
-      <Information>Last login</Information>
+      <Title>{nombre}</Title>
+      <Subtitle>{apellidos}</Subtitle>
+      <Information>{last_login}</Information>
     </SubContainer>
     <Utils>
       {isBoss ? (
