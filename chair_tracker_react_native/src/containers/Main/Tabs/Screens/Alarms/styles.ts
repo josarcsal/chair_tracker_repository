@@ -18,6 +18,7 @@ export const AddButton = styled.TouchableOpacity`
 
 export const AlarmList = styled.FlatList.attrs<Alarma>({
   showsVerticalScrollIndicator: false,
+  numColumns: 2,
   contentContainerStyle: {
     paddingTop: 10,
     paddingBottom: 70,

@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import { useCallback } from 'react';
-import type { Alarma } from 'axios/types/alarma';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { Alarma } from 'axios/types/alarma';
 import { PlusIcon } from 'components';
 import AlarmCard from 'components/AlarmCard';
 import MainHeader from 'components/Header/MainHeader';

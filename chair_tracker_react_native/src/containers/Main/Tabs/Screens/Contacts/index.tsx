@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import { useCallback } from 'react';
-import type { Usuario } from 'axios/types/usuario';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { Usuario } from 'axios/types/usuario';
 import ContactCard from 'components/ContactCard';
 import MainHeader from 'components/Header/MainHeader';
 import useConnect from './connect';
