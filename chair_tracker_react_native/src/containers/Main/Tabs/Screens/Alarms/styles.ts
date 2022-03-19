@@ -1,4 +1,6 @@
+import type { FlatList } from 'react-native';
 import styled from 'styled-components/native';
+import type { Alarma } from 'axios/types/alarma';
 import type { ContainerProps } from './types';
 
 export const Container = styled.SafeAreaView<ContainerProps>`
@@ -14,11 +16,11 @@ export const AddButton = styled.TouchableOpacity`
   right: 20px;
 `;
 
-export const AlarmList = styled.FlatList.attrs({
+export const AlarmList = styled.FlatList.attrs<Alarma>({
   showsVerticalScrollIndicator: false,
   contentContainerStyle: {
     paddingTop: 10,
     paddingBottom: 70,
     alignItems: 'center',
   },
-})``;
+})`` as unknown as typeof FlatList;
