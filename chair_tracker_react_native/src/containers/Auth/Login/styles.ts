@@ -1,13 +1,27 @@
 import styled from 'styled-components/native';
 import { Text as TextBase } from 'components';
+import type { ContainerProps } from './types';
 
-export const Container = styled.View`
+export const Container = styled.View<ContainerProps>`
   flex: 1;
-  justify-content: center;
-  align-items: center;
+  padding-top: ${({ safeTop }) => `${safeTop}px`};
 `;
 
-export const Text = styled(TextBase)`
+export const Content = styled.View`
+  margin: 10px 20px;
+  align-items: flex-start;
+`;
+
+export const Title = styled(TextBase)`
+  font-size: 37px;
+  color: ${({ theme }) => theme.colors.graniteGray};
+  font-weight: 400;
+  margin-top: 20px;
+`;
+
+export const Subtitle = styled(TextBase)`
   font-size: 20px;
-  color: #000;
+  color: ${({ theme }) => theme.colors.grayX11};
+  font-weight: 400;
+  margin-top: 5px;
 `;
