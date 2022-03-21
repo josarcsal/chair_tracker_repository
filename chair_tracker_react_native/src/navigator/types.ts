@@ -8,6 +8,7 @@ declare global {
 
 export type ScreensParams = {
   Login: undefined;
+  SignUp: undefined;
   Alarms: undefined;
   NewAlarms: undefined;
   Stadistics: undefined;
