@@ -1,8 +1,12 @@
 package es.us.lsi.dad;
 
+import java.util.List;
+
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.MultiMap;
 import io.vertx.core.Promise;
 import io.vertx.core.http.HttpServer;
+import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -19,7 +23,6 @@ public class HttpServerVerticle extends AbstractVerticle {
 		vertx.deployVerticle(new BBDDVerticle());
 		// Verticle MQTT Client
 		vertx.deployVerticle(new MqttVerticle());
-
 
 		// Router peticiones REST
 		Router router = Router.router(vertx);
@@ -162,17 +165,38 @@ public class HttpServerVerticle extends AbstractVerticle {
 
 	private void obtenerAlarmasUsuario(RoutingContext routingContext) {
 		JsonObject json = routingContext.getBodyAsJson();
-		json.put("hash_mac_fk", json.getString("hash_mac_fk"));
-		vertx.eventBus().request("obtenerAlarmasUsuario", json.toString(), reply -> {
-			if (reply.succeeded()) {
-				System.out.println(reply.result().body());
-				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			} else {
-				routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			}
-		});
+		HttpServerRequest request = routingContext.request();
+		MultiMap params = request.params();
+		List<String> param = params.getAll("hash_mac_fk");
+		boolean isParamEmpty = param.isEmpty();
+
+		if (json != null && isParamEmpty) {
+			json.put("hash_mac_fk", json.getString("hash_mac_fk"));
+			vertx.eventBus().request("obtenerAlarmasUsuario", json.toString(), reply -> {
+				if (reply.succeeded()) {
+					System.out.println(reply.result().body());
+					routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				} else {
+					routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				}
+			});
+		} else {
+			JsonObject auxJson = new JsonObject();
+			auxJson.put("hash_mac_fk", param.get(0));
+			vertx.eventBus().request("obtenerAlarmasUsuario", auxJson.toString(), reply -> {
+				if (reply.succeeded()) {
+					System.out.println(reply.result().body());
+					routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				} else {
+					routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				}
+			});
+		}
+
 	}
 
 	private void borrarAlarma(RoutingContext routingContext) {
@@ -247,40 +271,82 @@ public class HttpServerVerticle extends AbstractVerticle {
 
 	private void obtenerLlamadasRecibidasUsuario(RoutingContext routingContext) {
 		JsonObject json = routingContext.getBodyAsJson();
-		json.put("destinatario_hash_mac_fk", json.getString("destinatario_hash_mac_fk"));
-		vertx.eventBus().request("obtenerLlamadasRecibidasUsuario", json.toString(), reply -> {
-			if (reply.succeeded()) {
-				System.out.println(reply.result().body());
-				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			} else {
-				routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			}
-		});
+		HttpServerRequest request = routingContext.request();
+		MultiMap params = request.params();
+		List<String> param = params.getAll("destinatario_hash_mac_fk");
+		boolean isParamEmpty = param.isEmpty();
+
+		if (json != null && isParamEmpty) {
+			json.put("destinatario_hash_mac_fk", json.getString("destinatario_hash_mac_fk"));
+			vertx.eventBus().request("obtenerLlamadasRecibidasUsuario", json.toString(), reply -> {
+				if (reply.succeeded()) {
+					System.out.println(reply.result().body());
+					routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				} else {
+					routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				}
+			});
+		} else {
+			JsonObject auxJson = new JsonObject();
+			auxJson.put("destinatario_hash_mac_fk", param.get(0));
+			vertx.eventBus().request("obtenerLlamadasRecibidasUsuario", auxJson.toString(), reply -> {
+				if (reply.succeeded()) {
+					System.out.println(reply.result().body());
+					routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				} else {
+					routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				}
+			});
+		}
+
 	}
 
 	private void obtenerLlamadasEnviadasUsuario(RoutingContext routingContext) {
 		JsonObject json = routingContext.getBodyAsJson();
-		json.put("remitente_hash_mac_fk", json.getString("remitente_hash_mac_fk"));
-		vertx.eventBus().request("obtenerLlamadasEnviadasUsuario", json.toString(), reply -> {
-			if (reply.succeeded()) {
-				System.out.println(reply.result().body());
-				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			} else {
-				routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			}
-		});
+		HttpServerRequest request = routingContext.request();
+		MultiMap params = request.params();
+		List<String> param = params.getAll("remitente_hash_mac_fk");
+		boolean isParamEmpty = param.isEmpty();
+
+		if (json != null && isParamEmpty) {
+			json.put("remitente_hash_mac_fk", json.getString("remitente_hash_mac_fk"));
+			vertx.eventBus().request("obtenerLlamadasEnviadasUsuario", json.toString(), reply -> {
+				if (reply.succeeded()) {
+					System.out.println(reply.result().body());
+					routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				} else {
+					routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				}
+			});
+		} else {
+			JsonObject auxJson = new JsonObject();
+			auxJson.put("remitente_hash_mac_fk", param.get(0));
+			vertx.eventBus().request("obtenerLlamadasEnviadasUsuario", auxJson.toString(), reply -> {
+				if (reply.succeeded()) {
+					System.out.println(reply.result().body());
+					routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				} else {
+					routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				}
+			});
+		}
+
 	}
 
 	private void anadirLlamada(RoutingContext routingContext) {
 		vertx.eventBus().request("anadirLlamada", routingContext.getBodyAsString(), reply -> {
 			if (reply.succeeded()) {
-				
+
 				vertx.eventBus().request("llamadaAUsuario", routingContext.getBodyAsString());
-				
+
 				System.out.println(reply.result().body());
 				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
 						.end(String.valueOf(reply.result().body()));
@@ -356,47 +422,108 @@ public class HttpServerVerticle extends AbstractVerticle {
 
 	private void obtenerRegistrosAlarmasUsuario(RoutingContext routingContext) {
 		JsonObject json = routingContext.getBodyAsJson();
-		json.put("hash_mac_fk", json.getString("hash_mac_fk"));
-		vertx.eventBus().request("obtenerRegistrosAlarmasUsuario", json.toString(), reply -> {
-			if (reply.succeeded()) {
-				System.out.println(reply.result().body());
-				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			} else {
-				routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			}
-		});
+		HttpServerRequest request = routingContext.request();
+		MultiMap params = request.params();
+		List<String> param = params.getAll("hash_mac_fk");
+		boolean isParamEmpty = param.isEmpty();
+
+		if (json != null && isParamEmpty) {
+			json.put("hash_mac_fk", json.getString("hash_mac_fk"));
+			vertx.eventBus().request("obtenerRegistrosAlarmasUsuario", json.toString(), reply -> {
+				if (reply.succeeded()) {
+					System.out.println(reply.result().body());
+					routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				} else {
+					routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				}
+			});
+		} else {
+			JsonObject auxJson = new JsonObject();
+			auxJson.put("hash_mac_fk", param.get(0));
+			vertx.eventBus().request("obtenerRegistrosAlarmasUsuario", auxJson.toString(), reply -> {
+				if (reply.succeeded()) {
+					System.out.println(reply.result().body());
+					routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				} else {
+					routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				}
+			});
+		}
+
 	}
 
 	private void obtenerRegistrosLlamadasEnviadas(RoutingContext routingContext) {
 		JsonObject json = routingContext.getBodyAsJson();
-		json.put("remitente_hash_mac_fk", json.getString("remitente_hash_mac_fk"));
-		vertx.eventBus().request("obtenerRegistrosLlamadasEnviadas", json.toString(), reply -> {
-			if (reply.succeeded()) {
-				System.out.println(reply.result().body());
-				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			} else {
-				routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			}
-		});
+		HttpServerRequest request = routingContext.request();
+		MultiMap params = request.params();
+		List<String> param = params.getAll("remitente_hash_mac_fk");
+		boolean isParamEmpty = param.isEmpty();
+
+		if (json != null && isParamEmpty) {
+			json.put("remitente_hash_mac_fk", json.getString("remitente_hash_mac_fk"));
+			vertx.eventBus().request("obtenerRegistrosLlamadasEnviadas", json.toString(), reply -> {
+				if (reply.succeeded()) {
+					System.out.println(reply.result().body());
+					routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				} else {
+					routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				}
+			});
+		} else {
+			JsonObject auxJson = new JsonObject();
+			auxJson.put("remitente_hash_mac_fk", param.get(0));
+			vertx.eventBus().request("obtenerRegistrosLlamadasEnviadas", auxJson.toString(), reply -> {
+				if (reply.succeeded()) {
+					System.out.println(reply.result().body());
+					routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				} else {
+					routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				}
+			});
+		}
 	}
 
 	private void obtenerRegistrosLlamadasRecibidas(RoutingContext routingContext) {
 		JsonObject json = routingContext.getBodyAsJson();
-		json.put("destinatario_hash_mac_fk", json.getString("destinatario_hash_mac_fk"));
-		vertx.eventBus().request("obtenerRegistrosLlamadasRecibidas", json.toString(), reply -> {
-			if (reply.succeeded()) {
-				System.out.println(reply.result().body());
-				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			} else {
-				routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
-						.end(String.valueOf(reply.result().body()));
-			}
-		});
+		HttpServerRequest request = routingContext.request();
+		MultiMap params = request.params();
+		List<String> param = params.getAll("destinatario_hash_mac_fk");
+		boolean isParamEmpty = param.isEmpty();
+
+		if (json != null && isParamEmpty) {
+			json.put("destinatario_hash_mac_fk", json.getString("destinatario_hash_mac_fk"));
+			vertx.eventBus().request("obtenerRegistrosLlamadasRecibidas", json.toString(), reply -> {
+				if (reply.succeeded()) {
+					System.out.println(reply.result().body());
+					routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				} else {
+					routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				}
+			});
+		} else {
+			JsonObject auxJson = new JsonObject();
+			auxJson.put("destinatario_hash_mac_fk", param.get(0));
+			vertx.eventBus().request("obtenerRegistrosLlamadasRecibidas", auxJson.toString(), reply -> {
+				if (reply.succeeded()) {
+					System.out.println(reply.result().body());
+					routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				} else {
+					routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
+							.end(String.valueOf(reply.result().body()));
+				}
+			});
+		}
 	}
 
 	@Override
