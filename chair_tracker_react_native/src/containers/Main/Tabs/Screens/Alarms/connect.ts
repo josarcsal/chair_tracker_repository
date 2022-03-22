@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useNavigation } from '@react-navigation/core';
-import { useAlarmas } from 'axios/hooks/useAlarmas';
+import { useAlarmas } from 'axios/hooks/Alarms/useAlarmas';
 
 const useConnect = () => {
   const { normalizedData } = useAlarmas();
