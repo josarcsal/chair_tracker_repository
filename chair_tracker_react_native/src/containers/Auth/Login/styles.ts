@@ -5,6 +5,7 @@ import type { ContainerProps } from './types';
 export const Container = styled.View<ContainerProps>`
   flex: 1;
   padding-top: ${({ safeTop }) => `${safeTop}px`};
+  background-color: ${({ theme }) => theme.colors.fdWhite}; ;
 `;
 
 export const Content = styled.View`
@@ -24,4 +25,17 @@ export const Subtitle = styled(TextBase)`
   color: ${({ theme }) => theme.colors.grayX11};
   font-weight: 400;
   margin-top: 5px;
+`;
+
+export const InputText = styled.TextInput`
+  font-size: 18px;
+  width: 90%;
+  height: 50px;
+  margin: 10px 20px;
+  padding-left: 15px;
+  background-color: ${({ theme }) => theme.colors.fdWhite};
+  border: 1px solid ${({ theme }) => theme.colors.grayX11};
+  border-radius: 8px;
+  align-self: center;
+  justify-content: center;
 `;
