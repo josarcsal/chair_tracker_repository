@@ -9,7 +9,7 @@ export const Container = styled.ScrollView<ContainerProps>`
 `;
 
 export const Content = styled.View`
-  margin: 10px 20px;
+  margin: 10px 16px;
   align-items: flex-start;
 `;
 
@@ -17,15 +17,15 @@ export const Title = styled(TextBase)`
   font-size: 37px;
   color: ${({ theme }) => theme.colors.graniteGray};
   font-weight: 400;
-  margin-top: 20px;
+  margin-top: 8px;
 `;
 
 export const InputText = styled.TextInput`
   font-size: 18px;
   width: 90%;
   height: 50px;
-  margin: 10px 20px;
-  padding-left: 15px;
+  margin: 10px 16px;
+  padding-left: 12px;
   background-color: ${({ theme }) => theme.colors.fdWhite};
   border: 1px solid ${({ theme }) => theme.colors.grayX11};
   border-radius: 8px;

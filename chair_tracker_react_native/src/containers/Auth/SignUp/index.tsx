@@ -1,5 +1,7 @@
 import type { FC } from 'react';
-// import { useState } from 'react';
+import { useState } from 'react';
+import { Picker } from '@react-native-picker/picker';
+
 import { Formik } from 'formik';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DetailHeader from 'components/Header/DetailHeader';
@@ -12,7 +14,7 @@ import type { Props } from './types';
 const SignUp: FC<Props> = () => {
   const { handleGoBack } = useConnect();
   const { top: safeTop } = useSafeAreaInsets();
-  // const [rol, setRol] = useState('');
+  const [rol, setRol] = useState('');
 
   return (
     <Container safeTop={safeTop}>
@@ -63,6 +65,7 @@ const SignUp: FC<Props> = () => {
               onBlur={handleBlur('contrasena')}
               value={values.contrasena}
               keyboardType="default"
+              secureTextEntry
             />
 
             {/* {errors.email && touched.email && (
@@ -92,28 +95,35 @@ const SignUp: FC<Props> = () => {
             {/* {errors.email && touched.email && (
               <Text style={styles.errorText}>{errors.email}</Text>
             )} */}
-
-            <InputText
-              placeholder="NIF of your boss"
-              onChangeText={handleChange('nif_jefe')}
-              onBlur={handleBlur('nif_jefe')}
-              value={values.nif_jefe}
-              keyboardType="default"
-            />
-
-            {/* {errors.email && touched.email && (
-              <Text style={styles.errorText}>{errors.email}</Text>
-            )} */}
-
-            {/* <Picker
-              style={{ width: '90%', alignSelf: 'center', marginTop: -30 }}
+            <Picker
+              style={{
+                width: '94%',
+                alignSelf: 'center',
+                marginTop: -30,
+                marginBottom: -50,
+              }}
               mode="dropdown"
               selectedValue={rol}
               onValueChange={(itemValue) => setRol(itemValue)}
             >
               <Picker.Item label="Boss" value="J" />
               <Picker.Item label="Worker" value="E" />
-            </Picker> */}
+            </Picker>
+
+            {/* {errors.email && touched.email && (
+              <Text style={styles.errorText}>{errors.email}</Text>
+            )} */}
+
+            {rol === 'E' && (
+              <InputText
+                placeholder="NIF of your boss"
+                onChangeText={handleChange('nif_jefe')}
+                onBlur={handleBlur('nif_jefe')}
+                value={values.nif_jefe}
+                keyboardType="default"
+              />
+            )}
+
             {/* {errors.email && touched.email && (
               <Text style={styles.errorText}>{errors.email}</Text>
             )} */}

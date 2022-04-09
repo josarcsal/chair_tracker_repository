@@ -1,13 +1,46 @@
-import type { FC } from 'react';
-import React, { memo } from 'react';
+import React from 'react';
+import { BarChart } from 'react-native-chart-kit';
+import theme from 'theme';
 import { Container, Graph, Title } from './styles';
-import type { Props } from './types';
+const chartConfig = {
+  backgroundColor: theme.colors.cultured,
+  backgroundGradientFrom: theme.colors.cultured,
+  backgroundGradientTo: theme.colors.cultured,
+  color: () => `rgba(0, 161, 235, 1)`,
+};
 
-const StadisticCard: FC<Props> = () => (
-  <Container>
-    <Graph />
-    <Title>Date</Title>
-  </Container>
-);
+const StadisticCard = () => {
+  const data = {
+    labels: ['Worked', 'Rested'],
+    datasets: [
+      {
+        data: [40, 20],
+      },
+    ],
+  };
 
-export default memo(StadisticCard);
+  return (
+    <Container>
+      <Title>Bar Graph</Title>
+      <Graph>
+        <BarChart
+          yAxisLabel={''}
+          yAxisSuffix={''}
+          width={256}
+          height={256}
+          data={data}
+          chartConfig={chartConfig}
+          fromZero={true}
+          withInnerLines={false}
+          style={{
+            alignItems: 'center',
+            paddingHorizontal: 30,
+            marginBottom: 5,
+          }}
+        />
+      </Graph>
+    </Container>
+  );
+};
+
+export default StadisticCard;

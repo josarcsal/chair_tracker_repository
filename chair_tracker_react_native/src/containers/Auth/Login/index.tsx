@@ -56,6 +56,7 @@ const Login: FC<Props> = () => {
               onBlur={handleBlur('contrasena')}
               value={values.contrasena}
               keyboardType="default"
+              secureTextEntry
             />
 
             {/* {errors.email && touched.email && (
