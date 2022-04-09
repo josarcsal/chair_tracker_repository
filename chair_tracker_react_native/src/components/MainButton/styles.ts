@@ -2,9 +2,9 @@ import styled from 'styled-components/native';
 import { Text as TextBase } from 'components';
 
 export const SignInButton = styled.TouchableOpacity`
-  width: 80%;
+  width: 90%;
   height: 60px;
-  margin: 5px 20px;
+  margin: 5px 16px;
   background-color: ${({ theme }) => theme.colors.carolinaBlue};
   border: 1px solid ${({ theme }) => theme.colors.grayX11};
   box-sizing: border-box;
