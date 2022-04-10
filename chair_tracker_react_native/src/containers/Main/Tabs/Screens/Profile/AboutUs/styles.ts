@@ -7,6 +7,6 @@ export const Container = styled.ScrollView<ContainerProps>`
 `;
 export const Content = styled.Text`
   font-size: 15px;
-  margin: 10px 20px;
+  margin: 8px 16px;
   line-height: 25px;
 `;

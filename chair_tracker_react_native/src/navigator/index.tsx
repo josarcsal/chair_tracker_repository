@@ -13,7 +13,7 @@ import type { Props } from './types';
 const { Navigator, Group, Screen } = createNativeStackNavigator();
 
 const AppNavigator: FC<Props> = () => {
-  const ready = false;
+  const ready = true;
   return (
     <Navigator screenOptions={generalStackScreenOptions}>
       {ready ? (

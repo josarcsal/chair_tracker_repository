@@ -4,7 +4,6 @@ export const Container = styled.View`
   border: 1px solid ${({ theme }) => theme.colors.grayX11};
   box-sizing: border-box;
   margin-bottom: 15px;
-  padding-bottom: 8px;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.colors.fdWhite};
   width: ${({ theme }) => theme.device.width * 0.91}px;

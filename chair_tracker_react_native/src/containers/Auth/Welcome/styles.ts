@@ -22,12 +22,13 @@ export const Title = styled(TextBase)`
   font-size: 30px;
   color: ${({ theme }) => theme.colors.graniteGray};
   font-weight: 400;
-  margin-top: 20px;
+  margin-top: 10px;
 `;
 
 export const Subtitle = styled(TextBase)`
   font-size: 20px;
   color: ${({ theme }) => theme.colors.graniteGray};
-  margin: 10px 50px;
+  margin: 15px 16px;
+  margin-top: 5px;
   text-align: center;
 `;

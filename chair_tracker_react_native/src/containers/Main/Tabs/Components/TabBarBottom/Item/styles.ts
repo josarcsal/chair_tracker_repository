@@ -24,7 +24,6 @@ export const Label = styled(Text).attrs(() => ({
 }))<LabelProps>`
   font-size: 12px;
   line-height: 17px;
-  margin-top: 8px;
   text-align: center;
   ${({ focused }) => focused && focusedLabelStyles}
 `;

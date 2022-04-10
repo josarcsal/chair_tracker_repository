@@ -11,8 +11,8 @@ export const Container = styled.ScrollView.attrs({
 
 export const Header = styled.View`
   background-color: ${({ theme }) => theme.colors.carolinaBlue};
-  height: 200px;
-  padding: 55px 20px;
+  height: 180px;
+  padding: 55px 16px;
 `;
 
 export const Title = styled.Text`
@@ -34,11 +34,11 @@ export const Subtitle = styled.Text`
 export const LogOutButton = styled.TouchableOpacity`
   position: absolute;
   top: 60px;
-  right: 20px;
+  right: 16px;
 `;
 
 export const Workers = styled.TouchableOpacity`
-  height: 75px;
+  height: 60px;
   width: ${({ theme }) => theme.device.width * 0.8}px;
   background-color: ${({ theme }) => theme.colors.cultured};
   border: 1px solid ${({ theme }) => theme.colors.grayX11};
@@ -49,7 +49,7 @@ export const Workers = styled.TouchableOpacity`
   padding: 0px 30px;
   align-items: center;
   align-self: center;
-  margin-top: -37.5px;
+  margin-top: -30px;
   margin-bottom: 20px;
 `;
 
@@ -66,7 +66,7 @@ export const Information = styled.Text`
   font-weight: 600;
   line-height: 41px;
   letter-spacing: 0.41px;
-  margin: 0px 20px;
+  margin: 0px 16px;
 `;
 
 export const Calendar = styled.View`
@@ -99,6 +99,7 @@ export const Divider = styled.View`
   width: ${({ theme }) => theme.device.width * 0.91}px;
   align-self: center;
   background-color: ${({ theme }) => theme.colors.grayX11};
+  opacity: 0.4;
 `;
 
 export const InfoView = styled.View`
