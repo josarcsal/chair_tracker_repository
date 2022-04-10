@@ -323,10 +323,10 @@ public class BBDDVerticle extends AbstractVerticle {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("borrarAlarma");
 
 		consumer.handler(message -> {
-			String oid_alarma = message.body();
+			JsonObject jsonBorrarAlarma = new JsonObject(message.body());
+			String oid_alarma = jsonBorrarAlarma.getString("oid_alarma");
 			JsonObject json = new JsonObject();
-
-
+		
 			Query<RowSet<Row>> queryCount = mySqlClient.query(
 					"SELECT COUNT(*) AS cuenta FROM proyectodad.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
 
