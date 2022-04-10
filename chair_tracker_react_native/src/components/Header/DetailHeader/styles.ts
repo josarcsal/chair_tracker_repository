@@ -11,6 +11,7 @@ export const BackButton = styled.TouchableOpacity`
 `;
 
 export const BackText = styled(TextBase)`
+  color: ${({ theme }) => theme.colors.cultured};
   font-size: 17px;
   line-height: 22px;
   padding-top: 1px;

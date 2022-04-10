@@ -5,7 +5,7 @@ export const Container = styled.SafeAreaView<ContainerProps>`
   flex: 1;
   align-items: center;
   padding-top: ${({ safeTop }) => `${safeTop}px`};
-  background-color: ${({ theme }) => theme.colors.fdWhite};
+  background-color: ${({ theme }) => theme.colors.deepOcean};
 `;
 
 export const AddButton = styled.TouchableOpacity`

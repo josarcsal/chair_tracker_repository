@@ -6,11 +6,11 @@ export const Container = styled.ScrollView.attrs({
   },
 })`
   flex: 1;
-  background-color: ${({ theme }) => theme.colors.fdWhite};
+  background-color: ${({ theme }) => theme.colors.deepOcean};
 `;
 
 export const Header = styled.View`
-  background-color: ${({ theme }) => theme.colors.carolinaBlue};
+  background-color: ${({ theme }) => theme.colors.beforeBlue};
   height: 180px;
   padding: 55px 16px;
 `;
@@ -40,8 +40,8 @@ export const LogOutButton = styled.TouchableOpacity`
 export const Workers = styled.TouchableOpacity`
   height: 60px;
   width: ${({ theme }) => theme.device.width * 0.8}px;
-  background-color: ${({ theme }) => theme.colors.cultured};
-  border: 1px solid ${({ theme }) => theme.colors.grayX11};
+  background-color: ${({ theme }) => theme.colors.marineBlue};
+  border: 1px solid ${({ theme }) => theme.colors.marineBlue};
   box-sizing: border-box;
   border-radius: 8px;
   flex-direction: row;
@@ -54,6 +54,7 @@ export const Workers = styled.TouchableOpacity`
 `;
 
 export const Text = styled.Text`
+  color: ${({ theme }) => theme.colors.cultured};
   font-size: 22px;
   font-weight: 500;
   line-height: 41px;
@@ -62,6 +63,7 @@ export const Text = styled.Text`
 `;
 
 export const Information = styled.Text`
+  color: ${({ theme }) => theme.colors.cultured};
   font-size: 20px;
   font-weight: 600;
   line-height: 41px;
@@ -73,7 +75,7 @@ export const Calendar = styled.View`
   align-self: center;
   width: ${({ theme }) => theme.device.width * 0.85}px;
   height: ${({ theme }) => theme.device.width * 0.85}px;
-  background-color: ${({ theme }) => theme.colors.white};
+  background-color: ${({ theme }) => theme.colors.beforeBlue};
   margin-top: 10px;
   margin-bottom: 20px;
 `;
@@ -87,6 +89,7 @@ export const Card = styled.TouchableOpacity`
 `;
 
 export const Detail = styled.Text`
+  color: ${({ theme }) => theme.colors.cultured};
   font-size: 17px;
   line-height: 41px;
   letter-spacing: 0.41px;
@@ -98,7 +101,7 @@ export const Divider = styled.View`
   height: 1px;
   width: ${({ theme }) => theme.device.width * 0.91}px;
   align-self: center;
-  background-color: ${({ theme }) => theme.colors.grayX11};
+  background-color: ${({ theme }) => theme.colors.cultured};
   opacity: 0.4;
 `;
 

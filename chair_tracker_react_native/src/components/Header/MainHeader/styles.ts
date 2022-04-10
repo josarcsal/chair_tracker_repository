@@ -10,7 +10,7 @@ export const Title = styled.Text`
   font-weight: 700;
   line-height: 41px;
   letter-spacing: 0.41px;
-  color: ${({ theme }) => theme.colors.black};
+  color: ${({ theme }) => theme.colors.cultured};
 `;
 
 export const Subtitle = styled.Text`
@@ -18,5 +18,5 @@ export const Subtitle = styled.Text`
   font-weight: 400;
   line-height: 41px;
   letter-spacing: 0.41px;
-  color: ${({ theme }) => theme.colors.black};
+  color: ${({ theme }) => theme.colors.cultured};
 `;
