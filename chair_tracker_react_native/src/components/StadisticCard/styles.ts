@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import { BarChart as BarChartBase } from 'react-native-chart-kit';
 
 export const Container = styled.View`
   border: 1px solid ${({ theme }) => theme.colors.beforeBlue};
@@ -11,6 +12,18 @@ export const Container = styled.View`
   shadow-opacity: 0.1;
   shadow-radius: 3.84px;
   elevation: 5;
+`;
+
+export const BarChart = styled(BarChartBase).attrs({
+  width: 256,
+  height: 236,
+  yAxisLabel: '',
+  yAxisSuffix: '',
+  fromZero: true,
+  withInnerLines: false,
+})`
+  align-items: center;
+  margin-top: 15px;
 `;
 
 export const Graph = styled.View`

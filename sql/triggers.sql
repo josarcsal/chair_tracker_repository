@@ -26,10 +26,20 @@ CREATE TRIGGER Rellena_Registros_Alarmas_INSERT AFTER INSERT
 END//
 
 DELIMITER //
-CREATE TRIGGER Rellena_Registros_Alarmas_UPDATE AFTER UPDATE
+CREATE TRIGGER Rellena_Registros_Alarmas_UPDATE BEFORE UPDATE
 	ON proyectodad.alarmas FOR EACH ROW
     BEGIN
-    UPDATE proyectodad.registros SET fecha = NOW(), trabajo = NEW.ciclo_trabajo * NEW.t_trabajo, descanso = NEW.ciclo_descanso * NEW.t_descanso WHERE oid_alarma_fk = OLD.oid_alarma;
+		DECLARE fecha DATETIME; DECLARE ciclo_trabajo_old SMALLINT; DECLARE ciclo_descanso_old SMALLINT;
+		SELECT fecha INTO fecha FROM proyectodad.registros WHERE oid_alarma_fk = NEW.oid_alarma;
+		SELECT ciclo_trabajo INTO ciclo_trabajo_old FROM proyectodad.alarmas WHERE oid_alarma = NEW.oid_alarma;
+		SELECT ciclo_descanso INTO ciclo_descanso_old FROM proyectodad.alarmas WHERE oid_alarma = NEW.oid_alarma;
+        IF(Month(NOW()) > Month(fecha)) 
+		THEN
+        INSERT INTO proyectodad.registros (tipo, fecha, trabajo, descanso, oid_llamada_fk, oid_alarma_fk, hash_mac_fk, remitente_hash_mac_fk, destinatario_hash_mac_fk) 
+		VALUES ('A', NOW(),  (NEW.ciclo_trabajo - ciclo_trabajo_old) * NEW.t_trabajo, (NEW.ciclo_descanso - ciclo_descanso_old) * NEW.t_descanso, NULL, NEW.oid_alarma, NEW.hash_mac_fk, NULL, NULL);
+	ELSE
+		UPDATE proyectodad.registros SET fecha = NOW(), trabajo = NEW.ciclo_trabajo * NEW.t_trabajo, descanso = NEW.ciclo_descanso * NEW.t_descanso WHERE oid_alarma_fk = OLD.oid_alarma ORDER BY fecha LIMIT 1;
+	END IF;
 END//
 
 DELIMITER //

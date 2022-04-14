@@ -1,4 +1,4 @@
-CREATE SCHEMA proyectodad;
+#CREATE SCHEMA proyectodad;
 USE proyectodad;
 
 DROP TABLE Registros;
