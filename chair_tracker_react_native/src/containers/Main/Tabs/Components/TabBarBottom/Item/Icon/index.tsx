@@ -8,7 +8,7 @@ import theme from 'theme';
 import type { Props } from './types';
 
 const Icon: FC<Props> = ({ icon, focused }) => {
-  const color = focused ? theme.colors.carolinaBlue : theme.colors.black;
+  const color = focused ? theme.colors.cultured : theme.colors.marineBlue;
   return (
     <>
       {icon === 'Alarms' && <AlarmClockIcon color={color} />}

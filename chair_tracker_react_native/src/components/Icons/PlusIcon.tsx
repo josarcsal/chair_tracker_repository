@@ -1,9 +1,14 @@
 import type { FC } from 'react';
 import { memo } from 'react';
 import { Path, Svg } from 'react-native-svg';
+import theme from 'theme';
 import type { Props } from './types';
 
-const PlusIcon: FC<Props> = ({ size = 20, color = 'black', ...props }) => (
+const PlusIcon: FC<Props> = ({
+  size = 20,
+  color = theme.colors.cultured,
+  ...props
+}) => (
   <Svg width={size} height={size} viewBox="0 0 20 20" {...props}>
     <Path
       fillRule="evenodd"

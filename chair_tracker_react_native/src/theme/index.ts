@@ -14,6 +14,13 @@ const colors = {
   grayX11: '#bababa',
   fdWhite: '#FDFDFD',
   cultured: '#F5F5F5',
+  deepOcean: '#080B1A',
+  accentBlue: '#0D155C',
+  whiteC2: '#C2C6D2',
+  marineBlue: '#6F7DAC',
+  twentyBlue: '#22254E',
+  beforeBlue: '#222B4C',
+  orangeC7: '#C75D21',
 };
 
 const { width, height } = Dimensions.get('window');

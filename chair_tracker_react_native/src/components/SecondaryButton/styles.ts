@@ -2,7 +2,7 @@ import styled from 'styled-components/native';
 import { Text as TextBase } from 'components';
 
 export const SignUpButton = styled.TouchableOpacity`
-  width: 90%;
+  width: 95%;
   align-self: center;
 `;
 

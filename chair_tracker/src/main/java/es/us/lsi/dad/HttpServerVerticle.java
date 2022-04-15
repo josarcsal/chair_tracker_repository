@@ -56,6 +56,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 		router.get("/api/registros/llamadas").handler(this::obtenerRegistrosLlamadas);
 		router.get("/api/registros/alarmas").handler(this::obtenerRegistrosAlarmas);
 		router.get("/api/registros/alarmas/hash_mac").handler(this::obtenerRegistrosAlarmasUsuario);
+		router.get("/api/registros/alarmas/hash_macAnyo").handler(this::obtenerRegistrosAlarmasUsuarioAnyo);	
 		router.get("/api/registros/llamadas/enviadas/hash_mac").handler(this::obtenerRegistrosLlamadasEnviadas);
 		router.get("/api/registros/llamadas/recibidas/hash_mac").handler(this::obtenerRegistrosLlamadasRecibidas);
 
@@ -413,6 +414,35 @@ public class HttpServerVerticle extends AbstractVerticle {
 		}
 		
 		vertx.eventBus().request("obtenerRegistrosAlarmasUsuario", jsonRes.toString(), reply -> {
+			if (reply.succeeded()) {
+				System.out.println(reply.result().body());
+				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+						.end(String.valueOf(reply.result().body()));
+			} else {
+				routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
+						.end(String.valueOf(reply.result().body()));
+			}
+		});
+	}
+	
+	private void obtenerRegistrosAlarmasUsuarioAnyo(RoutingContext routingContext) {
+		JsonObject json = routingContext.getBodyAsJson();
+		HttpServerRequest request = routingContext.request();
+		MultiMap params = request.params();
+		List<String> hashMac = params.getAll("hash_mac_fk");
+		boolean isHashMacEmpty = hashMac.isEmpty();
+		List<String> anyo = params.getAll("anyo");
+		boolean isAnyoEmpty = anyo.isEmpty();
+		JsonObject jsonRes = new JsonObject();
+		
+		if (json != null && isHashMacEmpty && isAnyoEmpty) {
+			jsonRes = json;
+		} else {
+			jsonRes.put("hash_mac_fk", hashMac.get(0));
+			jsonRes.put("anyo", anyo.get(0));
+		}
+
+		vertx.eventBus().request("obtenerRegistrosAlarmasUsuarioAnyo", jsonRes.toString(), reply -> {
 			if (reply.succeeded()) {
 				System.out.println(reply.result().body());
 				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")

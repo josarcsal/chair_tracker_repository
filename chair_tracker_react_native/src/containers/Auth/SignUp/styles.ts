@@ -22,13 +22,17 @@ export const Title = styled(TextBase)`
 
 export const InputText = styled.TextInput`
   font-size: 18px;
-  width: 90%;
+  width: 94%;
   height: 50px;
-  margin: 10px 16px;
-  padding-left: 12px;
+  margin: 5px 16px;
+  padding-left: 15px;
   background-color: ${({ theme }) => theme.colors.fdWhite};
   border: 1px solid ${({ theme }) => theme.colors.grayX11};
   border-radius: 8px;
   align-self: center;
   justify-content: center;
+`;
+
+export const Buttons = styled.View`
+  margin-top: 15px;
 `;

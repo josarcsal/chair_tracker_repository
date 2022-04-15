@@ -1,6 +1,9 @@
 import type { FC } from 'react';
 import React, { memo } from 'react';
+import { IconContainer } from 'components/AlarmCard/styles';
+import AlarmClockIcon from 'components/Icons/AlarmClockIcon';
 import CrossIcon from 'components/Icons/CrossIcon';
+import theme from 'theme';
 import { CloseButton, Container, Information, Title } from './styles';
 import type { Props } from './types';
 
@@ -17,6 +20,9 @@ const AlarmCard: FC<Props> = ({
     <CloseButton>
       <CrossIcon />
     </CloseButton>
+    <IconContainer>
+      <AlarmClockIcon color={theme.colors.deepOcean} size={90} />
+    </IconContainer>
     <Information>{dias}</Information>
     <Information>
       {t_inicio} - {t_fin}

@@ -5,7 +5,14 @@ import DetailHeader from 'components/Header/DetailHeader';
 import MainButton from 'components/MainButton';
 import SecondaryButton from 'components/SecondaryButton';
 import useConnect from './connect';
-import { Container, Content, InputText, Subtitle, Title } from './styles';
+import {
+  Buttons,
+  Container,
+  Content,
+  InputText,
+  Subtitle,
+  Title,
+} from './styles';
 import type { Props } from './types';
 
 const Login: FC<Props> = () => {
@@ -62,8 +69,9 @@ const Login: FC<Props> = () => {
             {/* {errors.email && touched.email && (
               <Text style={styles.errorText}>{errors.email}</Text>
             )} */}
-
-            <MainButton text={'Sign in'} handlePress={handleSubmit} />
+            <Buttons>
+              <MainButton text={'Sign in'} handlePress={handleSubmit} />
+            </Buttons>
           </>
         )}
       </Formik>

@@ -8,7 +8,7 @@ import DetailHeader from 'components/Header/DetailHeader';
 import MainButton from 'components/MainButton';
 import SecondaryButton from 'components/SecondaryButton';
 import useConnect from './connect';
-import { Container, Content, InputText, Title } from './styles';
+import { Buttons, Container, Content, InputText, Title } from './styles';
 import type { Props } from './types';
 
 const SignUp: FC<Props> = () => {
@@ -97,10 +97,10 @@ const SignUp: FC<Props> = () => {
             )} */}
             <Picker
               style={{
-                width: '94%',
+                width: '99%',
                 alignSelf: 'center',
-                marginTop: -30,
-                marginBottom: -50,
+                marginTop: -40,
+                marginBottom: -60,
               }}
               mode="dropdown"
               selectedValue={rol}
@@ -127,10 +127,12 @@ const SignUp: FC<Props> = () => {
             {/* {errors.email && touched.email && (
               <Text style={styles.errorText}>{errors.email}</Text>
             )} */}
-            <MainButton
-              text={'Create your account'}
-              handlePress={handleSubmit}
-            />
+            <Buttons>
+              <MainButton
+                text={'Create your account'}
+                handlePress={handleSubmit}
+              />
+            </Buttons>
           </>
         )}
       </Formik>

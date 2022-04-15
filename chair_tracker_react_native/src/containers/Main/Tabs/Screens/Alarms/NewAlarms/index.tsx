@@ -8,7 +8,7 @@ import DetailHeader from 'components/Header/DetailHeader';
 import MainHeader from 'components/Header/MainHeader';
 import MainButton from 'components/MainButton';
 import useConnect from './connect';
-import { Container, HourView, InputHour, Text } from './styles';
+import { ButtonView, Container, HourView, InputHour, Text } from './styles';
 import type { Props } from './types';
 
 const NewAlarms: FC<Props> = () => {
@@ -29,7 +29,7 @@ const NewAlarms: FC<Props> = () => {
         validateOnMount={true}
         // validationSchema={loginValidationSchema}
         initialValues={{
-          week_days: [''],
+          days: '',
           t_trabajo: '',
           t_descanso: '',
         }}
@@ -103,6 +103,7 @@ const NewAlarms: FC<Props> = () => {
             {/* {errors.telefono && touched.telefono && (
               <Text style={styles.errorText}>{errors.telefono}</Text>
             )} */}
+
             <HourView>
               <Text>Break time:</Text>
               <InputHour
@@ -116,7 +117,23 @@ const NewAlarms: FC<Props> = () => {
             {/* {errors.mensaje && touched.mensaje && (
               <Text style={styles.errorText}>{errors.mensaje}</Text>
             )} */}
-            <MainButton text={'Set alarm'} handlePress={handleSubmit} />
+
+            <HourView>
+              <Text>Days:</Text>
+              <InputHour
+                placeholder="LMXJV"
+                onChangeText={handleChange('days')}
+                onBlur={handleBlur('days')}
+                value={values.days}
+                keyboardType="default"
+              />
+            </HourView>
+            {/* {errors.mensaje && touched.mensaje && (
+              <Text style={styles.errorText}>{errors.mensaje}</Text>
+            )} */}
+            <ButtonView>
+              <MainButton text={'Set alarm'} handlePress={handleSubmit} />
+            </ButtonView>
           </>
         )}
       </Formik>

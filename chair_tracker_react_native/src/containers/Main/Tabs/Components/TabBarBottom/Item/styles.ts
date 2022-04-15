@@ -16,15 +16,15 @@ export const Content = styled(BorderlessButton).attrs(() => ({
 `;
 
 const focusedLabelStyles = css`
-  color: ${({ theme }) => theme.colors.carolinaBlue};
+  color: ${({ theme }) => theme.colors.cultured};
 `;
 
 export const Label = styled(Text).attrs(() => ({
   family: undefined,
 }))<LabelProps>`
+  color: ${({ theme }) => theme.colors.marineBlue};
   font-size: 12px;
   line-height: 17px;
-  margin-top: 8px;
   text-align: center;
   ${({ focused }) => focused && focusedLabelStyles}
 `;
