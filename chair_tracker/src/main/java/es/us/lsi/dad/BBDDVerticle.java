@@ -57,6 +57,7 @@ public class BBDDVerticle extends AbstractVerticle {
 		// REGISTROS
 		obtenerRegistros();
 		obtenerRegistrosLlamadas();
+		obtenerRegistrosAlarmasUsuarioAnyo();
 		obtenerRegistrosAlarmas();
 		obtenerRegistrosAlarmasUsuario();
 		obtenerRegistrosLlamadasEnviadas();
@@ -827,6 +828,48 @@ public class BBDDVerticle extends AbstractVerticle {
 			});
 		});
 	}
+	
+	// Obtiene el registro de las alarmas de un mes y anyo asociadas a un usuario dado su hash_mac
+	private void obtenerRegistrosAlarmasUsuarioAnyo() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerRegistrosAlarmasUsuarioAnyo");
+
+		consumer.handler(message -> {
+			JsonObject jsonEditLlamada = new JsonObject(message.body());
+			String hash_mac_fk = jsonEditLlamada.getString("hash_mac_fk");
+			String anyo = jsonEditLlamada.getString("anyo");
+			
+			Query<RowSet<Row>> query = mySqlClient
+					.query("SELECT * FROM proyectodad.registros WHERE hash_mac_fk = '" + hash_mac_fk + "' AND YEAR(fecha) = " + anyo + ";");
+
+			query.execute(res -> {
+				JsonObject json = new JsonObject();
+				if (res.succeeded()) {
+
+					res.result().forEach(v -> {
+						RegistroImpl registro = new RegistroImpl();
+						registro.setOid_reg(v.getShort("oid_reg"));
+						registro.setTipo(v.getString("tipo"));
+						registro.setFecha(UsuarioImpl.ParseaLocalDateTimeFromJson(String.valueOf(v.getValue("fecha"))));
+						registro.setTrabajo(v.getShort("trabajo"));
+						registro.setDescanso(v.getShort("descanso"));
+						registro.setOid_llamada_fk(v.getShort("oid_llamada_fk"));
+						registro.setOid_alarma_fk(v.getShort("oid_alarma_fk"));
+						registro.sethash_mac_fk(v.getString("hash_mac_fk"));
+						registro.setRemitente_hash_mac_fk(v.getString("remitente_hash_mac_fk"));
+						registro.setDestinatario_hash_mac_fk(v.getString("destinatario_hash_mac_fk"));
+						System.out.println(json);
+						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
+
+					});
+				} else {
+					json.put(String.valueOf("ERROR"), res.cause());
+				}
+				;
+				message.reply(json);
+			});
+		});
+	}
+
 
 	// Obtiene el registro de llamadas enviadas por un usuario dado su hash_mac
 	private void obtenerRegistrosLlamadasEnviadas() {
