@@ -1,9 +1,9 @@
 import type { FC } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Welcome, Login, SignUp, Tabs } from 'containers';
+import CallHistory from 'containers/Main/CallHistory';
 import NewAlarms from 'containers/Main/Tabs/Screens/Alarms/NewAlarms';
 import AboutUs from 'containers/Main/Tabs/Screens/Profile/AboutUs';
-import WorkersList from 'containers/Main/WorkersList';
 import {
   generalStackScreenOptions,
   modalStackScreenOptions,
@@ -20,7 +20,7 @@ const AppNavigator: FC<Props> = () => {
         <Group screenOptions={generalStackScreenOptions}>
           <Screen name="Tabs" component={Tabs} />
           <Screen name="NewAlarms" component={NewAlarms} />
-          <Screen name="WorkersList" component={WorkersList} />
+          <Screen name="CallHistory" component={CallHistory} />
         </Group>
       ) : (
         <Group screenOptions={generalStackScreenOptions}>

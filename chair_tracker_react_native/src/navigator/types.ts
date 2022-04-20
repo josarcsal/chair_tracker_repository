@@ -13,7 +13,7 @@ export type ScreensParams = {
   NewAlarms: undefined;
   Stadistics: undefined;
   Profile: undefined;
-  WorkersList: undefined;
+  CallHistory: undefined;
   AboutUs: undefined;
   Contacts: undefined;
 };

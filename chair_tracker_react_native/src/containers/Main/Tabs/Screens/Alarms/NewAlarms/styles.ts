@@ -4,7 +4,7 @@ import type { ContainerProps } from '../types';
 export const Container = styled.SafeAreaView<ContainerProps>`
   flex: 1;
   padding-top: ${({ safeTop }) => `${safeTop}px`};
-  background-color: ${({ theme }) => theme.colors.fdWhite}; ;
+  background-color: ${({ theme }) => theme.colors.deepOcean};
 `;
 
 export const HourView = styled.View`
@@ -16,6 +16,7 @@ export const HourView = styled.View`
 export const Text = styled.Text`
   font-size: 19px;
   line-height: 41px;
+  color: ${({ theme }) => theme.colors.cultured};
 `;
 
 export const InputHour = styled.TextInput`

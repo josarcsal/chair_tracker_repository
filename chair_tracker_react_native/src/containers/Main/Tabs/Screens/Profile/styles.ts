@@ -37,7 +37,7 @@ export const LogOutButton = styled.TouchableOpacity`
   right: 16px;
 `;
 
-export const Workers = styled.TouchableOpacity`
+export const Calls = styled.TouchableOpacity`
   height: 60px;
   width: ${({ theme }) => theme.device.width * 0.8}px;
   background-color: ${({ theme }) => theme.colors.marineBlue};
