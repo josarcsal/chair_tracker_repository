@@ -18,7 +18,7 @@ if (
 
 const Root: FC<Props> = () => (
   <ThemeProvider theme={theme}>
-    <StatusBar />
+    <StatusBar light={true} />
     <SafeAreaProvider>
       <NavigationContainer>
         <Navigator />

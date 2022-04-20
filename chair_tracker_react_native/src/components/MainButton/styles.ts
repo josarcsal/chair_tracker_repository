@@ -4,8 +4,8 @@ import { Text as TextBase } from 'components';
 export const SignInButton = styled.TouchableOpacity`
   height: 60px;
   width: 95%;
-  background-color: ${({ theme }) => theme.colors.carolinaBlue};
-  border: 1px solid ${({ theme }) => theme.colors.grayX11};
+  background-color: ${({ theme }) => theme.colors.marineBlue};
+  border: 1px solid ${({ theme }) => theme.colors.marineBlue};
   border-radius: 8px;
   shadow-color: '#000';
   shadow-opacity: 0.1;
