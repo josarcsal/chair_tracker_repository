@@ -6,7 +6,7 @@ import NextIcon from 'components/Icons/NextIcon';
 import QuestionIcon from 'components/Icons/QuestionIcon';
 import useConnect from './connect';
 import {
-  Calendar,
+  CalendarItem,
   Card,
   Container,
   Detail,
@@ -42,7 +42,25 @@ const Profile: FC<Props> = () => {
           <NextIcon size={27} />
         </Workers>
         <Information>My schedule</Information>
-        <Calendar />
+
+        <CalendarItem
+          current={'2022-04-23'}
+          minDate={'2022-01-01'}
+          maxDate={'2022-12-31'}
+          onDayPress={(day) => {
+            console.log('selected day', day);
+          }}
+          onDayLongPress={(day) => {
+            console.log('selected day', day);
+          }}
+          monthFormat={'mm - yyyy'}
+          onMonthChange={(month) => {
+            console.log('month changed', month);
+          }}
+          onPressArrowLeft={(subtractMonth) => subtractMonth()}
+          onPressArrowRight={(addMonth) => addMonth()}
+        />
+
         <Information>Information</Information>
         <Card onPress={handleToAboutUs}>
           <InfoView>
