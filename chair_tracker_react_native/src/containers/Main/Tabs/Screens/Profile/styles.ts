@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import { Calendar } from 'react-native-calendars';
 
 export const Container = styled.ScrollView.attrs({
   contentContainerStyle: {
@@ -20,7 +21,7 @@ export const Title = styled.Text`
   font-weight: 700;
   line-height: 41px;
   letter-spacing: 0.41px;
-  color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.cultured};
 `;
 
 export const Subtitle = styled.Text`
@@ -28,7 +29,7 @@ export const Subtitle = styled.Text`
   font-weight: 400;
   line-height: 41px;
   letter-spacing: 0.41px;
-  color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.cultured};
 `;
 
 export const LogOutButton = styled.TouchableOpacity`
@@ -71,11 +72,17 @@ export const Information = styled.Text`
   margin: 0px 16px;
 `;
 
-export const Calendar = styled.View`
+export const CalendarItem = styled(Calendar).attrs({
+  hideExtraDays: true,
+  disableMonthChange: true,
+  firstDay: 1,
+  disableAllTouchEventsForDisabledDays: true,
+  enableSwipeMonths: true,
+})`
   align-self: center;
-  width: ${({ theme }) => theme.device.width * 0.85}px;
-  height: ${({ theme }) => theme.device.width * 0.85}px;
-  background-color: ${({ theme }) => theme.colors.beforeBlue};
+  width: ${({ theme }) => theme.device.width * 0.9}px;
+  padding-bottom: 5px;
+  background-color: ${({ theme }) => theme.colors.marineBlue};
   margin-top: 10px;
   margin-bottom: 20px;
 `;
