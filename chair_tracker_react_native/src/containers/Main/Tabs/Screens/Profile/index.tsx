@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import GroupIcon from 'components/Icons/GroupIcon';
+import CallIcon from 'components/Icons/CallIcon';
 import InfoIcon from 'components/Icons/InfoIcon';
 import LogoutIcon from 'components/Icons/LogoutIcon';
 import NextIcon from 'components/Icons/NextIcon';
@@ -18,12 +18,12 @@ import {
   Subtitle,
   Text,
   Title,
-  Workers,
+  Calls,
 } from './styles';
 import type { Props } from './types';
 
 const Profile: FC<Props> = () => {
-  const { handleToWorkersList, handleToAboutUs } = useConnect();
+  const { handleToCallHistory, handleToAboutUs } = useConnect();
   return (
     <>
       <Container>
@@ -34,13 +34,13 @@ const Profile: FC<Props> = () => {
             <LogoutIcon />
           </LogOutButton>
         </Header>
-        <Workers onPress={handleToWorkersList}>
+        <Calls onPress={handleToCallHistory}>
           <InfoView>
-            <GroupIcon size={30} />
-            <Text>Workers List</Text>
+            <CallIcon size={30} />
+            <Text>Call history</Text>
           </InfoView>
           <NextIcon size={27} />
-        </Workers>
+        </Calls>
         <Information>My schedule</Information>
         <Calendar />
         <Information>Information</Information>
