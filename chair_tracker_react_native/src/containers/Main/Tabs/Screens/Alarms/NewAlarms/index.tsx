@@ -1,6 +1,5 @@
 import type { FC } from 'react';
 import { useState } from 'react';
-import { Button } from 'react-native';
 import { Formik } from 'formik';
 import DatePicker from 'react-native-date-picker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -8,7 +7,15 @@ import DetailHeader from 'components/Header/DetailHeader';
 import MainHeader from 'components/Header/MainHeader';
 import MainButton from 'components/MainButton';
 import useConnect from './connect';
-import { ButtonView, Container, HourView, InputHour, Text } from './styles';
+import {
+  ButtonView,
+  Container,
+  HourView,
+  InputHour,
+  OpenButton,
+  OpenText,
+  Text,
+} from './styles';
 import type { Props } from './types';
 
 const NewAlarms: FC<Props> = () => {
@@ -49,7 +56,9 @@ const NewAlarms: FC<Props> = () => {
           <>
             <HourView>
               <Text>Start time:</Text>
-              <Button title="Open" onPress={() => setOpen1(true)} />
+              <OpenButton onPress={() => setOpen1(true)}>
+                <OpenText>OPEN</OpenText>
+              </OpenButton>
               <DatePicker
                 modal
                 mode="time"
@@ -71,7 +80,9 @@ const NewAlarms: FC<Props> = () => {
 
             <HourView>
               <Text>Finish time:</Text>
-              <Button title="Open" onPress={() => setOpen1(true)} />
+              <OpenButton onPress={() => setOpen1(true)}>
+                <OpenText>OPEN</OpenText>
+              </OpenButton>
               <DatePicker
                 modal
                 mode="time"
