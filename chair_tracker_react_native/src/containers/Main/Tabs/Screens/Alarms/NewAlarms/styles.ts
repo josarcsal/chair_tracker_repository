@@ -10,24 +10,35 @@ export const Container = styled.SafeAreaView<ContainerProps>`
 export const HourView = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  margin: 0px 16px;
+  margin: 8px 16px;
+  height: 35px;
 `;
 
 export const Text = styled.Text`
-  font-size: 19px;
+  font-size: 18px;
   line-height: 41px;
   color: ${({ theme }) => theme.colors.cultured};
 `;
 
-export const InputHour = styled.TextInput`
-  font-size: 16.5px;
+export const OpenButton = styled.TouchableOpacity`
   width: 23%;
-  height: 35px;
-  padding-left: 15px;
   background-color: ${({ theme }) => theme.colors.cultured};
   border-radius: 8px;
-  align-self: center;
-  justify-content: center;
+  align-items: center;
+`;
+
+export const OpenText = styled.Text`
+  font-size: 14px;
+  padding-top: 7px;
+  color: ${({ theme }) => theme.colors.marineBlue};
+`;
+
+export const InputHour = styled.TextInput`
+  font-size: 14px;
+  width: 23%;
+  background-color: ${({ theme }) => theme.colors.cultured};
+  border-radius: 8px;
+  text-align: center;
 `;
 
 export const ButtonView = styled.View`

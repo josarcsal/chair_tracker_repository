@@ -1,20 +1,13 @@
-import type { StyleProp, ViewStyle } from 'react-native';
+import type { RegistroLlamada } from 'axios/types/registro';
 
 export type Props = {
-  data: string[];
+  data: RegistroLlamada[];
 };
 
 export type CardItemProps = {
-  id: string;
-  tagColor?: string;
-  tagTitle?: string;
-  title?: string;
-  subtitle?: string;
-  duration?: string;
-  liked?: boolean;
-  onPressLike?: (id: string) => void;
-  onPressPlay?: (id: string) => void;
-  style?: StyleProp<ViewStyle>;
+  fecha: Date;
+  remitente_hash_mac_fk: string;
+  destinatario_hash_mac_fk: string;
 };
 
 export type RenderItemProps = {

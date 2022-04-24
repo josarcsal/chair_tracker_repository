@@ -1,4 +1,7 @@
-import type { Usuario as UsuarioType } from 'axios/types/usuario';
+import type {
+  ExisteUsuario as ExisteUsuarioType,
+  Usuario as UsuarioType,
+} from 'axios/types/usuario';
 
 const normalizeLogin = (login: String) => {
   var normalizedLogin = 'No last login';
@@ -28,4 +31,8 @@ export const normalizeUsuario = (usuario: UsuarioType) => ({
   nif_jefe: usuario.nif_jefe || '',
   nombre: usuario.nombre || '',
   rol: usuario.rol || '',
+});
+
+export const normalizeExisteUsuario = (usuario?: ExisteUsuarioType) => ({
+  existe: usuario?.existe || 0,
 });

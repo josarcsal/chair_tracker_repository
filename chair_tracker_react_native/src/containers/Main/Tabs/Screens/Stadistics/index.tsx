@@ -2,10 +2,13 @@ import type { FC } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import MainHeader from 'components/Header/MainHeader';
 import StadisticCard from 'components/StadisticCard';
+import useConnect from './connect';
 import { StadisticList, Container } from './styles';
 import type { Props } from './types';
 
 const Stadistics: FC<Props> = () => {
+  const { normalizedData } = useConnect();
+  console.log(normalizedData);
   const { top: safeTop } = useSafeAreaInsets();
 
   return (

@@ -13,6 +13,9 @@ export const useAlarmas = () => {
     },
   });
 
+  console.log(AXIOS_ENDPOINT);
+  console.log(data);
+
   const auxData = data || '';
   const normalizedData: Alarma[] = [];
 

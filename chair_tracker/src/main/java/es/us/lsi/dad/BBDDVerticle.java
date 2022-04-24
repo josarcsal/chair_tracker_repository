@@ -33,6 +33,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 		// USUARIOS
 		obtenerUsuarios();
+		existeUsuario();
 		borrarUsuario();
 		anadirUsuario();
 		editarUsuario();
@@ -104,6 +105,38 @@ public class BBDDVerticle extends AbstractVerticle {
 					json.put(String.valueOf("ERROR"), res.cause());
 				}
 				;
+				message.reply(json);
+			});
+		});
+	}
+	
+	// Borra un usuario de la BBDD dado su hash_mac
+	private void existeUsuario() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("existeUsuario");
+
+		consumer.handler(message -> {
+			
+			JsonObject jsonExisteUsuario = new JsonObject(message.body());
+			String hash_mac = jsonExisteUsuario.getString("hash_mac");
+			String contrasena = jsonExisteUsuario.getString("contrasena");
+
+			Query<RowSet<Row>> queryCount = mySqlClient
+					.query("SELECT COUNT(*) AS cuenta FROM proyectodad.usuarios WHERE hash_mac = '" + hash_mac + "' AND contrasena = '" + contrasena + "';");
+
+			queryCount.execute(res -> {
+				JsonObject json = new JsonObject();
+				if (res.succeeded()) {
+
+					Row rowCount = res.result().iterator().next();
+
+					if (rowCount.getInteger("cuenta") > 0) {
+						json.put(String.valueOf("existe"), rowCount.getInteger("cuenta"));
+					} else {
+						json.put(String.valueOf("existe"), 0);
+					}
+				} else {
+					message.reply("ERROR AL VERIFICAR AL USUARIO " + res.cause());
+				}
 				message.reply(json);
 			});
 		});

@@ -12,9 +12,14 @@ import type { Props } from './types';
 
 const CallHistory: FC<Props> = () => {
   const { safeTop } = useSafeAreaInsets();
-  const { handleGoBack, onPageScroll, currentPage } = useConnect();
+  const {
+    normalizedDataIncoming,
+    normalizedDataOutgoing,
+    handleGoBack,
+    onPageScroll,
+    currentPage,
+  } = useConnect();
   const pagerRef = useRef<PagerView | null>(null);
-  const hardCodedData = ['1', '2', '3', '4', '5', '6'];
 
   return (
     <Container safeTop={safeTop}>
@@ -27,10 +32,10 @@ const CallHistory: FC<Props> = () => {
         scrollEnabled
       >
         <Page key="1" collapsable={false}>
-          <List data={hardCodedData} />
+          <List data={normalizedDataIncoming} />
         </Page>
         <Page key="2" collapsable={false}>
-          <List data={hardCodedData} />
+          <List data={normalizedDataOutgoing} />
         </Page>
       </Pager>
     </Container>
