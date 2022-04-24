@@ -6,7 +6,7 @@ import { normalizeUsuario } from 'models/Usuario/index';
 export const useUsuarios = () => {
   const { data, loading, error } = useAxios<JSON>({
     baseURL: AXIOS_ENDPOINT,
-    url: '/usuarios',
+    url: '/usuarios/',
     headers: {
       'Content-Type': 'application/json',
       'X-Custom-Header': 'custom-header-value',
