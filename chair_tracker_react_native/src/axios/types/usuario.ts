@@ -8,3 +8,7 @@ export type Usuario = {
   nombre: string;
   rol: string;
 };
+
+export type ExisteUsuario = {
+  existe: number;
+};

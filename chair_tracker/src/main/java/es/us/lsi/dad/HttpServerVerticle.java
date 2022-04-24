@@ -30,7 +30,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 		// USUARIO
 		router.route("/api/usuarios/*").handler(BodyHandler.create());
 		router.get("/api/usuarios").handler(this::obtenerUsuarios);
-		router.get("/api/existeUsuario").handler(this::existeUsuario);
+		router.get("/api/usuarios/existeUsuario").handler(this::existeUsuario);
 		router.post("/api/usuarios/anadirUsuario").handler(this::anadirUsuario);
 		router.put("/api/usuarios/editarUsuario").handler(this::editarUsuario);
 		router.delete("/api/usuarios/borrarUsuario").handler(this::borrarUsuario);

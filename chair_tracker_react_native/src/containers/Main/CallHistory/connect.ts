@@ -1,9 +1,13 @@
 import { useCallback, useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import type { PagerViewOnPageScrollEvent } from 'react-native-pager-view';
+import { useRegistroLlamadasIncoming } from 'axios/hooks/Call history/useRegistroLlamadasIncoming';
+import { useRegistroLlamadasOutgoing } from 'axios/hooks/Call history/useRegistroLlamadasOutgoing';
 
 const useConnect = () => {
   const { goBack, canGoBack } = useNavigation();
+  const { normalizedDataIncoming } = useRegistroLlamadasIncoming();
+  const { normalizedDataOutgoing } = useRegistroLlamadasOutgoing();
 
   const handleGoBack = useCallback(() => {
     if (canGoBack()) {
@@ -21,6 +25,8 @@ const useConnect = () => {
   };
 
   return {
+    normalizedDataIncoming,
+    normalizedDataOutgoing,
     handleGoBack,
     onPageScroll,
     currentPage,

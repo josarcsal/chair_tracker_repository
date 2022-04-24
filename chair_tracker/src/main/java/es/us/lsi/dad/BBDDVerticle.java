@@ -130,9 +130,9 @@ public class BBDDVerticle extends AbstractVerticle {
 					Row rowCount = res.result().iterator().next();
 
 					if (rowCount.getInteger("cuenta") > 0) {
-						json.put(String.valueOf("Existe"), rowCount.getInteger("cuenta"));
+						json.put(String.valueOf("existe"), rowCount.getInteger("cuenta"));
 					} else {
-						json.put(String.valueOf("Existe"), 0);
+						json.put(String.valueOf("existe"), 0);
 					}
 				} else {
 					message.reply("ERROR AL VERIFICAR AL USUARIO " + res.cause());
