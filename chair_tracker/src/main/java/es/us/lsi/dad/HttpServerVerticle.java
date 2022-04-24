@@ -30,6 +30,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 		// USUARIO
 		router.route("/api/usuarios/*").handler(BodyHandler.create());
 		router.get("/api/usuarios").handler(this::obtenerUsuarios);
+		router.get("/api/existeUsuario").handler(this::existeUsuario);
 		router.post("/api/usuarios/anadirUsuario").handler(this::anadirUsuario);
 		router.put("/api/usuarios/editarUsuario").handler(this::editarUsuario);
 		router.delete("/api/usuarios/borrarUsuario").handler(this::borrarUsuario);
@@ -85,6 +86,36 @@ public class HttpServerVerticle extends AbstractVerticle {
 		// Peticion al bus de eventos para comunicarnos con el verticle BBDD, devolvemos
 		// respuesta en consecuencia
 		vertx.eventBus().request("obtenerUsuarios", "obtenerUsuarios", reply -> {
+			if (reply.succeeded()) {
+				System.out.println(reply.result().body());
+				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+						.end(String.valueOf(reply.result().body()));
+			} else {
+				routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
+						.end(String.valueOf(reply.result().body()));
+			}
+		});
+	}
+	
+	
+	private void existeUsuario(RoutingContext routingContext) {
+		JsonObject json = routingContext.getBodyAsJson();
+		HttpServerRequest request = routingContext.request();
+		MultiMap params = request.params();
+		List<String> hashMac = params.getAll("hash_mac");
+		boolean isHashMacEmpty = hashMac.isEmpty();
+		List<String> contrasena = params.getAll("contrasena");
+		boolean isContrasenaEmpty = contrasena.isEmpty();
+		JsonObject jsonRes = new JsonObject();
+		
+		if (json != null && isHashMacEmpty && isContrasenaEmpty) {
+			jsonRes = json;
+		} else {
+			jsonRes.put("hash_mac", hashMac.get(0));
+			jsonRes.put("contrasena", contrasena.get(0));
+		}
+
+		vertx.eventBus().request("existeUsuario", jsonRes.toString(), reply -> {
 			if (reply.succeeded()) {
 				System.out.println(reply.result().body());
 				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
