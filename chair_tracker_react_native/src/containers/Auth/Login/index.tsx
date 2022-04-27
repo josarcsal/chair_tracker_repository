@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { useCallback } from 'react';
 import { Formik } from 'formik';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DetailHeader from 'components/Header/DetailHeader';
@@ -16,8 +17,16 @@ import {
 import type { Props } from './types';
 
 const Login: FC<Props> = () => {
-  const { handleGoBack } = useConnect();
+  const { handleGoBack, setNif, setPassword } = useConnect();
   const { top: safeTop } = useSafeAreaInsets();
+
+  const handleLogIn = useCallback(
+    (values) => {
+      setNif(values.nif);
+      setPassword(values.contrasena);
+    },
+    [setNif, setPassword],
+  );
 
   return (
     <Container safeTop={safeTop}>
@@ -33,7 +42,7 @@ const Login: FC<Props> = () => {
           nif: '',
           contrasena: '',
         }}
-        onSubmit={(values) => console.log(values)}
+        onSubmit={handleLogIn}
       >
         {({
           handleSubmit,
