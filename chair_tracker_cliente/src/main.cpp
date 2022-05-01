@@ -67,7 +67,7 @@ HttpClient httpClient = HttpClient(espClient, server, atoi(http_port));
 
 //Obtiene mac y realiza hash con algoritmo sha1 para mayor seguridad
 String macEsp = sha1(WiFi.macAddress());
-String hashMac = macEsp.substring(0,9);
+String hashMac = macEsp.substring(0,10);
 
 //Gestion alarmas
 String proxima;
