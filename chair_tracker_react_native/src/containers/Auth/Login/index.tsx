@@ -4,7 +4,6 @@ import { Formik } from 'formik';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DetailHeader from 'components/Header/DetailHeader';
 import MainButton from 'components/MainButton';
-import SecondaryButton from 'components/SecondaryButton';
 import useConnect from './connect';
 import {
   Buttons,
@@ -84,7 +83,6 @@ const Login: FC<Props> = () => {
           </>
         )}
       </Formik>
-      <SecondaryButton text={'Forgot pasword?'} />
     </Container>
   );
 };

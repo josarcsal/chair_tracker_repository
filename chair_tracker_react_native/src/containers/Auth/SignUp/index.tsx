@@ -1,14 +1,19 @@
 import type { FC } from 'react';
 import { useState } from 'react';
-import { Picker } from '@react-native-picker/picker';
-
 import { Formik } from 'formik';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DetailHeader from 'components/Header/DetailHeader';
 import MainButton from 'components/MainButton';
 import SecondaryButton from 'components/SecondaryButton';
 import useConnect from './connect';
-import { Buttons, Container, Content, InputText, Title } from './styles';
+import {
+  Buttons,
+  Container,
+  Content,
+  InputText,
+  Picker,
+  Title,
+} from './styles';
 import type { Props } from './types';
 
 const SignUp: FC<Props> = () => {
@@ -26,6 +31,7 @@ const SignUp: FC<Props> = () => {
         validateOnMount={true}
         // validationSchema={loginValidationSchema}
         initialValues={{
+          hashMac: '',
           nif: '',
           contrasena: '',
           nombre: '',
@@ -46,6 +52,18 @@ const SignUp: FC<Props> = () => {
           // isValid,
         }) => (
           <>
+            <InputText
+              placeholder="HashMac"
+              onChangeText={handleChange('hashMac')}
+              onBlur={handleBlur('hashMac')}
+              value={values.hashMac}
+              keyboardType="default"
+            />
+
+            {/* {errors.nombresyapellidos && touched.nombresyapellidos && (
+              <Text style={styles.errorText}>{errors.nombresyapellidos}</Text>
+            )} */}
+
             <InputText
               placeholder="NIF"
               onChangeText={handleChange('nif')}
@@ -95,13 +113,6 @@ const SignUp: FC<Props> = () => {
               <Text style={styles.errorText}>{errors.email}</Text>
             )} */}
             <Picker
-              style={{
-                width: '99%',
-                alignSelf: 'center',
-                marginTop: -40,
-                marginBottom: -60,
-              }}
-              mode="dropdown"
               selectedValue={rol}
               onValueChange={(itemValue) => setRol(itemValue)}
             >
@@ -131,13 +142,13 @@ const SignUp: FC<Props> = () => {
                 text={'Create your account'}
                 handlePress={handleSubmit}
               />
+              <SecondaryButton
+                text={'By creating an account, you agree to our Terms'}
+              />
             </Buttons>
           </>
         )}
       </Formik>
-      <SecondaryButton
-        text={'By creating an account, you agree to our Terms'}
-      />
     </Container>
   );
 };

@@ -1,11 +1,12 @@
 import styled from 'styled-components/native';
+import { Picker as PickerBase } from '@react-native-picker/picker';
 import { Text as TextBase } from 'components';
 import type { ContainerProps } from './types';
 
 export const Container = styled.ScrollView<ContainerProps>`
   flex: 1;
   padding-top: ${({ safeTop }) => `${safeTop}px`};
-  background-color: ${({ theme }) => theme.colors.fdWhite}; ;
+  background-color: ${({ theme }) => theme.colors.deepOcean}; ;
 `;
 
 export const Content = styled.View`
@@ -15,10 +16,21 @@ export const Content = styled.View`
 
 export const Title = styled(TextBase)`
   font-size: 37px;
-  color: ${({ theme }) => theme.colors.graniteGray};
+  color: ${({ theme }) => theme.colors.cultured};
   font-weight: 400;
   margin-top: 8px;
 `;
+
+export const Picker = styled(PickerBase).attrs({
+  mode: 'dropdown',
+})`
+  align-items: center;
+  width: 93%;
+  margin: 5px 16px;
+  background-color: ${({ theme }) => theme.colors.fdWhite};
+  border: 1px solid ${({ theme }) => theme.colors.grayX11};
+  border-radius: 8px;
+` as unknown as typeof PickerBase;
 
 export const InputText = styled.TextInput`
   font-size: 18px;
@@ -34,5 +46,5 @@ export const InputText = styled.TextInput`
 `;
 
 export const Buttons = styled.View`
-  margin-top: 15px;
+  margin: 6px 0;
 `;

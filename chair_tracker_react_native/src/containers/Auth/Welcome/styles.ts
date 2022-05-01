@@ -1,4 +1,5 @@
 import styled from 'styled-components/native';
+import FastImage from 'react-native-fast-image';
 import { Text as TextBase } from 'components';
 import type { ContainerProps } from './types';
 
@@ -11,6 +12,18 @@ export const Container = styled.View<ContainerProps>`
 export const ImageContainer = styled.View`
   flex: 2;
   background-color: ${({ theme }) => theme.colors.deepOcean};
+`;
+
+export const Background = styled(FastImage).attrs({
+  resizeMode: 'cover',
+})`
+  border-radius: 12px;
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
 `;
 
 export const SubContainer = styled.View`
