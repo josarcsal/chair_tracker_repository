@@ -13,11 +13,13 @@ public class RegistroImpl {
 	protected Short oid_alarma_fk;
 	protected String hash_mac_fk;
 	protected String remitente_hash_mac_fk;
+	protected String remitente_nombre;
 	protected String destinatario_hash_mac_fk;
+	protected String destinatario_nombre;
 
 	public RegistroImpl(Short oid_reg, String tipo, LocalDateTime fecha, Short trabajo, Short descanso,
-			Short oid_llamada_fk, Short oid_alarma_fk, String hash_mac_fk, String remitente_hash_mac_fk,
-			String destinatario_hash_mac_fk) {
+			Short oid_llamada_fk, Short oid_alarma_fk, String hash_mac_fk, String remitente_hash_mac_fk, String remitente_nombre,
+			String destinatario_hash_mac_fk, String destinatario_nombre) {
 		super();
 		this.oid_reg = oid_reg;
 		this.tipo = tipo;
@@ -28,7 +30,9 @@ public class RegistroImpl {
 		this.oid_alarma_fk = oid_alarma_fk;
 		this.hash_mac_fk = hash_mac_fk;
 		this.remitente_hash_mac_fk = remitente_hash_mac_fk;
+		this.remitente_nombre = remitente_nombre;
 		this.destinatario_hash_mac_fk = destinatario_hash_mac_fk;
+		this.destinatario_nombre = destinatario_nombre;
 	}
 
 	public RegistroImpl() {
@@ -108,6 +112,14 @@ public class RegistroImpl {
 		this.remitente_hash_mac_fk = remitente_hash_mac_fk;
 	}
 
+	public String getRemitente_nombre() {
+		return remitente_nombre;
+	}
+
+	public void setRemitente_nombre(String remitente_nombre) {
+		this.remitente_nombre = remitente_nombre;
+	}
+
 	public String getDestinatario_hash_mac_fk() {
 		return destinatario_hash_mac_fk;
 	}
@@ -116,12 +128,21 @@ public class RegistroImpl {
 		this.destinatario_hash_mac_fk = destinatario_hash_mac_fk;
 	}
 
+	public String getDestinatario_nombre() {
+		return destinatario_nombre;
+	}
+
+	public void setDestinatario_nombre(String destinatario_nombre) {
+		this.destinatario_nombre = destinatario_nombre;
+	}
+	
 	@Override
 	public String toString() {
 		return "RegistroImpl [oid_reg=" + oid_reg + ", tipo=" + tipo + ", fecha=" + fecha + ", trabajo=" + trabajo
 				+ ", descanso=" + descanso + ", oid_llamada_fk=" + oid_llamada_fk + ", oid_alarma_fk=" + oid_alarma_fk
 				+ ", hash_mac_fk=" + hash_mac_fk + ", remitente_hash_mac_fk=" + remitente_hash_mac_fk
-				+ ", destinatario_hash_mac_fk=" + destinatario_hash_mac_fk + "]";
+				+ ", remitente_nombre=" + remitente_nombre + ", destinatario_hash_mac_fk=" + destinatario_hash_mac_fk
+				+ ", destinatario_nombre=" + destinatario_nombre + "]";
 	}
 
 	@Override
@@ -130,12 +151,14 @@ public class RegistroImpl {
 		int result = 1;
 		result = prime * result + ((descanso == null) ? 0 : descanso.hashCode());
 		result = prime * result + ((destinatario_hash_mac_fk == null) ? 0 : destinatario_hash_mac_fk.hashCode());
+		result = prime * result + ((destinatario_nombre == null) ? 0 : destinatario_nombre.hashCode());
 		result = prime * result + ((fecha == null) ? 0 : fecha.hashCode());
 		result = prime * result + ((hash_mac_fk == null) ? 0 : hash_mac_fk.hashCode());
 		result = prime * result + ((oid_alarma_fk == null) ? 0 : oid_alarma_fk.hashCode());
 		result = prime * result + ((oid_llamada_fk == null) ? 0 : oid_llamada_fk.hashCode());
 		result = prime * result + ((oid_reg == null) ? 0 : oid_reg.hashCode());
 		result = prime * result + ((remitente_hash_mac_fk == null) ? 0 : remitente_hash_mac_fk.hashCode());
+		result = prime * result + ((remitente_nombre == null) ? 0 : remitente_nombre.hashCode());
 		result = prime * result + ((tipo == null) ? 0 : tipo.hashCode());
 		result = prime * result + ((trabajo == null) ? 0 : trabajo.hashCode());
 		return result;
@@ -159,6 +182,11 @@ public class RegistroImpl {
 			if (other.destinatario_hash_mac_fk != null)
 				return false;
 		} else if (!destinatario_hash_mac_fk.equals(other.destinatario_hash_mac_fk))
+			return false;
+		if (destinatario_nombre == null) {
+			if (other.destinatario_nombre != null)
+				return false;
+		} else if (!destinatario_nombre.equals(other.destinatario_nombre))
 			return false;
 		if (fecha == null) {
 			if (other.fecha != null)
@@ -189,6 +217,11 @@ public class RegistroImpl {
 			if (other.remitente_hash_mac_fk != null)
 				return false;
 		} else if (!remitente_hash_mac_fk.equals(other.remitente_hash_mac_fk))
+			return false;
+		if (remitente_nombre == null) {
+			if (other.remitente_nombre != null)
+				return false;
+		} else if (!remitente_nombre.equals(other.remitente_nombre))
 			return false;
 		if (tipo == null) {
 			if (other.tipo != null)

@@ -1,7 +1,7 @@
-import { useUsuarios } from 'axios/hooks/Users/useUsuarios';
+import { useContactsUsuario } from 'axios/hooks/Users/useContactsUsuario';
 
 const useConnect = () => {
-  const { normalizedData } = useUsuarios();
+  const { normalizedData } = useContactsUsuario();
 
   return { normalizedData };
 };
