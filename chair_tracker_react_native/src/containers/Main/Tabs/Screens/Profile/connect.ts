@@ -1,4 +1,5 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/core';
 
 const useConnect = () => {
@@ -9,7 +10,18 @@ const useConnect = () => {
   const handleToAboutUs = useCallback(() => {
     navigate('AboutUs');
   }, [navigate]);
-  return { handleToCallHistory, handleToAboutUs };
+
+  const [nombre, setNombre] = useState<string | null>();
+  const [nifJefe, setNifJefe] = useState<string | null>();
+
+  async function readValue() {
+    const v = await AsyncStorage.getItem('nombre');
+    const y = await AsyncStorage.getItem('nif_jefe');
+    setNombre(v);
+    setNifJefe(y);
+  }
+
+  return { handleToCallHistory, handleToAboutUs, readValue, nombre, nifJefe };
 };
 
 export default useConnect;

@@ -197,11 +197,14 @@ public class BBDDVerticle extends AbstractVerticle {
 		consumer.handler(message -> {
 			
 			JsonObject jsonExisteUsuario = new JsonObject(message.body());
-			String hash_mac = jsonExisteUsuario.getString("hash_mac");
+			String nif = jsonExisteUsuario.getString("nif");
 			String contrasena = jsonExisteUsuario.getString("contrasena");
+			
+			System.out.println(nif);
+			System.out.println(contrasena);
 
 			Query<RowSet<Row>> queryCount = mySqlClient
-					.query("SELECT COUNT(*) AS cuenta FROM proyectodad.usuarios WHERE hash_mac = '" + hash_mac + "' AND contrasena = '" + contrasena + "';");
+					.query("SELECT COUNT(*), hash_mac, nombre, nif_jefe FROM proyectodad.usuarios WHERE nif = '" + nif + "' AND contrasena = '" + contrasena + "';");
 
 			queryCount.execute(res -> {
 				JsonObject json = new JsonObject();
@@ -209,8 +212,13 @@ public class BBDDVerticle extends AbstractVerticle {
 
 					Row rowCount = res.result().iterator().next();
 
-					if (rowCount.getInteger("cuenta") > 0) {
-						json.put(String.valueOf("existe"), rowCount.getInteger("cuenta"));
+					if (rowCount.getInteger("COUNT(*)") > 0) {
+						res.result().forEach(v -> {
+							json.put("existe", v.getInteger("COUNT(*)"));
+							json.put("hash_mac", v.getString("hash_mac"));
+							json.put("nombre", v.getString("nombre"));
+							json.put("nif_jefe", v.getString("nif_jefe"));
+						});
 					} else {
 						json.put(String.valueOf("existe"), 0);
 					}

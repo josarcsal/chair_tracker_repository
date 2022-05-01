@@ -129,16 +129,16 @@ public class HttpServerVerticle extends AbstractVerticle {
 		JsonObject json = routingContext.getBodyAsJson();
 		HttpServerRequest request = routingContext.request();
 		MultiMap params = request.params();
-		List<String> hashMac = params.getAll("hash_mac");
-		boolean isHashMacEmpty = hashMac.isEmpty();
+		List<String> nif = params.getAll("nif");
+		boolean isNifEmpty = nif.isEmpty();
 		List<String> contrasena = params.getAll("contrasena");
 		boolean isContrasenaEmpty = contrasena.isEmpty();
 		JsonObject jsonRes = new JsonObject();
 		
-		if (json != null && isHashMacEmpty && isContrasenaEmpty) {
+		if (json != null && isNifEmpty && isContrasenaEmpty) {
 			jsonRes = json;
 		} else {
-			jsonRes.put("hash_mac", hashMac.get(0));
+			jsonRes.put("nif", nif.get(0));
 			jsonRes.put("contrasena", contrasena.get(0));
 		}
 

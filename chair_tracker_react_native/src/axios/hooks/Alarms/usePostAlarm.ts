@@ -29,8 +29,5 @@ export const usePostAlarm = (
       hash_mac_fk: hashMac,
     },
   });
-
-  console.log(data);
-
   return { data, loading, error };
 };

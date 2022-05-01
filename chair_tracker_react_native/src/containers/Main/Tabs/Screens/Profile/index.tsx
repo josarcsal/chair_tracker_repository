@@ -25,13 +25,19 @@ import {
 import type { Props } from './types';
 
 const Profile: FC<Props> = () => {
-  const { handleToCallHistory, handleToAboutUs } = useConnect();
+  const { handleToCallHistory, handleToAboutUs, readValue, nombre, nifJefe } =
+    useConnect();
+  readValue();
   return (
     <>
       <Container>
         <Header>
-          <Title>Full name</Title>
-          <Subtitle>Boss: </Subtitle>
+          <Title>{nombre}</Title>
+          {nifJefe !== null ? (
+            <Subtitle>Worker</Subtitle>
+          ) : (
+            <Subtitle>Boss</Subtitle>
+          )}
           <LogOutButton
             onPress={() => {
               AsyncStorage.setItem('logged', '0');

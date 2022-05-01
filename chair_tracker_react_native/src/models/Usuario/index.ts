@@ -15,7 +15,6 @@ const normalizeLogin = (login: String) => {
         return value;
       })
       .join('/');
-    //2021-12-20T15:51:06
     const hour = login.split('T')[1].substring(0, 5);
     normalizedLogin = date + ' | ' + hour;
   }
@@ -34,5 +33,8 @@ export const normalizeUsuario = (usuario: UsuarioType) => ({
 });
 
 export const normalizeExisteUsuario = (usuario?: ExisteUsuarioType) => ({
-  existe: usuario?.existe || 0,
+  existe: usuario?.existe || -1,
+  hash_mac: usuario?.hash_mac || '',
+  nombre: usuario?.nombre || '',
+  nif_jefe: usuario?.nif_jefe || '',
 });

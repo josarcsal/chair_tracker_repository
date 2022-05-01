@@ -11,7 +11,7 @@ import { AddButton, AlarmList, Container } from './styles';
 import type { Props } from './types';
 
 const Alarms: FC<Props> = () => {
-  const { handleToAddAlarms, normalizedData } = useConnect();
+  const { handleToAddAlarms, normalizedData, readValue } = useConnect();
   const handleKeyExtractor = (item: Alarma) => item.oid_alarma.toString();
   const handleRenderItem = useCallback(
     ({ item }: AlarmProps) => (
@@ -27,7 +27,7 @@ const Alarms: FC<Props> = () => {
     [],
   );
   const { top: safeTop } = useSafeAreaInsets();
-
+  readValue();
   return (
     <Container safeTop={safeTop}>
       <MainHeader title="Alarms" subtitle="Your schedule" />
