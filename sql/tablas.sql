@@ -7,7 +7,7 @@ DROP TABLE Alarmas;
 DROP TABLE Usuarios;
 
 CREATE TABLE Usuarios(
-	hash_mac VARCHAR(40) PRIMARY KEY,
+	hash_mac VARCHAR(10) PRIMARY KEY,
     nif         VARCHAR(9) NOT NULL,
     contrasena  VARCHAR(64) NOT NULL,
     last_login   DATETIME,
@@ -26,7 +26,7 @@ CREATE TABLE Alarmas(
     t_descanso	SMALLINT,
     ciclo_trabajo		SMALLINT,
     ciclo_descanso SMALLINT,
-    hash_mac_fk VARCHAR(40),
+    hash_mac_fk VARCHAR(10),
     FOREIGN KEY (hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE
 );
 
@@ -35,8 +35,8 @@ CREATE TABLE Llamadas(
     estado 		VARCHAR(10) CHECK(estado IN ('Pendiente', 'Contestada')) NOT NULL,
     desde		VARCHAR(20),
     descripcion	VARCHAR(64),
-    remitente_hash_mac_fk VARCHAR(40),
-    destinatario_hash_mac_fk VARCHAR(40),
+    remitente_hash_mac_fk VARCHAR(10),
+    destinatario_hash_mac_fk VARCHAR(10),
     FOREIGN KEY (remitente_hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE,
     FOREIGN KEY (destinatario_hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE
 );
@@ -49,9 +49,11 @@ CREATE TABLE Registros(
     descanso 	SMALLINT,
     oid_llamada_fk	SMALLINT NULL,
     oid_alarma_fk	SMALLINT NULL,
-	hash_mac_fk VARCHAR(40) NULL,
-	remitente_hash_mac_fk VARCHAR(40) NULL,
-    destinatario_hash_mac_fk VARCHAR(40) NULL,
+	hash_mac_fk VARCHAR(10) NULL,
+	remitente_hash_mac_fk VARCHAR(10) NULL,
+	remitente_nombre VARCHAR(64),
+    destinatario_hash_mac_fk VARCHAR(10) NULL,
+	destinatario_nombre VARCHAR(64),
     FOREIGN KEY (hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE,
     FOREIGN KEY (remitente_hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE,
     FOREIGN KEY (destinatario_hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE,

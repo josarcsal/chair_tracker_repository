@@ -13,16 +13,22 @@ DELIMITER //
 CREATE TRIGGER Rellena_Registros_Llamadas_INSERT AFTER INSERT 
 	ON proyectodad.llamadas FOR EACH ROW
     BEGIN
-    INSERT INTO proyectodad.registros (tipo, fecha, trabajo, descanso, oid_llamada_fk, oid_alarma_fk, hash_mac_fk, remitente_hash_mac_fk, destinatario_hash_mac_fk) 
-		VALUES ('L', NOW(), NULL, NULL, NEW.oid_llamada, NULL, NULL, NEW.remitente_hash_mac_fk, NEW.destinatario_hash_mac_fk);
+	DECLARE remitenteNombreAux VARCHAR(20); DECLARE remitenteApellidosAux VARCHAR(64); 	
+    DECLARE destinatarioNombreAux VARCHAR(20); DECLARE destinatarioApellidosAux VARCHAR(64);
+    
+	SELECT nombre, apellidos INTO remitenteNombreAux, remitenteApellidosAux FROM proyectodad.usuarios WHERE hash_mac = NEW.remitente_hash_mac_fk;
+	SELECT nombre, apellidos INTO destinatarioNombreAux, destinatarioApellidosAux FROM proyectodad.usuarios WHERE hash_mac = NEW.destinatario_hash_mac_fk;
+
+    INSERT INTO proyectodad.registros (tipo, fecha, trabajo, descanso, oid_llamada_fk, oid_alarma_fk, hash_mac_fk, remitente_hash_mac_fk, remitente_nombre, destinatario_hash_mac_fk, destinatario_nombre) 
+		VALUES ('L', NOW(), NULL, NULL, NEW.oid_llamada, NULL, NULL, NEW.remitente_hash_mac_fk, CONCAT(remitenteNombreAux, ' ', remitenteApellidosAux), NEW.destinatario_hash_mac_fk, CONCAT(destinatarioNombreAux, ' ', destinatarioApellidosAux));
 END//
 
 DELIMITER //
 CREATE TRIGGER Rellena_Registros_Alarmas_INSERT AFTER INSERT
 	ON proyectodad.alarmas FOR EACH ROW
     BEGIN
-    INSERT INTO proyectodad.registros (tipo, fecha, trabajo, descanso, oid_llamada_fk, oid_alarma_fk, hash_mac_fk, remitente_hash_mac_fk, destinatario_hash_mac_fk) 
-		VALUES ('A', NOW(), NEW.ciclo_trabajo * NEW.t_trabajo, NEW.ciclo_descanso * NEW.t_descanso, NULL, NEW.oid_alarma, NEW.hash_mac_fk, NULL, NULL);
+    INSERT INTO proyectodad.registros (tipo, fecha, trabajo, descanso, oid_llamada_fk, oid_alarma_fk, hash_mac_fk, remitente_hash_mac_fk, remitente_nombre, destinatario_hash_mac_fk, destinatario_nombre) 
+		VALUES ('A', NOW(), NEW.ciclo_trabajo * NEW.t_trabajo, NEW.ciclo_descanso * NEW.t_descanso, NULL, NEW.oid_alarma, NEW.hash_mac_fk, NULL, NULL, NULL, NULL);
 END//
 
 DELIMITER //
@@ -39,8 +45,8 @@ CREATE TRIGGER Rellena_Registros_Alarmas_UPDATE BEFORE UPDATE
 	
 	IF(Month(NOW()) > Month(fechaAux)) 
 		THEN
-		INSERT INTO proyectodad.registros (tipo, fecha, trabajo, descanso, oid_llamada_fk, oid_alarma_fk, hash_mac_fk, remitente_hash_mac_fk, destinatario_hash_mac_fk) 
-		VALUES ('A', NOW(),  0, 0, NULL, NEW.oid_alarma, NEW.hash_mac_fk, NULL, NULL);
+		INSERT INTO proyectodad.registros (tipo, fecha, trabajo, descanso, oid_llamada_fk, oid_alarma_fk, hash_mac_fk, remitente_hash_mac_fk, remitente_nombre, destinatario_hash_mac_fk, destinatario_nombre) 
+		VALUES ('A', NOW(),  0, 0, NULL, NEW.oid_alarma, NEW.hash_mac_fk, NULL, NULL, NULL, NULL);
 
 	ELSEIF(Month(NOW()) <= Month(fechaAux) AND nRegistros <= 1) 
 		THEN

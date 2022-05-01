@@ -33,6 +33,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 		// USUARIOS
 		obtenerUsuarios();
+		obtenerContactos();
 		existeUsuario();
 		borrarUsuario();
 		anadirUsuario();
@@ -106,6 +107,85 @@ public class BBDDVerticle extends AbstractVerticle {
 				}
 				;
 				message.reply(json);
+			});
+		});
+	}
+	
+	// Obtiene todos los contactos de un usuario de la BBDD
+	private void obtenerContactos() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerContactos");
+
+		consumer.handler(message -> {
+			JsonObject jsonHash = new JsonObject(message.body());
+			String hash_mac = jsonHash.getString("hash_mac");
+
+			Query<RowSet<Row>> queryCount = mySqlClient
+					.query("SELECT rol, nif FROM proyectodad.usuarios WHERE hash_mac = '" + hash_mac + "';");
+
+			queryCount.execute(res -> {
+				if (res.succeeded()) {
+
+					Row rowCount = res.result().iterator().next();
+
+					if (rowCount.getString("rol").equals("J")) {
+
+						Query<RowSet<Row>> queryJefe = mySqlClient
+								.query("SELECT * FROM proyectodad.Usuarios WHERE nif_jefe = '" + rowCount.getString("nif") + "' OR rol = 'J';");
+
+						queryJefe.execute(resQueryJefe -> {
+							JsonObject jsonJefe = new JsonObject();
+
+							if (resQueryJefe.succeeded()) {
+								resQueryJefe.result().forEach(v -> {
+									UsuarioImpl usuario = new UsuarioImpl();
+									usuario.setHash_mac(v.getString("hash_mac"));
+									usuario.setNif(v.getString("nif"));
+									usuario.setContrasena(v.getString("contrasena"));
+									usuario.setLast_login(
+											UsuarioImpl.ParseaLocalDateTimeFromJson(String.valueOf(v.getValue("last_login"))));
+									usuario.setNombre(v.getString("nombre"));
+									usuario.setApellidos(v.getString("apellidos"));
+									usuario.setRol(v.getString("rol"));
+									usuario.setNif_jefe(v.getString("nif_jefe"));
+									System.out.println(jsonJefe);
+									jsonJefe.put(v.getString("hash_mac"), v.toJson());
+								});
+							} else {
+								jsonJefe.put(String.valueOf("ERROR"), res.cause());
+							}
+							message.reply(jsonJefe);
+						});
+					} else {
+						Query<RowSet<Row>> queryEmpleado = mySqlClient
+								.query("SELECT * FROM proyectodad.Usuarios WHERE nif_jefe = '" + rowCount.getString("nif") + "' OR nif = '"+  rowCount.getString("nif") +"';");
+
+						queryEmpleado.execute(resQueryEmpleado -> {
+							JsonObject jsonEmpleado = new JsonObject();
+
+							if (resQueryEmpleado.succeeded()) {
+								resQueryEmpleado.result().forEach(v -> {
+									UsuarioImpl usuario = new UsuarioImpl();
+									usuario.setHash_mac(v.getString("hash_mac"));
+									usuario.setNif(v.getString("nif"));
+									usuario.setContrasena(v.getString("contrasena"));
+									usuario.setLast_login(
+											UsuarioImpl.ParseaLocalDateTimeFromJson(String.valueOf(v.getValue("last_login"))));
+									usuario.setNombre(v.getString("nombre"));
+									usuario.setApellidos(v.getString("apellidos"));
+									usuario.setRol(v.getString("rol"));
+									usuario.setNif_jefe(v.getString("nif_jefe"));
+									System.out.println(jsonEmpleado);
+									jsonEmpleado.put(v.getString("hash_mac"), v.toJson());
+								});
+							} else {
+								jsonEmpleado.put(String.valueOf("ERROR"), res.cause());
+							}
+							message.reply(jsonEmpleado);
+						});					}
+				} else {
+					message.reply("ERROR AL OBTENER CONTACTOS" + res.cause());
+				}
+
 			});
 		});
 	}
@@ -736,7 +816,9 @@ public class BBDDVerticle extends AbstractVerticle {
 						registro.setOid_alarma_fk(v.getShort("oid_alarma_fk"));
 						registro.sethash_mac_fk(v.getString("hash_mac_fk"));
 						registro.setRemitente_hash_mac_fk(v.getString("remitente_hash_mac_fk"));
+						registro.setRemitente_nombre(v.getString("remitente_nombre"));
 						registro.setDestinatario_hash_mac_fk(v.getString("destinatario_hash_mac_fk"));
+						registro.setDestinatario_nombre(v.getString("destinatario_nombre"));
 						System.out.println(json);
 						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
 
@@ -773,7 +855,9 @@ public class BBDDVerticle extends AbstractVerticle {
 						registro.setOid_alarma_fk(v.getShort("oid_alarma_fk"));
 						registro.sethash_mac_fk(v.getString("hash_mac_fk"));
 						registro.setRemitente_hash_mac_fk(v.getString("remitente_hash_mac_fk"));
+						registro.setRemitente_nombre(v.getString("remitente_nombre"));
 						registro.setDestinatario_hash_mac_fk(v.getString("destinatario_hash_mac_fk"));
+						registro.setDestinatario_nombre(v.getString("destinatario_nombre"));
 						System.out.println(json);
 						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
 
@@ -810,7 +894,9 @@ public class BBDDVerticle extends AbstractVerticle {
 						registro.setOid_alarma_fk(v.getShort("oid_alarma_fk"));
 						registro.sethash_mac_fk(v.getString("hash_mac_fk"));
 						registro.setRemitente_hash_mac_fk(v.getString("remitente_hash_mac_fk"));
+						registro.setRemitente_nombre(v.getString("remitente_nombre"));
 						registro.setDestinatario_hash_mac_fk(v.getString("destinatario_hash_mac_fk"));
+						registro.setDestinatario_nombre(v.getString("destinatario_nombre"));
 						System.out.println(json);
 						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
 
@@ -850,7 +936,9 @@ public class BBDDVerticle extends AbstractVerticle {
 						registro.setOid_alarma_fk(v.getShort("oid_alarma_fk"));
 						registro.sethash_mac_fk(v.getString("hash_mac_fk"));
 						registro.setRemitente_hash_mac_fk(v.getString("remitente_hash_mac_fk"));
+						registro.setRemitente_nombre(v.getString("remitente_nombre"));
 						registro.setDestinatario_hash_mac_fk(v.getString("destinatario_hash_mac_fk"));
+						registro.setDestinatario_nombre(v.getString("destinatario_nombre"));
 						System.out.println(json);
 						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
 
@@ -891,7 +979,9 @@ public class BBDDVerticle extends AbstractVerticle {
 						registro.setOid_alarma_fk(v.getShort("oid_alarma_fk"));
 						registro.sethash_mac_fk(v.getString("hash_mac_fk"));
 						registro.setRemitente_hash_mac_fk(v.getString("remitente_hash_mac_fk"));
+						registro.setRemitente_nombre(v.getString("remitente_nombre"));
 						registro.setDestinatario_hash_mac_fk(v.getString("destinatario_hash_mac_fk"));
+						registro.setDestinatario_nombre(v.getString("destinatario_nombre"));
 						System.out.println(json);
 						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
 
@@ -933,7 +1023,9 @@ public class BBDDVerticle extends AbstractVerticle {
 						registro.setOid_alarma_fk(v.getShort("oid_alarma_fk"));
 						registro.sethash_mac_fk(v.getString("hash_mac_fk"));
 						registro.setRemitente_hash_mac_fk(v.getString("remitente_hash_mac_fk"));
+						registro.setRemitente_nombre(v.getString("remitente_nombre"));
 						registro.setDestinatario_hash_mac_fk(v.getString("destinatario_hash_mac_fk"));
+						registro.setDestinatario_nombre(v.getString("destinatario_nombre"));
 						System.out.println(json);
 						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
 
@@ -974,7 +1066,9 @@ public class BBDDVerticle extends AbstractVerticle {
 						registro.setOid_alarma_fk(v.getShort("oid_alarma_fk"));
 						registro.sethash_mac_fk(v.getString("hash_mac_fk"));
 						registro.setRemitente_hash_mac_fk(v.getString("remitente_hash_mac_fk"));
+						registro.setRemitente_nombre(v.getString("remitente_nombre"));
 						registro.setDestinatario_hash_mac_fk(v.getString("destinatario_hash_mac_fk"));
+						registro.setDestinatario_nombre(v.getString("destinatario_nombre"));
 						System.out.println(json);
 						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
 
