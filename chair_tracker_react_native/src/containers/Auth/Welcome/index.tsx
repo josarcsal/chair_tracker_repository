@@ -1,9 +1,11 @@
 import type { FC } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { LOGO } from 'assets/images';
 import MainButton from 'components/MainButton';
 import SecondaryButton from 'components/SecondaryButton';
 import useConnect from './connect';
 import {
+  Background,
   Container,
   ImageContainer,
   SubContainer,
@@ -18,7 +20,9 @@ const Welcome: FC<Props> = () => {
 
   return (
     <Container safeTop={safeTop}>
-      <ImageContainer>{/* <Image></Image> */}</ImageContainer>
+      <ImageContainer>
+        <Background source={LOGO} />
+      </ImageContainer>
 
       <SubContainer>
         <Title>Welcome</Title>
