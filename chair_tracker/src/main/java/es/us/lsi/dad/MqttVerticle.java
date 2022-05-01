@@ -21,12 +21,12 @@ public class MqttVerticle extends AbstractVerticle {
 		mqttClient.connect(1883, "localhost", connection -> {
 			if (connection.succeeded()) {
 				System.out.println("Conectado cliente mqtt");
-				
+
 			} else {
 				System.out.println("Se ha producido un error en la conexión al broker");
 			}
 		});
-		
+
 		actualizacionAlarmas();
 		llamadaAUsuario();
 	}
@@ -35,10 +35,11 @@ public class MqttVerticle extends AbstractVerticle {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("llamadaAUsuario");
 
 		consumer.handler(message -> {
-			
+
 			JsonObject json = new JsonObject(message.body());
-			mqttClient.publish(json.getString("destinatario_hash_mac_fk") + "/llamadas", Buffer.buffer("Llamada desde " +json.getString("remitente_hash_mac_fk")), MqttQoS.AT_LEAST_ONCE, false, false,
-					publishHandler -> {
+			mqttClient.publish(json.getString("destinatario_hash_mac_fk") + "/llamadas",
+					Buffer.buffer("Llamada desde " + json.getString("remitente_hash_mac_fk")), MqttQoS.AT_LEAST_ONCE,
+					false, false, publishHandler -> {
 						if (publishHandler.succeeded()) {
 							System.out.println("Message has been published");
 						} else {
@@ -48,28 +49,26 @@ public class MqttVerticle extends AbstractVerticle {
 					});
 		});
 	}
-	
+
 	private void actualizacionAlarmas() {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("actualizacionAlarmas");
 
 		consumer.handler(message -> {
-			
+
 			JsonObject json = new JsonObject(message.body());
 
-			
-			mqttClient.publish(json.getString("hash_mac_fk") + "/alarmas/refresh", Buffer.buffer("Alarmas han sido actualizadas"), MqttQoS.AT_LEAST_ONCE, false, false,
-					publishHandler -> {
-						if (publishHandler.succeeded()) {
-							System.out.println("Message has been published");
-						} else {
-							System.out.println("Error while publishing message");
-						}
+			if (json.getString("hash_mac_fk") != "") {
+				mqttClient.publish(json.getString("hash_mac_fk") + "/alarmas/refresh",
+						Buffer.buffer("Alarmas han sido actualizadas"), MqttQoS.AT_LEAST_ONCE, false, false,
+						publishHandler -> {
+							if (publishHandler.succeeded()) {
+								System.out.println("Message has been published");
+							} else {
+								System.out.println("Error while publishing message");
+							}
 
-					});
+						});
+			}
 		});
 	}
-	
-	
-
-
 }

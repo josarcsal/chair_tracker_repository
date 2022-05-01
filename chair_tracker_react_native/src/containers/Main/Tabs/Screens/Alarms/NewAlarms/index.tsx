@@ -20,14 +20,11 @@ import type { Props } from './types';
 
 const NewAlarms: FC<Props> = () => {
   const { top: safeTop } = useSafeAreaInsets();
-  const { handleGoBack } = useConnect();
-
+  const { handleGoBack, setNewAlarm, normalizedHour } = useConnect();
   const [date1, setDate1] = useState(new Date());
   const [open1, setOpen1] = useState(false);
-
   const [date2, setDate2] = useState(new Date());
   const [open2, setOpen2] = useState(false);
-
   return (
     <Container safeTop={safeTop}>
       <DetailHeader onPressBack={handleGoBack} />
@@ -37,11 +34,21 @@ const NewAlarms: FC<Props> = () => {
         // validationSchema={loginValidationSchema}
         initialValues={{
           days: '',
-          t_trabajo: '',
-          t_descanso: '',
+          t_trabajo: 0,
+          t_descanso: 0,
         }}
         onSubmit={(values) => {
-          console.log(values);
+          setNewAlarm({
+            oid_alarma: 0,
+            dias: values.days,
+            t_inicio: normalizedHour(date2.toTimeString()),
+            t_fin: normalizedHour(date1.toTimeString()),
+            t_trabajo: values.t_trabajo,
+            t_descanso: values.t_descanso,
+            ciclo_trabajo: 0,
+            ciclo_descanso: 0,
+            hash_mac_fk: '878f387896e2978cf2af1acddf87750a47c431e9',
+          });
         }}
       >
         {({
@@ -106,7 +113,7 @@ const NewAlarms: FC<Props> = () => {
                 placeholder="In mins"
                 onChangeText={handleChange('t_trabajo')}
                 onBlur={handleBlur('t_trabajo')}
-                value={values.t_trabajo}
+                value={values.t_trabajo.toString()}
                 keyboardType="default"
               />
             </HourView>
@@ -121,7 +128,7 @@ const NewAlarms: FC<Props> = () => {
                 placeholder="In mins"
                 onChangeText={handleChange('t_descanso')}
                 onBlur={handleBlur('t_descanso')}
-                value={values.t_descanso}
+                value={values.t_descanso.toString()}
                 keyboardType="default"
               />
             </HourView>

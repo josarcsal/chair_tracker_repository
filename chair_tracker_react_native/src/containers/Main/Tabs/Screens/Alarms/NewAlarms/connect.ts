@@ -1,5 +1,7 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
+import { usePostAlarm } from 'axios/hooks/Alarms/usePostAlarm';
+import type { Alarma } from 'axios/types/alarma';
 
 const useConnect = () => {
   const { goBack, canGoBack } = useNavigation();
@@ -10,7 +12,33 @@ const useConnect = () => {
     }
   }, [canGoBack, goBack]);
 
-  return { handleGoBack };
+  const [newAlarm, setNewAlarm] = useState<Alarma>();
+
+  const normalizedHour = (hour: string) => {
+    var aux = 'PT';
+    var time = hour.split(':');
+    var h = time[0];
+    var m = time[1];
+    var s = time[2].substring(0, 1);
+    return aux + h + 'H' + m + 'M' + s + 'S';
+  };
+
+  usePostAlarm(
+    newAlarm?.dias || '',
+    newAlarm?.t_inicio || '',
+    newAlarm?.t_fin || '',
+    newAlarm?.t_trabajo || 0,
+    newAlarm?.t_descanso || 0,
+    newAlarm?.ciclo_trabajo || 0,
+    newAlarm?.ciclo_descanso || 0,
+    newAlarm?.hash_mac_fk || '',
+  );
+
+  return {
+    handleGoBack,
+    setNewAlarm,
+    normalizedHour,
+  };
 };
 
 export default useConnect;

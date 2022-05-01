@@ -503,34 +503,36 @@ public class BBDDVerticle extends AbstractVerticle {
 
 		consumer.handler(message -> {
 			JsonObject jsonNewAlarma = new JsonObject(message.body());
-			AlarmaImpl newAlarma = new AlarmaImpl();
+			if(jsonNewAlarma.getString("hash_mac_fk") != "") {
+				AlarmaImpl newAlarma = new AlarmaImpl();
+				// newAlarma.setOid_alarma(Short.valueOf(jsonNewAlarma.getString("oid_alarma")));
+				newAlarma.setDias(jsonNewAlarma.getString("dias"));
+				newAlarma.setT_inicio(AlarmaImpl.ParseaLocalTimeFromJson(jsonNewAlarma.getString("t_inicio")));
+				newAlarma.setT_fin(AlarmaImpl.ParseaLocalTimeFromJson(jsonNewAlarma.getString("t_fin")));
+				newAlarma.setT_trabajo(Short.valueOf(jsonNewAlarma.getString("t_trabajo")));
+				newAlarma.setT_descanso(Short.valueOf(jsonNewAlarma.getString("t_descanso")));
+				newAlarma.setCiclo_trabajo(Short.valueOf(jsonNewAlarma.getString("ciclo_trabajo")));
+				newAlarma.setCiclo_descanso(Short.valueOf(jsonNewAlarma.getString("ciclo_descanso")));
+				newAlarma.setHash_mac_fk(jsonNewAlarma.getString("hash_mac_fk"));
 
-			// newAlarma.setOid_alarma(Short.valueOf(jsonNewAlarma.getString("oid_alarma")));
-			newAlarma.setDias(jsonNewAlarma.getString("dias"));
-			newAlarma.setT_inicio(AlarmaImpl.ParseaLocalTimeFromJson(jsonNewAlarma.getString("t_inicio")));
-			newAlarma.setT_fin(AlarmaImpl.ParseaLocalTimeFromJson(jsonNewAlarma.getString("t_fin")));
-			newAlarma.setT_trabajo(Short.valueOf(jsonNewAlarma.getString("t_trabajo")));
-			newAlarma.setT_descanso(Short.valueOf(jsonNewAlarma.getString("t_descanso")));
-			newAlarma.setCiclo_trabajo(Short.valueOf(jsonNewAlarma.getString("ciclo_trabajo")));
-			newAlarma.setCiclo_descanso(Short.valueOf(jsonNewAlarma.getString("ciclo_descanso")));
-			newAlarma.setHash_mac_fk(jsonNewAlarma.getString("hash_mac_fk"));
+				Query<RowSet<Row>> query = mySqlClient
+						.query("INSERT INTO proyectodad.alarmas(dias, t_inicio, t_fin,"
+								+ "t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk) " + "VALUES ('"
+								+ newAlarma.getDias() + "','" + newAlarma.getT_inicio() + "','" + newAlarma.getT_fin()
+								+ "','" + newAlarma.getT_trabajo() + "','" + newAlarma.getT_descanso() + "','"
+								+ newAlarma.getCiclo_trabajo() + "','" + newAlarma.getCiclo_descanso() + "','"
+								+ newAlarma.getHash_mac_fk() + "');");
 
-			Query<RowSet<Row>> query = mySqlClient
-					.query("INSERT INTO proyectodad.alarmas(dias, t_inicio, t_fin,"
-							+ "t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk) " + "VALUES ('"
-							+ newAlarma.getDias() + "','" + newAlarma.getT_inicio() + "','" + newAlarma.getT_fin()
-							+ "','" + newAlarma.getT_trabajo() + "','" + newAlarma.getT_descanso() + "','"
-							+ newAlarma.getCiclo_trabajo() + "','" + newAlarma.getCiclo_descanso() + "','"
-							+ newAlarma.getHash_mac_fk() + "');");
-
-			query.execute(res -> {
-				if (res.succeeded()) {
-					message.reply(jsonNewAlarma);
-				} else {
-					message.reply("ERROR AL AÑADIR LA ALARMA " + res.cause());
-				}
-				;
-			});
+				query.execute(res -> {
+					if (res.succeeded()) {
+						message.reply(jsonNewAlarma);
+					} else {
+						message.reply("ERROR AL AÑADIR LA ALARMA " + res.cause());
+					}
+					;
+				});
+			}
+			if(jsonNewAlarma.getString("hash_mac_fk") == "") message.reply(jsonNewAlarma);
 		});
 	}
 
