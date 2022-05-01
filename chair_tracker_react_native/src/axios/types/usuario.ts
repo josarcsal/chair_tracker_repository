@@ -11,4 +11,7 @@ export type Usuario = {
 
 export type ExisteUsuario = {
   existe: number;
+  hash_mac: string;
+  nombre: string;
+  nif_jefe: string;
 };

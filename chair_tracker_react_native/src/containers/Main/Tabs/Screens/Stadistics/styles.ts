@@ -1,4 +1,6 @@
+import type { FlatList } from 'react-native';
 import styled from 'styled-components/native';
+import type { RegistroAlarma } from 'axios/types/registro';
 import type { ContainerProps } from './types';
 
 export const Container = styled.SafeAreaView<ContainerProps>`
@@ -15,11 +17,11 @@ export const AddButton = styled.TouchableOpacity`
   right: 22px;
 `;
 
-export const StadisticList = styled.FlatList.attrs({
+export const StadisticList = styled.FlatList.attrs<RegistroAlarma>({
   showsVerticalScrollIndicator: false,
   contentContainerStyle: {
     paddingTop: 10,
     paddingBottom: 70,
     alignItems: 'center',
   },
-})``;
+})`` as unknown as typeof FlatList;

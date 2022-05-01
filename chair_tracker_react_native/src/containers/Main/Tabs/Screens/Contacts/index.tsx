@@ -10,19 +10,25 @@ import type { UserProps } from './types';
 import type { Props } from './types';
 
 const Contacts: FC<Props> = () => {
-  const { normalizedData } = useConnect();
+  const { normalizedData, nifJefe, readValue } = useConnect();
   const { top: safeTop } = useSafeAreaInsets();
   const handleKeyExtractor = (item: Usuario) => item.hash_mac;
+
+  const isBoss = nifJefe === null;
+
   const handleRenderItem = useCallback(
     ({ item }: UserProps) => (
       <ContactCard
         nombre={item.nombre}
         apellidos={item.apellidos}
         last_login={item.last_login}
+        isBoss={isBoss && item.rol === 'E'}
       />
     ),
-    [],
+    [isBoss],
   );
+  readValue();
+
   return (
     <Container safeTop={safeTop}>
       <MainHeader title="Contacts" subtitle="Your workmates" />

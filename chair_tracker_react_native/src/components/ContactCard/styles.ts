@@ -50,7 +50,7 @@ export const ControlButton = styled.View`
   height: 50%;
   width: 100%;
   border-bottom-right-radius: 8px;
-  background-color: ${({ theme }) => theme.colors.accentBlue};
+  background-color: ${({ theme }) => theme.colors.marineBlue};
   align-items: center;
   justify-content: center;
 `;

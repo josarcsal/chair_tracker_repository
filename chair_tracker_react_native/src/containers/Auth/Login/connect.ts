@@ -9,10 +9,13 @@ const useConnect = () => {
 
   const [nif, setNif] = useState('');
   const [password, setPassword] = useState('');
-  const { normalizedData } = useUsuarioExist(password);
+  const { normalizedData } = useUsuarioExist(nif, password);
 
   useEffect(() => {
-    AsyncStorage.setItem('logged', JSON.stringify(normalizedData.existe));
+    AsyncStorage.setItem('logged', normalizedData.existe.toString());
+    AsyncStorage.setItem('hash_mac', normalizedData.hash_mac);
+    AsyncStorage.setItem('nombre', normalizedData.nombre);
+    AsyncStorage.setItem('nif_jefe', normalizedData.nif_jefe);
     if (normalizedData.existe === 1) {
       RNRestart.Restart();
     }
