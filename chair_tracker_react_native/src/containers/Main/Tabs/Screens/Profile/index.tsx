@@ -1,4 +1,6 @@
 import type { FC } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import RNRestart from 'react-native-restart';
 import CallIcon from 'components/Icons/CallIcon';
 import InfoIcon from 'components/Icons/InfoIcon';
 import LogoutIcon from 'components/Icons/LogoutIcon';
@@ -30,7 +32,12 @@ const Profile: FC<Props> = () => {
         <Header>
           <Title>Full name</Title>
           <Subtitle>Boss: </Subtitle>
-          <LogOutButton>
+          <LogOutButton
+            onPress={() => {
+              AsyncStorage.setItem('logged', '0');
+              RNRestart.Restart();
+            }}
+          >
             <LogoutIcon />
           </LogOutButton>
         </Header>

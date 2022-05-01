@@ -34,7 +34,6 @@ const SignUp: FC<Props> = () => {
         }}
         onSubmit={(values) => {
           console.log(values);
-          // console.log(rol);
         }}
       >
         {({

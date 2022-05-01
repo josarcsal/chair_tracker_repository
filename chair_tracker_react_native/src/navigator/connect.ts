@@ -1,18 +1,14 @@
-import { useCallback } from 'react';
-import { useNavigation } from '@react-navigation/core';
-import { useUsuarioExist } from 'axios/hooks/Users/useUsuarioExist';
+import { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const useConnect = () => {
-  const { normalizedData } = useUsuarioExist('prueba');
-  const { goBack, canGoBack } = useNavigation();
+  const [logged, setLogged] = useState<string | null>();
+  async function readValue() {
+    const v = await AsyncStorage.getItem('logged');
+    setLogged(v);
+  }
 
-  const handleGoBack = useCallback(() => {
-    if (canGoBack()) {
-      goBack();
-    }
-  }, [canGoBack, goBack]);
-
-  return { normalizedData, handleGoBack };
+  return { logged, readValue };
 };
 
 export default useConnect;
