@@ -26,6 +26,7 @@ export type ScreensParams = {
   Profile: undefined;
   CallHistory: undefined;
   AboutUs: undefined;
+  TermsAndConditions: undefined;
   Contacts: undefined;
   ConfirmModal: ConfirmModalParams;
   DeleteModal: DeleteModalParams;

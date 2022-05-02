@@ -7,7 +7,6 @@ import setupMqtt from 'mqtt/client';
 
 const useConnect = () => {
   const [hashMac, setHashMac] = useState<string | null>();
-  console.log(hashMac);
 
   const { normalizedData } = useAlarmasByHashMac(hashMac);
   const mqttClient = setupMqtt();
