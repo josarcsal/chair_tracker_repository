@@ -5,4 +5,5 @@ export type Props = {
   t_fin: string;
   t_trabajo: number;
   t_descanso: number;
+  handleDelete: (id: number) => void;
 };

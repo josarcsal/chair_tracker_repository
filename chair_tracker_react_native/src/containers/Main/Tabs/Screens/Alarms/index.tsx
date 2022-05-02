@@ -11,7 +11,8 @@ import { AddButton, AlarmList, Container } from './styles';
 import type { Props } from './types';
 
 const Alarms: FC<Props> = () => {
-  const { handleToAddAlarms, normalizedData, readValue } = useConnect();
+  const { handleToAddAlarms, normalizedData, readValue, handleDeleteAlarm } =
+    useConnect();
   const handleKeyExtractor = (item: Alarma) => item.oid_alarma.toString();
   const handleRenderItem = useCallback(
     ({ item }: AlarmProps) => (
@@ -22,9 +23,10 @@ const Alarms: FC<Props> = () => {
         t_fin={item.t_fin}
         t_inicio={item.t_inicio}
         t_trabajo={item.t_trabajo}
+        handleDelete={handleDeleteAlarm}
       />
     ),
-    [],
+    [handleDeleteAlarm],
   );
   const { top: safeTop } = useSafeAreaInsets();
   readValue();
