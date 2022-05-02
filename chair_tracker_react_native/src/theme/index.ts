@@ -5,7 +5,7 @@ import { ThemeContext } from 'styled-components/native';
 const colors = {
   white: 'white',
   black: 'black',
-  red: 'red',
+  red: '#BE4B55',
   yellow: 'yellow',
   blue: 'blue',
   transparent: 'rgba(0,0,0,0)',
@@ -21,6 +21,7 @@ const colors = {
   twentyBlue: '#22254E',
   beforeBlue: '#222B4C',
   orangeC7: '#C75D21',
+  deepOcean80: '#080B1A80',
 };
 
 const { width, height } = Dimensions.get('window');

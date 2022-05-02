@@ -7,10 +7,6 @@ export const SignInButton = styled.TouchableOpacity`
   background-color: ${({ theme }) => theme.colors.marineBlue};
   border: 1px solid ${({ theme }) => theme.colors.marineBlue};
   border-radius: 8px;
-  shadow-color: '#000';
-  shadow-opacity: 0.1;
-  shadow-radius: 3.84px;
-  elevation: 5;
   align-self: center;
   justify-content: center;
 `;

@@ -5,6 +5,17 @@ declare global {
     interface RootParamList extends ScreensParams {}
   }
 }
+type ConfirmModalParams = {
+  title: string;
+  subtitle: string;
+  handleConfirm: () => void;
+};
+
+type DeleteModalParams = {
+  title: string;
+  subtitle: string;
+  id: number;
+};
 
 export type ScreensParams = {
   Login: undefined;
@@ -16,6 +27,8 @@ export type ScreensParams = {
   CallHistory: undefined;
   AboutUs: undefined;
   Contacts: undefined;
+  ConfirmModal: ConfirmModalParams;
+  DeleteModal: DeleteModalParams;
 };
 
 export type MainStackScreenProps<ScreenName extends keyof ScreensParams> =

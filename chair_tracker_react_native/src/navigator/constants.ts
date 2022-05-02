@@ -8,3 +8,9 @@ export const modalStackScreenOptions: NativeStackNavigationOptions = {
   ...generalStackScreenOptions,
   presentation: 'modal',
 };
+
+export const transparentModal: NativeStackNavigationOptions = {
+  ...generalStackScreenOptions,
+  presentation: 'transparentModal',
+  animation: 'fade',
+};

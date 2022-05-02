@@ -27,7 +27,19 @@ const useConnect = () => {
     navigate('NewAlarms');
   }, [navigate]);
 
-  return { handleToAddAlarms, normalizedData, readValue };
+  const handleDeleteAlarm = useCallback(
+    (id: number) => {
+      navigate('DeleteModal', {
+        title: 'Delete alarm',
+        subtitle:
+          'Are you sure you want to delete this alarm? You will not be able to restore it but its data will still be use for stadistics',
+        id: id,
+      });
+    },
+    [navigate],
+  );
+
+  return { handleToAddAlarms, normalizedData, readValue, handleDeleteAlarm };
 };
 
 export default useConnect;
