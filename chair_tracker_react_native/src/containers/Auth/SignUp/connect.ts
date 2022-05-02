@@ -1,8 +1,31 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
+import { usePostUsuarios } from 'axios/hooks/Users/usePostUsuarios';
+import type { Usuario } from 'axios/types/usuario';
 
 const useConnect = () => {
   const { goBack, canGoBack } = useNavigation();
+
+  console.log(new Date()); //2021-04-24T12:53:05
+
+  const [newUser, setNewUser] = useState<Usuario>();
+
+  const normalizedDateTime = (time: Date) =>
+    time
+      .toISOString()
+      .substring(0, new Date().toISOString().length - 2)
+      .replace('.', ':');
+
+  usePostUsuarios(
+    newUser?.hash_mac || '',
+    newUser?.nif || '',
+    newUser?.contrasena || '',
+    null,
+    newUser?.nombre || '',
+    newUser?.apellidos || '',
+    (newUser?.nif_jefe ? 'E' : 'J') || '',
+    newUser?.nif_jefe || null,
+  );
 
   const handleGoBack = useCallback(() => {
     if (canGoBack()) {
@@ -10,7 +33,7 @@ const useConnect = () => {
     }
   }, [canGoBack, goBack]);
 
-  return { handleGoBack };
+  return { handleGoBack, setNewUser };
 };
 
 export default useConnect;

@@ -17,7 +17,7 @@ import {
 import type { Props } from './types';
 
 const SignUp: FC<Props> = () => {
-  const { handleGoBack } = useConnect();
+  const { handleGoBack, setNewUser } = useConnect();
   const { top: safeTop } = useSafeAreaInsets();
   const [rol, setRol] = useState('');
 
@@ -39,7 +39,17 @@ const SignUp: FC<Props> = () => {
           nif_jefe: '',
         }}
         onSubmit={(values) => {
-          console.log(values);
+          setNewUser({
+            apellidos: values.apellidos,
+            contrasena: values.contrasena,
+            hash_mac: values.hashMac,
+            last_login: null,
+            nif: values.nif,
+            nif_jefe: values.nif_jefe,
+            nombre: values.nombre,
+            rol: rol,
+          });
+          console.log(rol);
         }}
       >
         {({
