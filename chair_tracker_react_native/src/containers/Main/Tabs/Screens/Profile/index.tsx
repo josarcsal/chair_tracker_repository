@@ -25,8 +25,14 @@ import {
 import type { Props } from './types';
 
 const Profile: FC<Props> = () => {
-  const { handleToCallHistory, handleToAboutUs, readValue, nombre, nifJefe } =
-    useConnect();
+  const {
+    handleToCallHistory,
+    handleToAboutUs,
+    readValue,
+    nombre,
+    nifJefe,
+    handleToTermsAndConditions,
+  } = useConnect();
   readValue();
   return (
     <>
@@ -83,7 +89,7 @@ const Profile: FC<Props> = () => {
           <NextIcon />
         </Card>
         <Divider />
-        <Card>
+        <Card onPress={handleToTermsAndConditions}>
           <InfoView>
             <QuestionIcon />
             <Detail>Terms and conditions</Detail>

@@ -7,8 +7,13 @@ const useConnect = () => {
   const handleToCallHistory = useCallback(() => {
     navigate('CallHistory');
   }, [navigate]);
+
   const handleToAboutUs = useCallback(() => {
     navigate('AboutUs');
+  }, [navigate]);
+
+  const handleToTermsAndConditions = useCallback(() => {
+    navigate('TermsAndConditions');
   }, [navigate]);
 
   const [nombre, setNombre] = useState<string | null>();
@@ -21,7 +26,14 @@ const useConnect = () => {
     setNifJefe(y);
   }
 
-  return { handleToCallHistory, handleToAboutUs, readValue, nombre, nifJefe };
+  return {
+    handleToCallHistory,
+    handleToAboutUs,
+    readValue,
+    nombre,
+    nifJefe,
+    handleToTermsAndConditions,
+  };
 };
 
 export default useConnect;
