@@ -8,7 +8,6 @@ import StatusBar from 'components/StatusBar';
 import Navigator from 'navigator';
 import theme from 'theme';
 import type { Props } from './types';
-import 'i18n';
 LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
 if (
   Platform.OS === 'android' &&

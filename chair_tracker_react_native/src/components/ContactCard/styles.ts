@@ -27,7 +27,7 @@ export const Utils = styled.View`
   align-items: flex-start;
 `;
 
-export const MainButton = styled.View`
+export const MainButton = styled.TouchableOpacity`
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
   height: 100%;
@@ -37,7 +37,7 @@ export const MainButton = styled.View`
   justify-content: center;
 `;
 
-export const CallButton = styled.View`
+export const CallButton = styled.TouchableOpacity`
   height: 50%;
   width: 100%;
   border-top-right-radius: 8px;

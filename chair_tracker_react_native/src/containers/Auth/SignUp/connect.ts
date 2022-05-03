@@ -10,11 +10,11 @@ const useConnect = () => {
 
   const [newUser, setNewUser] = useState<Usuario>();
 
-  const normalizedDateTime = (time: Date) =>
-    time
-      .toISOString()
-      .substring(0, new Date().toISOString().length - 2)
-      .replace('.', ':');
+  // const normalizedDateTime = (time: Date) =>
+  //   time
+  //     .toISOString()
+  //     .substring(0, new Date().toISOString().length - 2)
+  //     .replace('.', ':');
 
   usePostUsuarios(
     newUser?.hash_mac || '',
@@ -33,7 +33,7 @@ const useConnect = () => {
     }
   }, [canGoBack, goBack]);
 
-  return { handleGoBack, setNewUser };
+  return { handleGoBack, setNewUser, newUser };
 };
 
 export default useConnect;
