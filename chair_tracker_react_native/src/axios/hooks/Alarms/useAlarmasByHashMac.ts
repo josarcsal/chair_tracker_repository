@@ -5,7 +5,7 @@ import { normalizeAlarma } from 'models/Alarma';
 
 export const useAlarmasByHashMac = (hashMac?: string | null) => {
   //DEBEMOS RECOGER LA MAC DE LA PLACA DEL USER Y ALMACENARLA
-  const { data, loading, error } = useAxios<JSON>({
+  const { data, loading, error, refetch } = useAxios<JSON>({
     baseURL: AXIOS_ENDPOINT,
     method: 'get',
     url: '/alarmas/hash_mac',
@@ -22,5 +22,5 @@ export const useAlarmasByHashMac = (hashMac?: string | null) => {
     normalizedData.push(normalizeAlarma(value));
   });
 
-  return { normalizedData, loading, error };
+  return { normalizedData, loading, error, refetch };
 };

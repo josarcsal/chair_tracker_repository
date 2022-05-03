@@ -37,6 +37,7 @@ const useConnect = () => {
   return {
     handleGoBack,
     setNewAlarm,
+    newAlarm,
     normalizedHour,
   };
 };
