@@ -12,12 +12,12 @@ const TabSelector: FC<Props> = ({ refPagerView, currentPage }) => {
     <Container>
       <ButtonContainer onPress={handleRealizadas}>
         <Main disabled={buttonRealizadas}>
-          <Title>Outgoing calls</Title>
+          <Title>Incoming calls</Title>
         </Main>
       </ButtonContainer>
       <ButtonContainer onPress={handleRecibidas}>
         <Main disabled={buttonRecibidas}>
-          <Title>Incoming calls</Title>
+          <Title>Outgoing calls</Title>
         </Main>
       </ButtonContainer>
     </Container>

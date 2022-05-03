@@ -20,7 +20,7 @@ export const SubContainer = styled.View`
   margin-bottom: 15px;
 `;
 
-export const MainButton = styled.View`
+export const MainButton = styled.TouchableOpacity`
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
   flex: 1;
@@ -30,8 +30,7 @@ export const MainButton = styled.View`
 `;
 
 export const Title = styled.Text`
-  margin-top: 10px;
-  margin-left: 10px;
+  margin: 10px 10px 5px;
   color: ${({ theme }) => theme.colors.cultured};
   font-size: 22px;
   font-weight: 600;

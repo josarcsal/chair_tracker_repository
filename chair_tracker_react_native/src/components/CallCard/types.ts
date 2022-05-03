@@ -1,5 +1,7 @@
 export type Props = {
-  nombre: string;
-  apellidos: string;
-  fecha: string;
+  nombre: string | null;
+  fecha: string | null;
+  desde: string | null;
+  descripcion: string | null;
+  onPress: (id: string) => void;
 };

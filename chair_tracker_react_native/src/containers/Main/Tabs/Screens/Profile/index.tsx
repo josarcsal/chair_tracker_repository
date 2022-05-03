@@ -34,12 +34,13 @@ const Profile: FC<Props> = () => {
     handleToTermsAndConditions,
   } = useConnect();
   readValue();
+  console.log(nifJefe);
   return (
     <>
       <Container>
         <Header>
           <Title>{nombre}</Title>
-          {nifJefe !== null ? (
+          {nifJefe !== 'null' ? (
             <Subtitle>Worker</Subtitle>
           ) : (
             <Subtitle>Boss</Subtitle>

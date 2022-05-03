@@ -826,6 +826,8 @@ public class BBDDVerticle extends AbstractVerticle {
 						registro.setRemitente_nombre(v.getString("remitente_nombre"));
 						registro.setDestinatario_hash_mac_fk(v.getString("destinatario_hash_mac_fk"));
 						registro.setDestinatario_nombre(v.getString("destinatario_nombre"));
+						registro.setDesde(v.getString("desde"));
+						registro.setDescripcion(v.getString("descripcion"));
 						System.out.println(json);
 						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
 
@@ -865,6 +867,8 @@ public class BBDDVerticle extends AbstractVerticle {
 						registro.setRemitente_nombre(v.getString("remitente_nombre"));
 						registro.setDestinatario_hash_mac_fk(v.getString("destinatario_hash_mac_fk"));
 						registro.setDestinatario_nombre(v.getString("destinatario_nombre"));
+						registro.setDesde(v.getString("desde"));
+						registro.setDescripcion(v.getString("descripcion"));
 						System.out.println(json);
 						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
 
@@ -904,6 +908,8 @@ public class BBDDVerticle extends AbstractVerticle {
 						registro.setRemitente_nombre(v.getString("remitente_nombre"));
 						registro.setDestinatario_hash_mac_fk(v.getString("destinatario_hash_mac_fk"));
 						registro.setDestinatario_nombre(v.getString("destinatario_nombre"));
+						registro.setDesde(v.getString("desde"));
+						registro.setDescripcion(v.getString("descripcion"));
 						System.out.println(json);
 						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
 
@@ -946,6 +952,8 @@ public class BBDDVerticle extends AbstractVerticle {
 						registro.setRemitente_nombre(v.getString("remitente_nombre"));
 						registro.setDestinatario_hash_mac_fk(v.getString("destinatario_hash_mac_fk"));
 						registro.setDestinatario_nombre(v.getString("destinatario_nombre"));
+						registro.setDesde(v.getString("desde"));
+						registro.setDescripcion(v.getString("descripcion"));
 						System.out.println(json);
 						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
 
@@ -989,6 +997,8 @@ public class BBDDVerticle extends AbstractVerticle {
 						registro.setRemitente_nombre(v.getString("remitente_nombre"));
 						registro.setDestinatario_hash_mac_fk(v.getString("destinatario_hash_mac_fk"));
 						registro.setDestinatario_nombre(v.getString("destinatario_nombre"));
+						registro.setDesde(v.getString("desde"));
+						registro.setDescripcion(v.getString("descripcion"));
 						System.out.println(json);
 						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
 
@@ -1033,6 +1043,8 @@ public class BBDDVerticle extends AbstractVerticle {
 						registro.setRemitente_nombre(v.getString("remitente_nombre"));
 						registro.setDestinatario_hash_mac_fk(v.getString("destinatario_hash_mac_fk"));
 						registro.setDestinatario_nombre(v.getString("destinatario_nombre"));
+						registro.setDesde(v.getString("desde"));
+						registro.setDescripcion(v.getString("descripcion"));
 						System.out.println(json);
 						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
 
@@ -1076,6 +1088,8 @@ public class BBDDVerticle extends AbstractVerticle {
 						registro.setRemitente_nombre(v.getString("remitente_nombre"));
 						registro.setDestinatario_hash_mac_fk(v.getString("destinatario_hash_mac_fk"));
 						registro.setDestinatario_nombre(v.getString("destinatario_nombre"));
+						registro.setDesde(v.getString("desde"));
+						registro.setDescripcion(v.getString("descripcion"));
 						System.out.println(json);
 						json.put(String.valueOf(v.getValue("oid_reg")), v.toJson());
 
