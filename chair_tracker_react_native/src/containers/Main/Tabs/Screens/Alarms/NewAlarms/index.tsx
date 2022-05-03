@@ -20,11 +20,13 @@ import type { Props } from './types';
 
 const NewAlarms: FC<Props> = () => {
   const { top: safeTop } = useSafeAreaInsets();
-  const { handleGoBack, setNewAlarm, normalizedHour } = useConnect();
+  const { handleGoBack, setNewAlarm, normalizedHour, newAlarm } = useConnect();
   const [date1, setDate1] = useState(new Date());
   const [open1, setOpen1] = useState(false);
   const [date2, setDate2] = useState(new Date());
   const [open2, setOpen2] = useState(false);
+  console.log(newAlarm?.hash_mac_fk);
+
   return (
     <Container safeTop={safeTop}>
       <DetailHeader onPressBack={handleGoBack} />
@@ -47,7 +49,7 @@ const NewAlarms: FC<Props> = () => {
             t_descanso: values.t_descanso,
             ciclo_trabajo: 0,
             ciclo_descanso: 0,
-            hash_mac_fk: '878f387896e2978cf2af1acddf87750a47c431e9',
+            hash_mac_fk: 'mac123',
           });
         }}
       >
@@ -150,7 +152,11 @@ const NewAlarms: FC<Props> = () => {
               <Text style={styles.errorText}>{errors.mensaje}</Text>
             )} */}
             <ButtonView>
-              <MainButton text={'Set alarm'} handlePress={handleSubmit} />
+              {newAlarm?.hash_mac_fk === undefined ? (
+                <MainButton text={'Set alarm'} handlePress={handleSubmit} />
+              ) : (
+                <MainButton text={'Close'} handlePress={handleGoBack} />
+              )}
             </ButtonView>
           </>
         )}

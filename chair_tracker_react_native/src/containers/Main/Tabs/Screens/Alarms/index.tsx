@@ -5,14 +5,20 @@ import type { Alarma } from 'axios/types/alarma';
 import { PlusIcon } from 'components';
 import AlarmCard from 'components/AlarmCard';
 import MainHeader from 'components/Header/MainHeader';
+import MainButton from 'components/MainButton';
 import type { AlarmProps } from 'containers/Main/Tabs/Screens/Alarms/types';
 import useConnect from './connect';
 import { AddButton, AlarmList, Container } from './styles';
 import type { Props } from './types';
 
 const Alarms: FC<Props> = () => {
-  const { handleToAddAlarms, normalizedData, readValue, handleDeleteAlarm } =
-    useConnect();
+  const {
+    handleToAddAlarms,
+    normalizedData,
+    readValue,
+    handleDeleteAlarm,
+    refetch,
+  } = useConnect();
   const handleKeyExtractor = (item: Alarma) => item.oid_alarma.toString();
   const handleRenderItem = useCallback(
     ({ item }: AlarmProps) => (
@@ -36,6 +42,7 @@ const Alarms: FC<Props> = () => {
       <AddButton onPress={handleToAddAlarms}>
         <PlusIcon />
       </AddButton>
+      <MainButton handlePress={() => refetch()} text="refetch" />
       <AlarmList
         data={normalizedData}
         keyExtractor={handleKeyExtractor}

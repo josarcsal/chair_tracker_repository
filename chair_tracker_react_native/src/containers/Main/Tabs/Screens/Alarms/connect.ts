@@ -1,25 +1,18 @@
 import { useCallback, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/core';
-import * as Mqtt from 'react-native-native-mqtt';
-import { useAlarmasByHashMac } from 'axios/hooks/Alarms/useAlarmasByUserID';
+import { useAlarmasByHashMac } from 'axios/hooks/Alarms/useAlarmasByHashMac';
 import setupMqtt from 'mqtt/client';
 
 const useConnect = () => {
   const [hashMac, setHashMac] = useState<string | null>();
 
-  const { normalizedData } = useAlarmasByHashMac(hashMac);
-  const mqttClient = setupMqtt();
-
+  const { normalizedData, refetch } = useAlarmasByHashMac(hashMac);
+  setupMqtt();
   async function readValue() {
     const v = await AsyncStorage.getItem('hash_mac');
     setHashMac(v);
   }
-
-  mqttClient.on(Mqtt.Event.Connect, () => {
-    console.log('MQTT Connect');
-    mqttClient.subscribe([hashMac + '/alarmas/refresh'], [0]);
-  });
 
   const { navigate } = useNavigation();
   const handleToAddAlarms = useCallback(() => {
@@ -38,7 +31,13 @@ const useConnect = () => {
     [navigate],
   );
 
-  return { handleToAddAlarms, normalizedData, readValue, handleDeleteAlarm };
+  return {
+    handleToAddAlarms,
+    normalizedData,
+    refetch,
+    readValue,
+    handleDeleteAlarm,
+  };
 };
 
 export default useConnect;
