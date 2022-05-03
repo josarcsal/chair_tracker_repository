@@ -11,7 +11,7 @@ export const Container = styled.View`
 export const Divider = styled.View`
   height: 16px;
 `;
-// styled.FlatList.attrs<Usuario>
+
 export const CardList = styled.FlatList.attrs<ListProps>(({ safeBottom }) => ({
   contentContainerStyle: {
     paddingHorizontal: 16,
