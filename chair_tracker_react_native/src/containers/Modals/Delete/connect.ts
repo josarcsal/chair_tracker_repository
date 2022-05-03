@@ -21,8 +21,6 @@ const useConnect = () => {
     setOidAlarm(id?.toString() || '');
   }, [id]);
 
-  console.log(id);
-
   return {
     handleGoBack,
     title,

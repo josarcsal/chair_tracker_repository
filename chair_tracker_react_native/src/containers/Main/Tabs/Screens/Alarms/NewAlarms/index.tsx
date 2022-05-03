@@ -20,13 +20,20 @@ import type { Props } from './types';
 
 const NewAlarms: FC<Props> = () => {
   const { top: safeTop } = useSafeAreaInsets();
-  const { handleGoBack, setNewAlarm, normalizedHour, newAlarm } = useConnect();
+  const {
+    handleGoBack,
+    setNewAlarm,
+    normalizedHour,
+    newAlarm,
+    hashMac,
+    readValue,
+  } = useConnect();
   const [date1, setDate1] = useState(new Date());
   const [open1, setOpen1] = useState(false);
   const [date2, setDate2] = useState(new Date());
   const [open2, setOpen2] = useState(false);
-  console.log(newAlarm?.hash_mac_fk);
 
+  readValue();
   return (
     <Container safeTop={safeTop}>
       <DetailHeader onPressBack={handleGoBack} />
@@ -43,13 +50,13 @@ const NewAlarms: FC<Props> = () => {
           setNewAlarm({
             oid_alarma: 0,
             dias: values.days,
-            t_inicio: normalizedHour(date2.toTimeString()),
-            t_fin: normalizedHour(date1.toTimeString()),
+            t_inicio: normalizedHour(date1.toTimeString()),
+            t_fin: normalizedHour(date2.toTimeString()),
             t_trabajo: values.t_trabajo,
             t_descanso: values.t_descanso,
             ciclo_trabajo: 0,
             ciclo_descanso: 0,
-            hash_mac_fk: 'mac123',
+            hash_mac_fk: hashMac || '',
           });
         }}
       >
@@ -89,7 +96,7 @@ const NewAlarms: FC<Props> = () => {
 
             <HourView>
               <Text>Finish time:</Text>
-              <OpenButton onPress={() => setOpen1(true)}>
+              <OpenButton onPress={() => setOpen2(true)}>
                 <OpenText>OPEN</OpenText>
               </OpenButton>
               <DatePicker

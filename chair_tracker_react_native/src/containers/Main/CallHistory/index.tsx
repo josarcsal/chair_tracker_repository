@@ -18,9 +18,10 @@ const CallHistory: FC<Props> = () => {
     handleGoBack,
     onPageScroll,
     currentPage,
+    readValue,
   } = useConnect();
   const pagerRef = useRef<PagerView | null>(null);
-
+  readValue();
   return (
     <Container safeTop={safeTop}>
       <DetailHeader onPressBack={handleGoBack} />
@@ -32,10 +33,10 @@ const CallHistory: FC<Props> = () => {
         scrollEnabled
       >
         <Page key="1" collapsable={false}>
-          <List data={normalizedDataIncoming} />
+          <List data={normalizedDataOutgoing} />
         </Page>
         <Page key="2" collapsable={false}>
-          <List data={normalizedDataOutgoing} />
+          <List data={normalizedDataIncoming} />
         </Page>
       </Pager>
     </Container>

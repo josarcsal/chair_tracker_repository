@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/core';
 import { usePostAlarm } from 'axios/hooks/Alarms/usePostAlarm';
 import type { Alarma } from 'axios/types/alarma';
@@ -11,6 +12,12 @@ const useConnect = () => {
       goBack();
     }
   }, [canGoBack, goBack]);
+
+  const [hashMac, setHashMac] = useState<string | null>();
+  async function readValue() {
+    const v = await AsyncStorage.getItem('hash_mac');
+    setHashMac(v);
+  }
 
   const [newAlarm, setNewAlarm] = useState<Alarma>();
 
@@ -39,6 +46,8 @@ const useConnect = () => {
     setNewAlarm,
     newAlarm,
     normalizedHour,
+    hashMac,
+    readValue,
   };
 };
 

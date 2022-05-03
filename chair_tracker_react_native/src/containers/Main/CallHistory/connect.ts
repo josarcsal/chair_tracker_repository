@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/core';
 import type { PagerViewOnPageScrollEvent } from 'react-native-pager-view';
 import { useRegistroLlamadasIncoming } from 'axios/hooks/Call history/useRegistroLlamadasIncoming';
@@ -6,8 +7,14 @@ import { useRegistroLlamadasOutgoing } from 'axios/hooks/Call history/useRegistr
 
 const useConnect = () => {
   const { goBack, canGoBack } = useNavigation();
-  const { normalizedDataIncoming } = useRegistroLlamadasIncoming();
-  const { normalizedDataOutgoing } = useRegistroLlamadasOutgoing();
+
+  const [hashMac, setHashMac] = useState<string | null>();
+  async function readValue() {
+    const v = await AsyncStorage.getItem('hash_mac');
+    setHashMac(v);
+  }
+  const { normalizedDataIncoming } = useRegistroLlamadasIncoming(hashMac);
+  const { normalizedDataOutgoing } = useRegistroLlamadasOutgoing(hashMac);
 
   const handleGoBack = useCallback(() => {
     if (canGoBack()) {
@@ -30,6 +37,7 @@ const useConnect = () => {
     handleGoBack,
     onPageScroll,
     currentPage,
+    readValue,
   };
 };
 

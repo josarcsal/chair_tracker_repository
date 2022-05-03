@@ -49,7 +49,6 @@ const SignUp: FC<Props> = () => {
             nombre: values.nombre,
             rol: rol,
           });
-          console.log(rol);
         }}
       >
         {({

@@ -67,7 +67,7 @@ const Profile: FC<Props> = () => {
           minDate={'2022-01-01'}
           maxDate={'2022-12-31'}
           onDayPress={(day) => {
-            console.log('selected day', day);
+            console.log('selected day', day.day);
           }}
           onDayLongPress={(day) => {
             console.log('selected day', day);
