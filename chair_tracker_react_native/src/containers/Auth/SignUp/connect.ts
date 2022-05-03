@@ -5,9 +5,6 @@ import type { Usuario } from 'axios/types/usuario';
 
 const useConnect = () => {
   const { goBack, canGoBack } = useNavigation();
-
-  console.log(new Date()); //2021-04-24T12:53:05
-
   const [newUser, setNewUser] = useState<Usuario>();
 
   // const normalizedDateTime = (time: Date) =>
