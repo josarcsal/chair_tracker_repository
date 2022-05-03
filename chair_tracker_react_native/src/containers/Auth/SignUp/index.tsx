@@ -17,7 +17,7 @@ import {
 import type { Props } from './types';
 
 const SignUp: FC<Props> = () => {
-  const { handleGoBack, setNewUser } = useConnect();
+  const { handleGoBack, setNewUser, newUser } = useConnect();
   const { top: safeTop } = useSafeAreaInsets();
   const [rol, setRol] = useState('');
 
@@ -148,10 +148,11 @@ const SignUp: FC<Props> = () => {
               <Text style={styles.errorText}>{errors.email}</Text>
             )} */}
             <Buttons>
-              <MainButton
-                text={'Create your account'}
-                handlePress={handleSubmit}
-              />
+              {newUser?.hash_mac === undefined ? (
+                <MainButton text={'Set alarm'} handlePress={handleSubmit} />
+              ) : (
+                <MainButton text={'Close'} handlePress={handleGoBack} />
+              )}
               <SecondaryButton
                 text={'By creating an account, you agree to our Terms'}
               />

@@ -4,8 +4,8 @@ import { Welcome, Login, SignUp, Tabs } from 'containers';
 import CallHistory from 'containers/Main/CallHistory';
 import NewAlarms from 'containers/Main/Tabs/Screens/Alarms/NewAlarms';
 import AboutUs from 'containers/Main/Tabs/Screens/Profile/AboutUs';
-import { ConfirmModal, DeleteModal } from 'containers/Modals';
 import TermsAndConditions from 'containers/Main/Tabs/Screens/Profile/TermsAndConditions';
+import { CallModal, ConfirmModal, DeleteModal } from 'containers/Modals';
 import useConnect from './connect';
 import {
   generalStackScreenOptions,
@@ -42,6 +42,7 @@ const AppNavigator: FC<Props> = () => {
       <Group screenOptions={transparentModal}>
         <Screen name="ConfirmModal" component={ConfirmModal} />
         <Screen name="DeleteModal" component={DeleteModal} />
+        <Screen name="CallModal" component={CallModal} />
       </Group>
     </Navigator>
   );

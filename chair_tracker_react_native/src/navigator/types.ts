@@ -17,6 +17,10 @@ type DeleteModalParams = {
   id: number;
 };
 
+type CallModalParams = {
+  destinatarioHashMac: string;
+};
+
 export type ScreensParams = {
   Login: undefined;
   SignUp: undefined;
@@ -30,6 +34,7 @@ export type ScreensParams = {
   Contacts: undefined;
   ConfirmModal: ConfirmModalParams;
   DeleteModal: DeleteModalParams;
+  CallModal: CallModalParams;
 };
 
 export type MainStackScreenProps<ScreenName extends keyof ScreensParams> =
