@@ -16,10 +16,12 @@ public class RegistroImpl {
 	protected String remitente_nombre;
 	protected String destinatario_hash_mac_fk;
 	protected String destinatario_nombre;
+	protected String desde;
+	protected String descripcion;
 
 	public RegistroImpl(Short oid_reg, String tipo, LocalDateTime fecha, Short trabajo, Short descanso,
 			Short oid_llamada_fk, Short oid_alarma_fk, String hash_mac_fk, String remitente_hash_mac_fk, String remitente_nombre,
-			String destinatario_hash_mac_fk, String destinatario_nombre) {
+			String destinatario_hash_mac_fk, String destinatario_nombre, String desde, String descripcion) {
 		super();
 		this.oid_reg = oid_reg;
 		this.tipo = tipo;
@@ -33,6 +35,8 @@ public class RegistroImpl {
 		this.remitente_nombre = remitente_nombre;
 		this.destinatario_hash_mac_fk = destinatario_hash_mac_fk;
 		this.destinatario_nombre = destinatario_nombre;
+		this.desde = desde;
+		this.descripcion = descripcion;
 	}
 
 	public RegistroImpl() {
@@ -96,7 +100,7 @@ public class RegistroImpl {
 		this.oid_alarma_fk = oid_alarma_fk;
 	}
 
-	public String gethash_mac_fk() {
+	public String getHash_mac_fk() {
 		return hash_mac_fk;
 	}
 
@@ -135,14 +139,31 @@ public class RegistroImpl {
 	public void setDestinatario_nombre(String destinatario_nombre) {
 		this.destinatario_nombre = destinatario_nombre;
 	}
-	
+
+	public String getDesde() {
+		return desde;
+	}
+
+	public void setDesde(String desde) {
+		this.desde = desde;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
 	@Override
 	public String toString() {
 		return "RegistroImpl [oid_reg=" + oid_reg + ", tipo=" + tipo + ", fecha=" + fecha + ", trabajo=" + trabajo
 				+ ", descanso=" + descanso + ", oid_llamada_fk=" + oid_llamada_fk + ", oid_alarma_fk=" + oid_alarma_fk
 				+ ", hash_mac_fk=" + hash_mac_fk + ", remitente_hash_mac_fk=" + remitente_hash_mac_fk
 				+ ", remitente_nombre=" + remitente_nombre + ", destinatario_hash_mac_fk=" + destinatario_hash_mac_fk
-				+ ", destinatario_nombre=" + destinatario_nombre + "]";
+				+ ", destinatario_nombre=" + destinatario_nombre + ", desde=" + desde + ", descripcion=" + descripcion
+				+ "]";
 	}
 
 	@Override
@@ -150,6 +171,8 @@ public class RegistroImpl {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((descanso == null) ? 0 : descanso.hashCode());
+		result = prime * result + ((descripcion == null) ? 0 : descripcion.hashCode());
+		result = prime * result + ((desde == null) ? 0 : desde.hashCode());
 		result = prime * result + ((destinatario_hash_mac_fk == null) ? 0 : destinatario_hash_mac_fk.hashCode());
 		result = prime * result + ((destinatario_nombre == null) ? 0 : destinatario_nombre.hashCode());
 		result = prime * result + ((fecha == null) ? 0 : fecha.hashCode());
@@ -177,6 +200,16 @@ public class RegistroImpl {
 			if (other.descanso != null)
 				return false;
 		} else if (!descanso.equals(other.descanso))
+			return false;
+		if (descripcion == null) {
+			if (other.descripcion != null)
+				return false;
+		} else if (!descripcion.equals(other.descripcion))
+			return false;
+		if (desde == null) {
+			if (other.desde != null)
+				return false;
+		} else if (!desde.equals(other.desde))
 			return false;
 		if (destinatario_hash_mac_fk == null) {
 			if (other.destinatario_hash_mac_fk != null)

@@ -4,15 +4,9 @@ export type Props = {
   data: RegistroLlamada[];
 };
 
-export type CardItemProps = {
-  fecha: Date;
-  remitente_hash_mac_fk: string;
-  destinatario_hash_mac_fk: string;
-};
-
-export type RenderItemProps = {
+export type CallProps = {
   index: number;
-  item: CardItemProps;
+  item: RegistroLlamada;
 };
 
 export type ListProps = { safeBottom: number };

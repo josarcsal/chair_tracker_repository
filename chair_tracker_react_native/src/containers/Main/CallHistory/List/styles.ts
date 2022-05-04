@@ -1,5 +1,6 @@
-import { FlatList } from 'react-native';
+import type { FlatList } from 'react-native';
 import styled from 'styled-components/native';
+import type { RegistroLlamada } from 'axios/types/registro';
 import type { ListProps } from './types';
 
 export const Container = styled.View`
@@ -11,9 +12,9 @@ export const Divider = styled.View`
   height: 16px;
 `;
 
-export const CardList = styled(FlatList).attrs<ListProps>(({ safeBottom }) => ({
+export const CardList = styled.FlatList.attrs<ListProps>(({ safeBottom }) => ({
   contentContainerStyle: {
     paddingHorizontal: 16,
     paddingBottom: safeBottom + 16,
   },
-}))`` as unknown as typeof FlatList;
+}))<RegistroLlamada>`` as unknown as typeof FlatList;

@@ -12,8 +12,14 @@ export const Container = styled.SafeAreaView<ContainerProps>`
 
 export const AddButton = styled.TouchableOpacity`
   position: absolute;
-  top: 65px;
+  top: 70px;
   right: 20px;
+`;
+
+export const RefreshButton = styled.TouchableOpacity`
+  position: absolute;
+  top: 67px;
+  right: 70px;
 `;
 
 export const AlarmList = styled.FlatList.attrs<Alarma>({

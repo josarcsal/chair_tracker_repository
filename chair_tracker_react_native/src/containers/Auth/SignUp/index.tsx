@@ -148,7 +148,7 @@ const SignUp: FC<Props> = () => {
             )} */}
             <Buttons>
               {newUser?.hash_mac === undefined ? (
-                <MainButton text={'Set alarm'} handlePress={handleSubmit} />
+                <MainButton text={'Register'} handlePress={handleSubmit} />
               ) : (
                 <MainButton text={'Close'} handlePress={handleGoBack} />
               )}

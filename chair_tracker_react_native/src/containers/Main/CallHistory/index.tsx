@@ -33,10 +33,10 @@ const CallHistory: FC<Props> = () => {
         scrollEnabled
       >
         <Page key="1" collapsable={false}>
-          <List data={normalizedDataOutgoing} />
+          <List data={normalizedDataIncoming} />
         </Page>
         <Page key="2" collapsable={false}>
-          <List data={normalizedDataIncoming} />
+          <List data={normalizedDataOutgoing} />
         </Page>
       </Pager>
     </Container>

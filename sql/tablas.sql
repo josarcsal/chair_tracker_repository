@@ -54,6 +54,8 @@ CREATE TABLE Registros(
 	remitente_nombre VARCHAR(64),
     destinatario_hash_mac_fk VARCHAR(10) NULL,
 	destinatario_nombre VARCHAR(64),
+	desde		VARCHAR(20),
+    descripcion	VARCHAR(64),
     FOREIGN KEY (hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE,
     FOREIGN KEY (remitente_hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE,
     FOREIGN KEY (destinatario_hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE,
