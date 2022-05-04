@@ -16,8 +16,8 @@ const useConnect = () => {
 
   const { navigate } = useNavigation();
   const handleToAddAlarms = useCallback(() => {
-    navigate('NewAlarms');
-  }, [navigate]);
+    navigate('NewAlarms', { hashMac: hashMac || '' });
+  }, [hashMac, navigate]);
 
   const handleDeleteAlarm = useCallback(
     (id: number) => {

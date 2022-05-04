@@ -22,11 +22,16 @@ const ContactCard: FC<Props> = ({
   apellidos,
   last_login,
   hash_mac,
-  onPress,
+  onCall,
+  onAlarm,
 }) => {
-  const handlePress = useCallback(() => {
-    onPress(hash_mac);
-  }, [hash_mac, onPress]);
+  const handlePressCall = useCallback(() => {
+    onCall(hash_mac);
+  }, [hash_mac, onCall]);
+
+  const handlePressAlarm = useCallback(() => {
+    onAlarm(hash_mac);
+  }, [hash_mac, onAlarm]);
   return (
     <Container>
       <SubContainer>
@@ -37,15 +42,15 @@ const ContactCard: FC<Props> = ({
       <Utils>
         {isBoss ? (
           <>
-            <CallButton onPress={handlePress}>
+            <CallButton onPress={handlePressCall}>
               <CallIcon size={55} />
             </CallButton>
-            <ControlButton>
+            <ControlButton onPress={handlePressAlarm}>
               <AlarmClockIcon size={50} />
             </ControlButton>
           </>
         ) : (
-          <MainButton onPress={handlePress}>
+          <MainButton onPress={handlePressCall}>
             <CallIcon />
           </MainButton>
         )}
