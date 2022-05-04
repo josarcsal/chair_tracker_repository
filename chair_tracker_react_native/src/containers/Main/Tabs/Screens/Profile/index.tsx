@@ -32,6 +32,7 @@ const Profile: FC<Props> = () => {
     nombre,
     nifJefe,
     handleToTermsAndConditions,
+    handleToAlarmsDayModal,
   } = useConnect();
   readValue();
   return (
@@ -63,19 +64,11 @@ const Profile: FC<Props> = () => {
         <Information>My schedule</Information>
 
         <CalendarItem
-          current={'2022-04-23'}
+          current={new Date().toDateString()}
+          monthFormat={'MMMM yyyy'}
           minDate={'2022-01-01'}
-          maxDate={'2022-12-31'}
-          onDayPress={(day) => {
-            console.log('selected day', day.day);
-          }}
-          onDayLongPress={(day) => {
-            console.log('selected day', day);
-          }}
-          monthFormat={'mm - yyyy'}
-          onMonthChange={(month) => {
-            console.log('month changed', month);
-          }}
+          maxDate={'2025-12-31'}
+          onDayPress={handleToAlarmsDayModal}
           onPressArrowLeft={(subtractMonth) => subtractMonth()}
           onPressArrowRight={(addMonth) => addMonth()}
         />

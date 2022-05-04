@@ -42,9 +42,7 @@ public class BBDDVerticle extends AbstractVerticle {
 		// ALARMAS
 		obtenerAlarmas();
 		obtenerAlarmasUsuario();
-		// obtenerAlarmasPorHora --> para así en el cliente cuando sea X hora, poder
-		// seleccionar
-		// la alarma que queramos actualizar t_descanso y t_trabajo
+		obtenerAlarmasUsuarioDia();
 		borrarAlarma();
 		anadirAlarma();
 		editarAlarma();
@@ -412,6 +410,45 @@ public class BBDDVerticle extends AbstractVerticle {
 
 			Query<RowSet<Row>> query = mySqlClient
 					.query("SELECT * FROM proyectodad.alarmas WHERE hash_mac_fk = '" + hash_mac_fk + "';");
+
+			query.execute(res -> {
+				JsonObject json = new JsonObject();
+				if (res.succeeded()) {
+
+					res.result().forEach(v -> {
+						AlarmaImpl alarma = new AlarmaImpl();
+						alarma.setOid_alarma(v.getShort("oid_alarma"));
+						alarma.setDias(v.getString("dias"));
+						alarma.setT_inicio(AlarmaImpl.ParseaLocalTimeFromJson(String.valueOf(v.getValue("t_inicio"))));
+						alarma.setT_fin(AlarmaImpl.ParseaLocalTimeFromJson(String.valueOf(v.getValue("t_fin"))));
+						alarma.setT_trabajo(v.getShort("t_trabajo"));
+						alarma.setT_descanso(v.getShort("t_descanso"));
+						alarma.setCiclo_trabajo(v.getShort("ciclo_trabajo"));
+						alarma.setCiclo_descanso(v.getShort("ciclo_descanso"));
+						alarma.setHash_mac_fk(v.getString("hash_mac_fk"));
+						System.out.println(json);
+						json.put(String.valueOf(v.getValue("oid_alarma")), v.toJson());
+					});
+				} else {
+					json.put(String.valueOf("ERROR"), res.cause());
+				}
+				;
+				message.reply(json);
+			});
+		});
+	}
+	
+	// Obtiene las alarmas asociadas a un usuario en un dia dado junto con su hash_mac 
+	private void obtenerAlarmasUsuarioDia() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerAlarmasUsuarioDia");
+
+		consumer.handler(message -> {
+			JsonObject jsonEditLlamada = new JsonObject(message.body());
+			String hash_mac_fk = jsonEditLlamada.getString("hash_mac_fk");
+			String dias = jsonEditLlamada.getString("dias");
+
+			Query<RowSet<Row>> query = mySqlClient
+					.query("SELECT * FROM proyectodad.alarmas WHERE hash_mac_fk = '" + hash_mac_fk + "' AND dias LIKE '%" + dias + "%';");
 
 			query.execute(res -> {
 				JsonObject json = new JsonObject();
