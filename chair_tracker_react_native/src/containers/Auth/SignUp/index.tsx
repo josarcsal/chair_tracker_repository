@@ -2,6 +2,7 @@ import type { FC } from 'react';
 import { useState } from 'react';
 import { Formik } from 'formik';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as yup from 'yup';
 import DetailHeader from 'components/Header/DetailHeader';
 import MainButton from 'components/MainButton';
 import SecondaryButton from 'components/SecondaryButton';
@@ -12,6 +13,7 @@ import {
   Content,
   InputText,
   Picker,
+  TextError,
   Title,
 } from './styles';
 import type { Props } from './types';
@@ -29,7 +31,6 @@ const SignUp: FC<Props> = () => {
       </Content>
       <Formik
         validateOnMount={true}
-        // validationSchema={loginValidationSchema}
         initialValues={{
           hashMac: '',
           nif: '',
@@ -50,15 +51,39 @@ const SignUp: FC<Props> = () => {
             rol: rol,
           });
         }}
+        validationSchema={yup.object().shape({
+          hashMac: yup
+            .string()
+            .min(10, 'HashMac must be of 10 characters or numbers')
+            .max(10, 'HashMac must be of 10 characters or numbers')
+            .required('HashMac is required'),
+          nif: yup
+            .string()
+            .matches(/[0-9]{8}[A-Z]{1}/, 'NIF must have 00000000A format')
+            .required('NIF is required'),
+          contrasena: yup
+            .string()
+            .max(64, 'Password length must be lower than 64 characters')
+            .required('Password is required'),
+          nombre: yup
+            .string()
+            .max(20, 'Name length must be lower than 20 characters')
+            .required('Name is required'),
+          apellidos: yup
+            .string()
+            .max(64, 'Password length must be lower than 64 characters'),
+          nif_jefe: yup
+            .string()
+            .matches(/[0-9]{8}[A-Z]{1}/, 'NIF must have 00000000A format'),
+        })}
       >
         {({
           handleSubmit,
           handleChange,
           handleBlur,
           values,
-          // errors,
-          // touched,
-          // isValid,
+          errors,
+          touched,
         }) => (
           <>
             <InputText
@@ -69,9 +94,9 @@ const SignUp: FC<Props> = () => {
               keyboardType="default"
             />
 
-            {/* {errors.nombresyapellidos && touched.nombresyapellidos && (
-              <Text style={styles.errorText}>{errors.nombresyapellidos}</Text>
-            )} */}
+            {errors.hashMac && touched.hashMac && (
+              <TextError>{errors.hashMac}</TextError>
+            )}
 
             <InputText
               placeholder="NIF"
@@ -81,9 +106,7 @@ const SignUp: FC<Props> = () => {
               keyboardType="default"
             />
 
-            {/* {errors.nombresyapellidos && touched.nombresyapellidos && (
-              <Text style={styles.errorText}>{errors.nombresyapellidos}</Text>
-            )} */}
+            {errors.nif && touched.nif && <TextError>{errors.nif}</TextError>}
 
             <InputText
               placeholder="Password"
@@ -94,9 +117,9 @@ const SignUp: FC<Props> = () => {
               secureTextEntry
             />
 
-            {/* {errors.email && touched.email && (
-              <Text style={styles.errorText}>{errors.email}</Text>
-            )} */}
+            {errors.contrasena && touched.contrasena && (
+              <TextError>{errors.contrasena}</TextError>
+            )}
 
             <InputText
               placeholder="Name"
@@ -106,9 +129,9 @@ const SignUp: FC<Props> = () => {
               keyboardType="default"
             />
 
-            {/* {errors.email && touched.email && (
-              <Text style={styles.errorText}>{errors.email}</Text>
-            )} */}
+            {errors.nombre && touched.nombre && (
+              <TextError>{errors.nombre}</TextError>
+            )}
 
             <InputText
               placeholder="Surnames"
@@ -118,9 +141,10 @@ const SignUp: FC<Props> = () => {
               keyboardType="default"
             />
 
-            {/* {errors.email && touched.email && (
-              <Text style={styles.errorText}>{errors.email}</Text>
-            )} */}
+            {errors.apellidos && touched.apellidos && (
+              <TextError>{errors.apellidos}</TextError>
+            )}
+
             <Picker
               selectedValue={rol}
               onValueChange={(itemValue) => setRol(itemValue)}
@@ -128,10 +152,6 @@ const SignUp: FC<Props> = () => {
               <Picker.Item label="Boss" value="J" />
               <Picker.Item label="Worker" value="E" />
             </Picker>
-
-            {/* {errors.email && touched.email && (
-              <Text style={styles.errorText}>{errors.email}</Text>
-            )} */}
 
             {rol === 'E' && (
               <InputText
@@ -143,9 +163,10 @@ const SignUp: FC<Props> = () => {
               />
             )}
 
-            {/* {errors.email && touched.email && (
-              <Text style={styles.errorText}>{errors.email}</Text>
-            )} */}
+            {errors.nif_jefe && touched.nif_jefe && (
+              <TextError>{errors.nif_jefe}</TextError>
+            )}
+
             <Buttons>
               {newUser?.hash_mac === undefined ? (
                 <MainButton text={'Register'} handlePress={handleSubmit} />

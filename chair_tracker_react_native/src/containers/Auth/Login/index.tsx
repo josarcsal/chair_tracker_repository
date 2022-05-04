@@ -2,6 +2,7 @@ import type { FC } from 'react';
 import { useCallback } from 'react';
 import { Formik } from 'formik';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as yup from 'yup';
 import DetailHeader from 'components/Header/DetailHeader';
 import MainButton from 'components/MainButton';
 import useConnect from './connect';
@@ -11,6 +12,7 @@ import {
   Content,
   InputText,
   Subtitle,
+  TextError,
   Title,
 } from './styles';
 import type { Props } from './types';
@@ -36,21 +38,26 @@ const Login: FC<Props> = () => {
       </Content>
       <Formik
         validateOnMount={true}
-        // validationSchema={loginValidationSchema}
         initialValues={{
           nif: '',
           contrasena: '',
         }}
         onSubmit={handleLogIn}
+        validationSchema={yup.object().shape({
+          nif: yup
+            .string()
+            .matches(/[0-9]{8}[A-Z]{1}/, 'NIF must have 00000000A format')
+            .required('NIF is required'),
+          contrasena: yup.string().required('Password is required'),
+        })}
       >
         {({
           handleSubmit,
           handleChange,
           handleBlur,
           values,
-          // errors,
-          // touched,
-          // isValid,
+          errors,
+          touched,
         }) => (
           <>
             <InputText
@@ -61,9 +68,7 @@ const Login: FC<Props> = () => {
               keyboardType="default"
             />
 
-            {/* {errors.nombresyapellidos && touched.nombresyapellidos && (
-              <Text style={styles.errorText}>{errors.nombresyapellidos}</Text>
-            )} */}
+            {errors.nif && touched.nif && <TextError>{errors.nif}</TextError>}
 
             <InputText
               placeholder="Password"
@@ -74,9 +79,10 @@ const Login: FC<Props> = () => {
               secureTextEntry
             />
 
-            {/* {errors.email && touched.email && (
-              <Text style={styles.errorText}>{errors.email}</Text>
-            )} */}
+            {errors.contrasena && touched.contrasena && (
+              <TextError>{errors.contrasena}</TextError>
+            )}
+
             <Buttons>
               <MainButton text={'Sign in'} handlePress={handleSubmit} />
             </Buttons>

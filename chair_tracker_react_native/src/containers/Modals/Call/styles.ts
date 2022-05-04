@@ -67,3 +67,9 @@ export const InputText = styled.TextInput`
   border-radius: 8px;
   align-self: center;
 `;
+
+export const TextError = styled.Text`
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: ${({ theme }) => theme.colors.red};
+`;

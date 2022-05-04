@@ -43,3 +43,10 @@ export const InputText = styled.TextInput`
 export const Buttons = styled.View`
   margin-top: 15px;
 `;
+
+export const TextError = styled.Text`
+  font-size: 14px;
+  margin: 0px 16px;
+  margin-bottom: 8px;
+  color: ${({ theme }) => theme.colors.red};
+`;
