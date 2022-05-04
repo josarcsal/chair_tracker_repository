@@ -40,6 +40,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 		router.route("/api/alarmas/*").handler(BodyHandler.create());
 		router.get("/api/alarmas").handler(this::obtenerAlarmas);
 		router.get("/api/alarmas/hash_mac").handler(this::obtenerAlarmasUsuario);
+		router.get("/api/alarmas/hash_macDia").handler(this::obtenerAlarmasUsuarioDia);
 		router.post("/api/alarmas/anadirAlarma").handler(this::anadirAlarma);
 		router.put("/api/alarmas/editarAlarma").handler(this::editarAlarma);
 		router.delete("/api/alarmas/borrarAlarma").handler(this::borrarAlarma);
@@ -239,6 +240,37 @@ public class HttpServerVerticle extends AbstractVerticle {
 		}
 		
 		vertx.eventBus().request("obtenerAlarmasUsuario", jsonRes.toString(), reply -> {
+			if (reply.succeeded()) {
+				System.out.println(reply.result().body());
+				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
+						.end(String.valueOf(reply.result().body()));
+			} else {
+				routingContext.response().setStatusCode(500).putHeader("content-type", "application/json")
+						.end(String.valueOf(reply.result().body()));
+			}
+		});
+	}
+	
+	private void obtenerAlarmasUsuarioDia(RoutingContext routingContext) {
+		JsonObject json = routingContext.getBodyAsJson();
+		HttpServerRequest request = routingContext.request();
+		MultiMap params = request.params();		
+		List<String> hash_mac = params.getAll("hash_mac_fk");
+		boolean ishashMacEmpty = hash_mac.isEmpty();
+		List<String> dias = params.getAll("dias");
+		boolean isDiasEmpty = dias.isEmpty();
+		JsonObject jsonRes = new JsonObject();
+		
+		if (json != null && ishashMacEmpty && isDiasEmpty) {
+			jsonRes = json;
+			jsonRes.put("hash_mac_fk", jsonRes.getString("hash_mac_fk"));
+			jsonRes.put("dias", jsonRes.getString("dias"));
+		} else {
+			jsonRes.put("hash_mac_fk", hash_mac.get(0));
+			jsonRes.put("dias", dias.get(0));
+		}
+		
+		vertx.eventBus().request("obtenerAlarmasUsuarioDia", jsonRes.toString(), reply -> {
 			if (reply.succeeded()) {
 				System.out.println(reply.result().body());
 				routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
