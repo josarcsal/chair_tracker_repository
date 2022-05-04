@@ -20,20 +20,13 @@ import type { Props } from './types';
 
 const NewAlarms: FC<Props> = () => {
   const { top: safeTop } = useSafeAreaInsets();
-  const {
-    handleGoBack,
-    setNewAlarm,
-    normalizedHour,
-    newAlarm,
-    hashMac,
-    readValue,
-  } = useConnect();
+  const { handleGoBack, setNewAlarm, normalizedHour, newAlarm, hashMac } =
+    useConnect();
   const [date1, setDate1] = useState(new Date());
   const [open1, setOpen1] = useState(false);
   const [date2, setDate2] = useState(new Date());
   const [open2, setOpen2] = useState(false);
 
-  readValue();
   return (
     <Container safeTop={safeTop}>
       <DetailHeader onPressBack={handleGoBack} />

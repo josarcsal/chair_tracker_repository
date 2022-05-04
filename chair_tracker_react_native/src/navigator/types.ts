@@ -26,11 +26,15 @@ type AlarmsDayModalParams = {
   days: string;
 };
 
+type NewAlarmsParams = {
+  hashMac: string;
+};
+
 export type ScreensParams = {
   Login: undefined;
   SignUp: undefined;
   Alarms: undefined;
-  NewAlarms: undefined;
+  NewAlarms: NewAlarmsParams;
   Stadistics: undefined;
   Profile: undefined;
   CallHistory: undefined;

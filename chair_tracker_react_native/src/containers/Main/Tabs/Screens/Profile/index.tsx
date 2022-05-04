@@ -35,7 +35,6 @@ const Profile: FC<Props> = () => {
     handleToAlarmsDayModal,
   } = useConnect();
   readValue();
-
   return (
     <>
       <Container>
