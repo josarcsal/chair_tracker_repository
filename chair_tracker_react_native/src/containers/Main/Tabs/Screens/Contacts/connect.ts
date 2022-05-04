@@ -15,9 +15,10 @@ const useConnect = () => {
   const { navigate } = useNavigation();
 
   const handleCall = useCallback(
-    (hash_mac: string) => {
+    (hash_mac: string, nombre: string) => {
       navigate('CallModal', {
         destinatarioHashMac: hash_mac,
+        destinatarioNombre: nombre,
       });
     },
     [navigate],

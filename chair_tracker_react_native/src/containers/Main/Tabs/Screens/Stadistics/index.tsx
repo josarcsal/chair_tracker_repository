@@ -2,13 +2,14 @@ import type { FC } from 'react';
 import { useCallback } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import MainHeader from 'components/Header/MainHeader';
+import RefreshIcon from 'components/Icons/RefreshIcon';
 import StadisticCard from 'components/StadisticCard';
 import useConnect from './connect';
-import { StadisticList, Container } from './styles';
+import { StadisticList, Container, RefreshButton } from './styles';
 import type { Props, StadisticsProps } from './types';
 
 const Stadistics: FC<Props> = () => {
-  const { normalizedData, readValue } = useConnect();
+  const { normalizedData, refetch, readValue } = useConnect();
   const { top: safeTop } = useSafeAreaInsets();
   readValue();
   const handleRenderItem = useCallback(
@@ -26,6 +27,9 @@ const Stadistics: FC<Props> = () => {
   return (
     <Container safeTop={safeTop}>
       <MainHeader title="Stadistics" subtitle="Your cicles" />
+      <RefreshButton onPress={() => refetch()}>
+        <RefreshIcon size={27} />
+      </RefreshButton>
       <StadisticList data={normalizedData} renderItem={handleRenderItem} />
     </Container>
   );

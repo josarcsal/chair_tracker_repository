@@ -24,7 +24,7 @@ const CallModal: FC<Props> = () => {
   const { top: safeTop } = useSafeAreaInsets();
   const {
     handleGoBack,
-    destinatarioHashMac,
+    destinatarioNombre,
     readValue,
     setFrom,
     setMessage,
@@ -46,10 +46,16 @@ const CallModal: FC<Props> = () => {
     <Container>
       <ModalOverlay />
       <Modal safeTop={safeTop}>
-        <Title>Call to {destinatarioHashMac}</Title>
-        <Subtitle>
-          Before calling {destinatarioHashMac} you need to complete this form
-        </Subtitle>
+        <Title>Call to {destinatarioNombre}</Title>
+        {message === '' ? (
+          <Subtitle>
+            Before calling {destinatarioNombre} you need to complete this form
+          </Subtitle>
+        ) : (
+          <Subtitle>
+            Your call to {destinatarioNombre} has been done succesfully
+          </Subtitle>
+        )}
         <Formik
           validateOnMount={true}
           initialValues={{
@@ -76,25 +82,29 @@ const CallModal: FC<Props> = () => {
             touched,
           }) => (
             <>
-              <InputText
-                placeholder="Calling from"
-                onChangeText={handleChange('desde')}
-                onBlur={handleBlur('desde')}
-                value={values.desde}
-                keyboardType="default"
-              />
+              {message === '' && (
+                <InputText
+                  placeholder="Calling from"
+                  onChangeText={handleChange('desde')}
+                  onBlur={handleBlur('desde')}
+                  value={values.desde}
+                  keyboardType="default"
+                />
+              )}
 
               {errors.desde && touched.desde && (
                 <TextError>{errors.desde}</TextError>
               )}
 
-              <InputText
-                placeholder="Message"
-                onChangeText={handleChange('descripcion')}
-                onBlur={handleBlur('descripcion')}
-                value={values.descripcion}
-                keyboardType="default"
-              />
+              {message === '' && (
+                <InputText
+                  placeholder="Message"
+                  onChangeText={handleChange('descripcion')}
+                  onBlur={handleBlur('descripcion')}
+                  value={values.descripcion}
+                  keyboardType="default"
+                />
+              )}
 
               {errors.descripcion && touched.descripcion && (
                 <TextError>{errors.descripcion}</TextError>

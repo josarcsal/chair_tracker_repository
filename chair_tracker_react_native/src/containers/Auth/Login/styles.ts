@@ -1,5 +1,6 @@
 import styled from 'styled-components/native';
 import { Text as TextBase } from 'components';
+import themeBase from 'theme';
 import type { ContainerProps } from './types';
 
 export const Container = styled.View<ContainerProps>`
@@ -27,15 +28,17 @@ export const Subtitle = styled(TextBase)`
   margin: 5px 0px;
 `;
 
-export const InputText = styled.TextInput`
+export const InputText = styled.TextInput.attrs({
+  placeholderTextColor: themeBase.colors.cultured,
+  selectionColor: themeBase.colors.cultured,
+})`
+  color: ${({ theme }) => theme.colors.cultured};
   font-size: 18px;
   width: 94%;
   height: 50px;
   margin: 5px 16px;
-  padding-left: 15px;
-  background-color: ${({ theme }) => theme.colors.cultured};
-  border: 1px ${({ theme }) => theme.colors.grayX11};
-  border-radius: 8px;
+  border-bottom-width: 1px;
+  border-color: ${({ theme }) => theme.colors.cultured};
   align-self: center;
   justify-content: center;
 `;

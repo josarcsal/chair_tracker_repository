@@ -10,11 +10,10 @@ export const Container = styled.SafeAreaView<ContainerProps>`
   background-color: ${({ theme }) => theme.colors.deepOcean};
 `;
 
-export const AddButton = styled.TouchableOpacity`
-  margin-right: 6px;
+export const RefreshButton = styled.TouchableOpacity`
   position: absolute;
-  top: 65px;
-  right: 22px;
+  top: 70px;
+  right: 20px;
 `;
 
 export const StadisticList = styled.FlatList.attrs<RegistroAlarma>({

@@ -26,8 +26,8 @@ const ContactCard: FC<Props> = ({
   onAlarm,
 }) => {
   const handlePressCall = useCallback(() => {
-    onCall(hash_mac);
-  }, [hash_mac, onCall]);
+    onCall(hash_mac, nombre);
+  }, [hash_mac, nombre, onCall]);
 
   const handlePressAlarm = useCallback(() => {
     onAlarm(hash_mac);

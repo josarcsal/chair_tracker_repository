@@ -1,6 +1,7 @@
 import styled from 'styled-components/native';
 import { Text } from 'components';
 import MainButton from 'components/MainButton';
+import themeBase from 'theme';
 import type { ModalProps } from './types';
 
 export const Container = styled.View`
@@ -56,20 +57,23 @@ export const ButtonSpacer = styled.View`
   width: 12px;
 `;
 
-export const InputText = styled.TextInput`
+export const InputText = styled.TextInput.attrs({
+  placeholderTextColor: themeBase.colors.cultured,
+  selectionColor: themeBase.colors.cultured,
+})`
+  color: ${({ theme }) => theme.colors.cultured};
   font-size: 18px;
-  width: 325px;
+  width: 94%;
   height: 50px;
-  margin: 5px 0px;
-  padding-left: 15px;
-  background-color: ${({ theme }) => theme.colors.cultured};
-  border: 1px ${({ theme }) => theme.colors.grayX11};
-  border-radius: 8px;
+  margin: 5px 16px;
+  border-bottom-width: 1px;
+  border-color: ${({ theme }) => theme.colors.cultured};
   align-self: center;
+  justify-content: center;
 `;
 
 export const TextError = styled.Text`
   font-size: 14px;
-  margin-bottom: 8px;
+  margin: 0px 10px 8px;
   color: ${({ theme }) => theme.colors.red};
 `;

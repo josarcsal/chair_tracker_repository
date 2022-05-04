@@ -1,16 +1,11 @@
 import type { FC } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Welcome, Login, SignUp, Tabs } from 'containers';
-import CallHistory from 'containers/Main/CallHistory';
 import NewAlarms from 'containers/Main/Tabs/Screens/Alarms/NewAlarms';
 import AboutUs from 'containers/Main/Tabs/Screens/Profile/AboutUs';
+import CallHistory from 'containers/Main/Tabs/Screens/Profile/CallHistory';
 import TermsAndConditions from 'containers/Main/Tabs/Screens/Profile/TermsAndConditions';
-import {
-  AlarmsDayModal,
-  CallModal,
-  ConfirmModal,
-  DeleteModal,
-} from 'containers/Modals';
+import { AlarmsDayModal, CallModal, DeleteModal } from 'containers/Modals';
 import useConnect from './connect';
 import {
   generalStackScreenOptions,
@@ -45,7 +40,6 @@ const AppNavigator: FC<Props> = () => {
         <Screen name="TermsAndConditions" component={TermsAndConditions} />
       </Group>
       <Group screenOptions={transparentModal}>
-        <Screen name="ConfirmModal" component={ConfirmModal} />
         <Screen name="DeleteModal" component={DeleteModal} />
         <Screen name="CallModal" component={CallModal} />
         <Screen name="AlarmsDayModal" component={AlarmsDayModal} />
