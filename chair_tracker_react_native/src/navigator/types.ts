@@ -21,6 +21,11 @@ type CallModalParams = {
   destinatarioHashMac: string;
 };
 
+type AlarmsDayModalParams = {
+  hashMac: string;
+  days: string;
+};
+
 export type ScreensParams = {
   Login: undefined;
   SignUp: undefined;
@@ -35,6 +40,7 @@ export type ScreensParams = {
   ConfirmModal: ConfirmModalParams;
   DeleteModal: DeleteModalParams;
   CallModal: CallModalParams;
+  AlarmsDayModal: AlarmsDayModalParams;
 };
 
 export type MainStackScreenProps<ScreenName extends keyof ScreensParams> =
