@@ -55,10 +55,5 @@ CREATE TABLE Registros(
     destinatario_hash_mac_fk VARCHAR(10) NULL,
 	destinatario_nombre VARCHAR(64),
 	desde		VARCHAR(20),
-    descripcion	VARCHAR(64),
-    FOREIGN KEY (hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE,
-    FOREIGN KEY (remitente_hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE,
-    FOREIGN KEY (destinatario_hash_mac_fk) REFERENCES Usuarios (hash_mac) ON DELETE CASCADE,
-    FOREIGN KEY (oid_alarma_fk) REFERENCES Alarmas (oid_alarma) ON DELETE CASCADE,
-    FOREIGN KEY (oid_llamada_fk) REFERENCES Llamadas (oid_llamada) ON DELETE CASCADE
+    descripcion	VARCHAR(64)
 );

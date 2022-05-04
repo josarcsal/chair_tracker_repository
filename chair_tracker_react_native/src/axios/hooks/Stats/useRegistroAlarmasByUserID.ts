@@ -7,7 +7,7 @@ export const useARegistroAlarmaByUserID = (
   anyo: number,
   hashMac?: string | null,
 ) => {
-  const { data, loading, error } = useAxios<JSON>({
+  const { data, loading, error, refetch } = useAxios<JSON>({
     baseURL: AXIOS_ENDPOINT,
     method: 'get',
     url: '/registros/alarmas/hash_macAnyo',
@@ -24,5 +24,5 @@ export const useARegistroAlarmaByUserID = (
     normalizedData.push(normalizeRegistroAlarma(value));
   });
 
-  return { normalizedData, loading, error };
+  return { normalizedData, loading, error, refetch };
 };

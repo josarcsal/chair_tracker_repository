@@ -6,7 +6,8 @@ import type { Props } from './types';
 
 const useConnect = () => {
   const { goBack, canGoBack } = useNavigation();
-  const { params: { destinatarioHashMac } = {} } = useRoute<Props['route']>();
+  const { params: { destinatarioHashMac, destinatarioNombre } = {} } =
+    useRoute<Props['route']>();
 
   const [hashMac, setHashMac] = useState<string | null>();
 
@@ -37,6 +38,7 @@ const useConnect = () => {
   return {
     handleGoBack,
     destinatarioHashMac,
+    destinatarioNombre,
     setState,
     setFrom,
     setMessage,
