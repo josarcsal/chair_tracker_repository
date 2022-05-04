@@ -23,7 +23,14 @@ const useConnect = () => {
     [navigate],
   );
 
-  return { normalizedData, nifJefe, readValue, handleCall };
+  const handleAlarm = useCallback(
+    (hash_mac: string) => {
+      navigate('NewAlarms', { hashMac: hash_mac });
+    },
+    [navigate],
+  );
+
+  return { normalizedData, nifJefe, readValue, handleCall, handleAlarm };
 };
 
 export default useConnect;

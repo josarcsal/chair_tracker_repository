@@ -4,5 +4,6 @@ export type Props = {
   last_login: string | null;
   nombre: string;
   hash_mac: string;
-  onPress: (hash_mac: string) => void;
+  onCall: (hash_mac: string) => void;
+  onAlarm: (hash_mac: string) => void;
 };

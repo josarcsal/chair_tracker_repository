@@ -10,7 +10,8 @@ import type { UserProps } from './types';
 import type { Props } from './types';
 
 const Contacts: FC<Props> = () => {
-  const { normalizedData, nifJefe, readValue, handleCall } = useConnect();
+  const { normalizedData, nifJefe, readValue, handleCall, handleAlarm } =
+    useConnect();
   const { top: safeTop } = useSafeAreaInsets();
   const handleKeyExtractor = (item: Usuario) => item.hash_mac;
 
@@ -24,10 +25,11 @@ const Contacts: FC<Props> = () => {
         last_login={item.last_login}
         isBoss={isBoss && item.rol === 'E'}
         hash_mac={item.hash_mac}
-        onPress={handleCall}
+        onCall={handleCall}
+        onAlarm={handleAlarm}
       />
     ),
-    [handleCall, isBoss],
+    [handleAlarm, handleCall, isBoss],
   );
   readValue();
 

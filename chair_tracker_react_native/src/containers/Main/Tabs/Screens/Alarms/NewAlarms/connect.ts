@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation, useRoute } from '@react-navigation/core';
 import { usePostAlarm } from 'axios/hooks/Alarms/usePostAlarm';
 import type { Alarma } from 'axios/types/alarma';
+import type { Props } from './types';
 
 const useConnect = () => {
   const { goBack, canGoBack } = useNavigation();
@@ -13,11 +13,7 @@ const useConnect = () => {
     }
   }, [canGoBack, goBack]);
 
-  const [hashMac, setHashMac] = useState<string | null>();
-  async function readValue() {
-    const v = await AsyncStorage.getItem('hash_mac');
-    setHashMac(v);
-  }
+  const { params: { hashMac } = {} } = useRoute<Props['route']>();
 
   const [newAlarm, setNewAlarm] = useState<Alarma>();
 
@@ -47,7 +43,6 @@ const useConnect = () => {
     newAlarm,
     normalizedHour,
     hashMac,
-    readValue,
   };
 };
 

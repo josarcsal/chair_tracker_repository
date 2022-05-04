@@ -34,7 +34,6 @@ const Profile: FC<Props> = () => {
     handleToTermsAndConditions,
   } = useConnect();
   readValue();
-  console.log(nifJefe);
   return (
     <>
       <Container>

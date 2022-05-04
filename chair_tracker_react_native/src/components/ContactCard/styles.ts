@@ -46,7 +46,7 @@ export const CallButton = styled.TouchableOpacity`
   justify-content: center;
 `;
 
-export const ControlButton = styled.View`
+export const ControlButton = styled.TouchableOpacity`
   height: 50%;
   width: 100%;
   border-bottom-right-radius: 8px;
