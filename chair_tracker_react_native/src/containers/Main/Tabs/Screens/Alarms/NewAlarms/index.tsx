@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Formik } from 'formik';
 import DatePicker from 'react-native-date-picker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as yup from 'yup';
 import DetailHeader from 'components/Header/DetailHeader';
 import MainHeader from 'components/Header/MainHeader';
 import MainButton from 'components/MainButton';
@@ -15,6 +16,7 @@ import {
   OpenButton,
   OpenText,
   Text,
+  TextError,
 } from './styles';
 import type { Props } from './types';
 
@@ -33,7 +35,6 @@ const NewAlarms: FC<Props> = () => {
       <MainHeader title="New alarm" subtitle="Set your new alarm" />
       <Formik
         validateOnMount={true}
-        // validationSchema={loginValidationSchema}
         initialValues={{
           days: '',
           t_trabajo: 0,
@@ -52,15 +53,67 @@ const NewAlarms: FC<Props> = () => {
             hash_mac_fk: hashMac || '',
           });
         }}
+        validationSchema={yup.object().shape({
+          days: yup
+            .string()
+            .uppercase()
+            .oneOf([
+              'L',
+              'LM',
+              'LMX',
+              'LMXJ',
+              'LMXJV',
+              'LMXV',
+              'LMJ',
+              'LMJV',
+              'LMV',
+              'LX',
+              'LXJ',
+              'LXJV',
+              'LXV',
+              'LJ',
+              'LJV',
+              'LV',
+              'M',
+              'MX',
+              'MXJ',
+              'MXJV',
+              'MXV',
+              'MJ',
+              'MJV',
+              'MV',
+              'X',
+              'XJ',
+              'XJV',
+              'XV',
+              'J',
+              'JV',
+              'V',
+            ])
+            .min(1, 'You have to choose at least one day of the week')
+            .max(5, 'You can not choose more than five days')
+            .required('Days are required'),
+          t_trabajo: yup
+            .number()
+            .integer()
+            .moreThan(0, 'Working time must be more than 0 mins')
+            .lessThan(1440, 'Working time can not be more than 24 hours')
+            .required('Working time is required'),
+          t_descanso: yup
+            .number()
+            .integer()
+            .moreThan(0, 'Break time must be more than 0 mins')
+            .lessThan(1440, 'Break time can not be more than 24 hours')
+            .required('Break time is required'),
+        })}
       >
         {({
           handleSubmit,
           handleChange,
           handleBlur,
           values,
-          // errors,
-          // touched,
-          // isValid,
+          errors,
+          touched,
         }) => (
           <>
             <HourView>
@@ -83,10 +136,6 @@ const NewAlarms: FC<Props> = () => {
               />
             </HourView>
 
-            {/* {errors.email && touched.email && (
-              <Text style={styles.errorText}>{errors.email}</Text>
-            )} */}
-
             <HourView>
               <Text>Finish time:</Text>
               <OpenButton onPress={() => setOpen2(true)}>
@@ -106,9 +155,7 @@ const NewAlarms: FC<Props> = () => {
                 }}
               />
             </HourView>
-            {/* {errors.telefono && touched.telefono && (
-              <Text style={styles.errorText}>{errors.telefono}</Text>
-            )} */}
+
             <HourView>
               <Text>Working time:</Text>
               <InputHour
@@ -120,9 +167,9 @@ const NewAlarms: FC<Props> = () => {
               />
             </HourView>
 
-            {/* {errors.telefono && touched.telefono && (
-              <Text style={styles.errorText}>{errors.telefono}</Text>
-            )} */}
+            {errors.t_trabajo && touched.t_trabajo && (
+              <TextError>{errors.t_trabajo}</TextError>
+            )}
 
             <HourView>
               <Text>Break time:</Text>
@@ -134,9 +181,10 @@ const NewAlarms: FC<Props> = () => {
                 keyboardType="default"
               />
             </HourView>
-            {/* {errors.mensaje && touched.mensaje && (
-              <Text style={styles.errorText}>{errors.mensaje}</Text>
-            )} */}
+
+            {errors.t_descanso && touched.t_descanso && (
+              <TextError>{errors.t_descanso}</TextError>
+            )}
 
             <HourView>
               <Text>Days:</Text>
@@ -148,9 +196,11 @@ const NewAlarms: FC<Props> = () => {
                 keyboardType="default"
               />
             </HourView>
-            {/* {errors.mensaje && touched.mensaje && (
-              <Text style={styles.errorText}>{errors.mensaje}</Text>
-            )} */}
+
+            {errors.days && touched.days && (
+              <TextError>{errors.days}</TextError>
+            )}
+
             <ButtonView>
               {newAlarm?.hash_mac_fk === undefined ? (
                 <MainButton text={'Set alarm'} handlePress={handleSubmit} />

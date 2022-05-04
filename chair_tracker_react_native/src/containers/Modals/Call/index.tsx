@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import React from 'react';
 import { Formik } from 'formik';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import * as yup from 'yup';
 import { ModalOverlay } from '../Components';
 import useConnect from './connect';
 import {
@@ -15,6 +16,7 @@ import {
   Cancel,
   InputText,
   Subtitle,
+  TextError,
 } from './styles';
 import type { Props } from './types';
 
@@ -50,21 +52,28 @@ const CallModal: FC<Props> = () => {
         </Subtitle>
         <Formik
           validateOnMount={true}
-          // validationSchema={loginValidationSchema}
           initialValues={{
             desde: '',
             descripcion: '',
           }}
           onSubmit={handleCompleteCall}
+          validationSchema={yup.object().shape({
+            desde: yup
+              .string()
+              .max(20, 'From must be lower than 20 characters'),
+            descripcion: yup
+              .string()
+              .max(64, 'Message must be lower than 64 characters')
+              .required('Message is required'),
+          })}
         >
           {({
             handleSubmit,
             handleChange,
             handleBlur,
             values,
-            // errors,
-            // touched,
-            // isValid,
+            errors,
+            touched,
           }) => (
             <>
               <InputText
@@ -75,9 +84,9 @@ const CallModal: FC<Props> = () => {
                 keyboardType="default"
               />
 
-              {/* {errors.nombresyapellidos && touched.nombresyapellidos && (
-              <Text style={styles.errorText}>{errors.nombresyapellidos}</Text>
-            )} */}
+              {errors.desde && touched.desde && (
+                <TextError>{errors.desde}</TextError>
+              )}
 
               <InputText
                 placeholder="Message"
@@ -87,9 +96,10 @@ const CallModal: FC<Props> = () => {
                 keyboardType="default"
               />
 
-              {/* {errors.email && touched.email && (
-              <Text style={styles.errorText}>{errors.email}</Text>
-            )} */}
+              {errors.descripcion && touched.descripcion && (
+                <TextError>{errors.descripcion}</TextError>
+              )}
+
               <ButtonView>
                 <Cancel text="Close" handlePress={handleGoBack} />
                 {message === '' && (

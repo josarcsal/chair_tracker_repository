@@ -20,6 +20,13 @@ export const Text = styled.Text`
   color: ${({ theme }) => theme.colors.cultured};
 `;
 
+export const TextError = styled.Text`
+  font-size: 14px;
+  margin: 0px 16px;
+  margin-bottom: 8px;
+  color: ${({ theme }) => theme.colors.red};
+`;
+
 export const OpenButton = styled.TouchableOpacity`
   width: 23%;
   background-color: ${({ theme }) => theme.colors.cultured};
