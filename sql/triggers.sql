@@ -1,13 +1,12 @@
 USE proyectodad;
 
-DROP TRIGGER Rellena_Registros_Llamadas_INSERT;
-DROP TRIGGER Rellena_Registros_Alarmas_INSERT;
-DROP TRIGGER Rellena_Registros_Alarmas_UPDATE;
-DROP TRIGGER control_rol;
-DROP TRIGGER control_nif;
-DROP TRIGGER alarmas_por_usuario;
-
-DROP TRIGGER alarmas_inicio_fin_solapado_INSERT;
+DROP TRIGGER IF EXISTS Rellena_Registros_Llamadas_INSERT;
+DROP TRIGGER IF EXISTS Rellena_Registros_Alarmas_INSERT;
+DROP TRIGGER IF EXISTS Rellena_Registros_Alarmas_UPDATE;
+DROP TRIGGER IF EXISTS control_rol;
+DROP TRIGGER IF EXISTS control_nif;
+DROP TRIGGER IF EXISTS alarmas_por_usuario;
+DROP TRIGGER IF EXISTS alarmas_inicio_fin_solapado_INSERT;
 
 DELIMITER //
 CREATE TRIGGER Rellena_Registros_Llamadas_INSERT AFTER INSERT 
