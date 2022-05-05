@@ -4,5 +4,5 @@ export type Props = {
   fecha: string | null;
   desde: string | null;
   descripcion: string | null;
-  onPress: (id: string) => void;
+  onPress: (id: string, nombre: string) => void;
 };

@@ -1,6 +1,10 @@
 import styled from 'styled-components/native';
-import { Picker as PickerBase } from '@react-native-picker/picker';
+import {
+  Picker as PickerBase,
+  PickerIOS as PickerIOSBase,
+} from '@react-native-picker/picker';
 import { Text as TextBase } from 'components';
+import themeBase from 'theme';
 import type { ContainerProps } from './types';
 
 export const Container = styled.ScrollView<ContainerProps>`
@@ -21,26 +25,39 @@ export const Title = styled(TextBase)`
   margin-top: 8px;
 `;
 
-export const Picker = styled(PickerBase).attrs({
+export const PickerAndroid = styled(PickerBase).attrs({
   mode: 'dropdown',
+  dropdownIconColor: themeBase.colors.cultured,
+  dropdownIconRippleColor: themeBase.colors.cultured,
 })`
   align-items: center;
   width: 93%;
   margin: 5px 16px;
-  background-color: ${({ theme }) => theme.colors.fdWhite};
-  border: 1px solid ${({ theme }) => theme.colors.grayX11};
+  background-color: ${({ theme }) => theme.colors.cultured30};
+  color: ${({ theme }) => theme.colors.cultured};
+  border: 1px solid ${({ theme }) => theme.colors.cultured};
   border-radius: 8px;
 ` as unknown as typeof PickerBase;
 
-export const InputText = styled.TextInput`
+export const PickerIOS = styled(PickerIOSBase).attrs({
+  itemStyle: {
+    color: 'white',
+  },
+})`
+  margin: -40px 16px;
+` as unknown as typeof PickerBase;
+
+export const InputText = styled.TextInput.attrs({
+  placeholderTextColor: themeBase.colors.cultured,
+  selectionColor: themeBase.colors.cultured,
+})`
+  color: ${({ theme }) => theme.colors.cultured};
   font-size: 18px;
   width: 94%;
   height: 50px;
   margin: 5px 16px;
-  padding-left: 15px;
-  background-color: ${({ theme }) => theme.colors.fdWhite};
-  border: 1px solid ${({ theme }) => theme.colors.grayX11};
-  border-radius: 8px;
+  border-bottom-width: 1px;
+  border-color: ${({ theme }) => theme.colors.cultured};
   align-self: center;
   justify-content: center;
 `;

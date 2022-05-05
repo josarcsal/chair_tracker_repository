@@ -5,13 +5,13 @@ import { useARegistroAlarmaByUserID } from 'axios/hooks/Stats/useRegistroAlarmas
 const useConnect = () => {
   const [hashMac, setHashMac] = useState<string | null>();
 
-  const { normalizedData } = useARegistroAlarmaByUserID(2022, hashMac);
+  const { normalizedData, refetch } = useARegistroAlarmaByUserID(2022, hashMac);
 
   async function readValue() {
     const v = await AsyncStorage.getItem('hash_mac');
     setHashMac(v);
   }
-  return { normalizedData, readValue };
+  return { normalizedData, refetch, readValue };
 };
 
 export default useConnect;

@@ -19,14 +19,16 @@ export const Modal = styled.View<ModalProps>`
 export const Title = styled(Text)`
   text-align: center;
   color: ${({ theme }) => theme.colors.cultured};
+  margin-bottom: 10px;
   font-size: 20px;
   font-weight: 600;
 `;
 
-export const Subtitle = styled(Text)`
-  margin-top: 12px;
-  text-align: center;
-  font-size: 15px;
+export const Subtitle = styled.Text`
+  margin-top: 5px;
+  margin-left: 10px;
+  font-size: 16px;
+  font-weight: 600;
   color: ${({ theme }) => theme.colors.cultured};
 `;
 
@@ -36,13 +38,6 @@ export const ButtonView = styled.View`
   margin: 24px 25px 0;
 `;
 
-export const Button = styled(MainButton)`
-  width: 160px;
-  height: 50px;
-  border-radius: 8px;
-  border-width: 2px;
-`;
-
 export const Cancel = styled(MainButton)`
   width: 160px;
   height: 50px;
@@ -50,8 +45,4 @@ export const Cancel = styled(MainButton)`
   border-radius: 8px;
   border-width: 2px;
   border-color: ${({ theme }) => theme.colors.deepOcean80};
-`;
-
-export const ButtonSpacer = styled.View`
-  width: 12px;
 `;

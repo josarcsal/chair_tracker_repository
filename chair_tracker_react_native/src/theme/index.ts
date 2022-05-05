@@ -22,6 +22,7 @@ const colors = {
   beforeBlue: '#222B4C',
   orangeC7: '#C75D21',
   deepOcean80: '#080B1A80',
+  cultured30: '#F5F5F30',
 };
 
 const { width, height } = Dimensions.get('window');

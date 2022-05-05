@@ -14,8 +14,8 @@ const ContactCard: FC<Props> = ({
   onPress,
 }) => {
   const handlePress = useCallback(() => {
-    onPress(hash_mac || '');
-  }, [hash_mac, onPress]);
+    onPress(hash_mac || '', nombre || '');
+  }, [hash_mac, nombre, onPress]);
   return (
     <Container>
       <SubContainer>

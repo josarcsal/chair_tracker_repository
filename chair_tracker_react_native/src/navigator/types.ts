@@ -5,20 +5,19 @@ declare global {
     interface RootParamList extends ScreensParams {}
   }
 }
-type ConfirmModalParams = {
-  title: string;
-  subtitle: string;
-  handleConfirm: () => void;
-};
 
 type DeleteModalParams = {
-  title: string;
-  subtitle: string;
   id: number;
 };
 
 type CallModalParams = {
   destinatarioHashMac: string;
+  destinatarioNombre: string;
+};
+
+type AlarmsDayModalParams = {
+  hashMac: string;
+  days: string;
 };
 
 type NewAlarmsParams = {
@@ -36,9 +35,9 @@ export type ScreensParams = {
   AboutUs: undefined;
   TermsAndConditions: undefined;
   Contacts: undefined;
-  ConfirmModal: ConfirmModalParams;
   DeleteModal: DeleteModalParams;
   CallModal: CallModalParams;
+  AlarmsDayModal: AlarmsDayModalParams;
 };
 
 export type MainStackScreenProps<ScreenName extends keyof ScreensParams> =
