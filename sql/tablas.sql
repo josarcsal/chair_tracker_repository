@@ -1,13 +1,13 @@
-CREATE SCHEMA proyectodad;
+CREATE SCHEMA IF NOT EXISTS proyectodad;
 USE proyectodad;
 
-DROP TABLE Registros;
-DROP TABLE Llamadas;
-DROP TABLE Alarmas;
-DROP TABLE Usuarios;
+DROP TABLE IF EXISTS Registros;
+DROP TABLE IF EXISTS Llamadas;
+DROP TABLE IF EXISTS Alarmas;
+DROP TABLE IF EXISTS Usuarios;
 
 CREATE TABLE Usuarios(
-	hash_mac VARCHAR(10) PRIMARY KEY,
+	hash_mac VARCHAR(9) PRIMARY KEY,
     nif         VARCHAR(9) NOT NULL,
     contrasena  VARCHAR(64) NOT NULL,
     last_login   DATETIME,
