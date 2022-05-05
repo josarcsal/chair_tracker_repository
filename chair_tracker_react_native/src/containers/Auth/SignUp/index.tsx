@@ -6,13 +6,15 @@ import * as yup from 'yup';
 import DetailHeader from 'components/Header/DetailHeader';
 import MainButton from 'components/MainButton';
 import SecondaryButton from 'components/SecondaryButton';
+import theme from 'theme';
 import useConnect from './connect';
 import {
   Buttons,
   Container,
   Content,
   InputText,
-  Picker,
+  PickerAndroid,
+  PickerIOS,
   TextError,
   Title,
 } from './styles';
@@ -145,13 +147,23 @@ const SignUp: FC<Props> = () => {
               <TextError>{errors.apellidos}</TextError>
             )}
 
-            <Picker
-              selectedValue={rol}
-              onValueChange={(itemValue) => setRol(itemValue)}
-            >
-              <Picker.Item label="Boss" value="J" />
-              <Picker.Item label="Worker" value="E" />
-            </Picker>
+            {theme.device.isAndroid ? (
+              <PickerAndroid
+                selectedValue={rol}
+                onValueChange={(itemValue) => setRol(itemValue)}
+              >
+                <PickerAndroid.Item label="Boss" value="J" />
+                <PickerAndroid.Item label="Worker" value="E" />
+              </PickerAndroid>
+            ) : (
+              <PickerIOS
+                selectedValue={rol}
+                onValueChange={(itemValue) => setRol(itemValue)}
+              >
+                <PickerIOS.Item label="Boss" value="J" />
+                <PickerIOS.Item label="Worker" value="E" />
+              </PickerIOS>
+            )}
 
             {rol === 'E' && (
               <InputText
