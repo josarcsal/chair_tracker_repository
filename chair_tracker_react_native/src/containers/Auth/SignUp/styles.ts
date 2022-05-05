@@ -1,5 +1,8 @@
 import styled from 'styled-components/native';
-import { Picker as PickerBase } from '@react-native-picker/picker';
+import {
+  Picker as PickerBase,
+  PickerIOS as PickerIOSBase,
+} from '@react-native-picker/picker';
 import { Text as TextBase } from 'components';
 import themeBase from 'theme';
 import type { ContainerProps } from './types';
@@ -22,7 +25,7 @@ export const Title = styled(TextBase)`
   margin-top: 8px;
 `;
 
-export const Picker = styled(PickerBase).attrs({
+export const PickerAndroid = styled(PickerBase).attrs({
   mode: 'dropdown',
   dropdownIconColor: themeBase.colors.cultured,
   dropdownIconRippleColor: themeBase.colors.cultured,
@@ -34,6 +37,14 @@ export const Picker = styled(PickerBase).attrs({
   color: ${({ theme }) => theme.colors.cultured};
   border: 1px solid ${({ theme }) => theme.colors.cultured};
   border-radius: 8px;
+` as unknown as typeof PickerBase;
+
+export const PickerIOS = styled(PickerIOSBase).attrs({
+  itemStyle: {
+    color: 'white',
+  },
+})`
+  margin: -40px 16px;
 ` as unknown as typeof PickerBase;
 
 export const InputText = styled.TextInput.attrs({
