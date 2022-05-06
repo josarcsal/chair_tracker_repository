@@ -31,6 +31,7 @@
     "lodash": "4.17.21",
     "lottie-ios": "3.2.3",
     "lottie-react-native": "5.0.1",
+    "mqtt": "4.3.7",
     "react": "17.0.2",
     "react-hook-form": "7.22.5",
     "react-native": "0.66.4",

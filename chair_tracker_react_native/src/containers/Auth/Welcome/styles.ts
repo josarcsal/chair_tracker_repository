@@ -26,17 +26,18 @@ export const Background = styled(FastImage).attrs({
   height: 100%;
 `;
 
-export const SubContainer = styled.View`
+export const SubContainer = styled.View<ContainerProps>`
   flex: 1;
   background-color: ${({ theme }) => theme.colors.beforeBlue};
   align-items: center;
+  justify-content: center;
+  padding-bottom: ${({ safeBottom }) => `${safeBottom}px`};
 `;
 
 export const Title = styled(TextBase)`
   font-size: 30px;
   color: ${({ theme }) => theme.colors.cultured};
   font-weight: 400;
-  margin-top: 10px;
 `;
 
 export const Subtitle = styled(TextBase)`
