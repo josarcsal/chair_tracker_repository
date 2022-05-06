@@ -124,8 +124,7 @@ public class HttpServerVerticle extends AbstractVerticle {
 			}
 		});
 	}
-	
-	
+		
 	private void existeUsuario(RoutingContext routingContext) {
 		JsonObject json = routingContext.getBodyAsJson();
 		HttpServerRequest request = routingContext.request();

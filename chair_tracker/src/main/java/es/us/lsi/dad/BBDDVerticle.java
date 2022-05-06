@@ -108,101 +108,108 @@ public class BBDDVerticle extends AbstractVerticle {
 			});
 		});
 	}
-	
+
 	// Obtiene todos los contactos de un usuario de la BBDD
 	private void obtenerContactos() {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerContactos");
 
 		consumer.handler(message -> {
 			JsonObject jsonHash = new JsonObject(message.body());
+			JsonObject jsonRes = new JsonObject();
 			String hash_mac = jsonHash.getString("hash_mac");
+			if (!(hash_mac.equals(""))) {
+				Query<RowSet<Row>> queryCount = mySqlClient
+						.query("SELECT rol, nif FROM proyectodad.usuarios WHERE hash_mac = '" + hash_mac + "';");
 
-			Query<RowSet<Row>> queryCount = mySqlClient
-					.query("SELECT rol, nif FROM proyectodad.usuarios WHERE hash_mac = '" + hash_mac + "';");
+				queryCount.execute(res -> {
+					if (res.succeeded()) {
 
-			queryCount.execute(res -> {
-				if (res.succeeded()) {
+						Row rowCount = res.result().iterator().next();
 
-					Row rowCount = res.result().iterator().next();
+						if (rowCount.getString("rol").equals("J")) {
 
-					if (rowCount.getString("rol").equals("J")) {
+							Query<RowSet<Row>> queryJefe = mySqlClient
+									.query("SELECT * FROM proyectodad.Usuarios WHERE nif_jefe = '"
+											+ rowCount.getString("nif") + "' OR rol = 'J';");
 
-						Query<RowSet<Row>> queryJefe = mySqlClient
-								.query("SELECT * FROM proyectodad.Usuarios WHERE nif_jefe = '" + rowCount.getString("nif") + "' OR rol = 'J';");
+							queryJefe.execute(resQueryJefe -> {
+								JsonObject jsonJefe = new JsonObject();
 
-						queryJefe.execute(resQueryJefe -> {
-							JsonObject jsonJefe = new JsonObject();
+								if (resQueryJefe.succeeded()) {
+									resQueryJefe.result().forEach(v -> {
+										UsuarioImpl usuario = new UsuarioImpl();
+										usuario.setHash_mac(v.getString("hash_mac"));
+										usuario.setNif(v.getString("nif"));
+										usuario.setContrasena(v.getString("contrasena"));
+										usuario.setLast_login(UsuarioImpl
+												.ParseaLocalDateTimeFromJson(String.valueOf(v.getValue("last_login"))));
+										usuario.setNombre(v.getString("nombre"));
+										usuario.setApellidos(v.getString("apellidos"));
+										usuario.setRol(v.getString("rol"));
+										usuario.setNif_jefe(v.getString("nif_jefe"));
+										System.out.println(jsonJefe);
+										jsonJefe.put(v.getString("hash_mac"), v.toJson());
+									});
+								} else {
+									jsonJefe.put(String.valueOf("ERROR"), res.cause());
+								}
+								message.reply(jsonJefe);
+							});
+						} else {
+							Query<RowSet<Row>> queryEmpleado = mySqlClient.query(
+									"SELECT * FROM proyectodad.Usuarios WHERE nif_jefe = '" + rowCount.getString("nif")
+											+ "' OR nif = '" + rowCount.getString("nif") + "';");
 
-							if (resQueryJefe.succeeded()) {
-								resQueryJefe.result().forEach(v -> {
-									UsuarioImpl usuario = new UsuarioImpl();
-									usuario.setHash_mac(v.getString("hash_mac"));
-									usuario.setNif(v.getString("nif"));
-									usuario.setContrasena(v.getString("contrasena"));
-									usuario.setLast_login(
-											UsuarioImpl.ParseaLocalDateTimeFromJson(String.valueOf(v.getValue("last_login"))));
-									usuario.setNombre(v.getString("nombre"));
-									usuario.setApellidos(v.getString("apellidos"));
-									usuario.setRol(v.getString("rol"));
-									usuario.setNif_jefe(v.getString("nif_jefe"));
-									System.out.println(jsonJefe);
-									jsonJefe.put(v.getString("hash_mac"), v.toJson());
-								});
-							} else {
-								jsonJefe.put(String.valueOf("ERROR"), res.cause());
-							}
-							message.reply(jsonJefe);
-						});
+							queryEmpleado.execute(resQueryEmpleado -> {
+								JsonObject jsonEmpleado = new JsonObject();
+
+								if (resQueryEmpleado.succeeded()) {
+									resQueryEmpleado.result().forEach(v -> {
+										UsuarioImpl usuario = new UsuarioImpl();
+										usuario.setHash_mac(v.getString("hash_mac"));
+										usuario.setNif(v.getString("nif"));
+										usuario.setContrasena(v.getString("contrasena"));
+										usuario.setLast_login(UsuarioImpl
+												.ParseaLocalDateTimeFromJson(String.valueOf(v.getValue("last_login"))));
+										usuario.setNombre(v.getString("nombre"));
+										usuario.setApellidos(v.getString("apellidos"));
+										usuario.setRol(v.getString("rol"));
+										usuario.setNif_jefe(v.getString("nif_jefe"));
+										System.out.println(jsonEmpleado);
+										jsonEmpleado.put(v.getString("hash_mac"), v.toJson());
+									});
+								} else {
+									jsonEmpleado.put(String.valueOf("ERROR"), res.cause());
+								}
+								message.reply(jsonEmpleado);
+							});
+						}
 					} else {
-						Query<RowSet<Row>> queryEmpleado = mySqlClient
-								.query("SELECT * FROM proyectodad.Usuarios WHERE nif_jefe = '" + rowCount.getString("nif") + "' OR nif = '"+  rowCount.getString("nif") +"';");
-
-						queryEmpleado.execute(resQueryEmpleado -> {
-							JsonObject jsonEmpleado = new JsonObject();
-
-							if (resQueryEmpleado.succeeded()) {
-								resQueryEmpleado.result().forEach(v -> {
-									UsuarioImpl usuario = new UsuarioImpl();
-									usuario.setHash_mac(v.getString("hash_mac"));
-									usuario.setNif(v.getString("nif"));
-									usuario.setContrasena(v.getString("contrasena"));
-									usuario.setLast_login(
-											UsuarioImpl.ParseaLocalDateTimeFromJson(String.valueOf(v.getValue("last_login"))));
-									usuario.setNombre(v.getString("nombre"));
-									usuario.setApellidos(v.getString("apellidos"));
-									usuario.setRol(v.getString("rol"));
-									usuario.setNif_jefe(v.getString("nif_jefe"));
-									System.out.println(jsonEmpleado);
-									jsonEmpleado.put(v.getString("hash_mac"), v.toJson());
-								});
-							} else {
-								jsonEmpleado.put(String.valueOf("ERROR"), res.cause());
-							}
-							message.reply(jsonEmpleado);
-						});					}
-				} else {
-					message.reply("ERROR AL OBTENER CONTACTOS" + res.cause());
-				}
-
-			});
+						message.reply("ERROR AL OBTENER CONTACTOS" + res.cause());
+					}
+				});
+			} else {
+				message.reply(jsonRes);
+			}
 		});
 	}
-	
+
 	// Borra un usuario de la BBDD dado su hash_mac
 	private void existeUsuario() {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("existeUsuario");
 
 		consumer.handler(message -> {
-			
+
 			JsonObject jsonExisteUsuario = new JsonObject(message.body());
 			String nif = jsonExisteUsuario.getString("nif");
 			String contrasena = jsonExisteUsuario.getString("contrasena");
-			
+
 			System.out.println(nif);
 			System.out.println(contrasena);
 
 			Query<RowSet<Row>> queryCount = mySqlClient
-					.query("SELECT COUNT(*), hash_mac, nombre, nif_jefe FROM proyectodad.usuarios WHERE nif = '" + nif + "' AND contrasena = '" + contrasena + "';");
+					.query("SELECT COUNT(*), hash_mac, nombre, nif_jefe FROM proyectodad.usuarios WHERE nif = '" + nif
+							+ "' AND contrasena = '" + contrasena + "';");
 
 			queryCount.execute(res -> {
 				JsonObject json = new JsonObject();
@@ -437,8 +444,9 @@ public class BBDDVerticle extends AbstractVerticle {
 			});
 		});
 	}
-	
-	// Obtiene las alarmas asociadas a un usuario en un dia dado junto con su hash_mac 
+
+	// Obtiene las alarmas asociadas a un usuario en un dia dado junto con su
+	// hash_mac
 	private void obtenerAlarmasUsuarioDia() {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerAlarmasUsuarioDia");
 
@@ -447,8 +455,8 @@ public class BBDDVerticle extends AbstractVerticle {
 			String hash_mac_fk = jsonEditLlamada.getString("hash_mac_fk");
 			String dias = jsonEditLlamada.getString("dias");
 
-			Query<RowSet<Row>> query = mySqlClient
-					.query("SELECT * FROM proyectodad.alarmas WHERE hash_mac_fk = '" + hash_mac_fk + "' AND dias LIKE '%" + dias + "%';");
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.alarmas WHERE hash_mac_fk = '"
+					+ hash_mac_fk + "' AND dias LIKE '%" + dias + "%';");
 
 			query.execute(res -> {
 				JsonObject json = new JsonObject();
@@ -481,7 +489,7 @@ public class BBDDVerticle extends AbstractVerticle {
 	private void borrarAlarma() {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("borrarAlarma");
 
-		consumer.handler(message -> {			
+		consumer.handler(message -> {
 			String oid_alarma = message.body();
 
 			Query<RowSet<Row>> queryCount = mySqlClient.query(
@@ -494,10 +502,10 @@ public class BBDDVerticle extends AbstractVerticle {
 					Row rowCount = res.result().iterator().next();
 
 					if (rowCount.getInteger("cuenta") > 0) {
-						
-						Query<RowSet<Row>> queryUser = mySqlClient.query(
-								"SELECT * FROM proyectodad.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
-						
+
+						Query<RowSet<Row>> queryUser = mySqlClient
+								.query("SELECT * FROM proyectodad.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
+
 						queryUser.execute(resQueryUser -> {
 							if (resQueryUser.succeeded()) {
 
@@ -505,8 +513,10 @@ public class BBDDVerticle extends AbstractVerticle {
 									AlarmaImpl alarma = new AlarmaImpl();
 									alarma.setOid_alarma(v.getShort("oid_alarma"));
 									alarma.setDias(v.getString("dias"));
-									alarma.setT_inicio(AlarmaImpl.ParseaLocalTimeFromJson(String.valueOf(v.getValue("t_inicio"))));
-									alarma.setT_fin(AlarmaImpl.ParseaLocalTimeFromJson(String.valueOf(v.getValue("t_fin"))));
+									alarma.setT_inicio(
+											AlarmaImpl.ParseaLocalTimeFromJson(String.valueOf(v.getValue("t_inicio"))));
+									alarma.setT_fin(
+											AlarmaImpl.ParseaLocalTimeFromJson(String.valueOf(v.getValue("t_fin"))));
 									alarma.setT_trabajo(v.getShort("t_trabajo"));
 									alarma.setT_descanso(v.getShort("t_descanso"));
 									alarma.setCiclo_trabajo(v.getShort("ciclo_trabajo"));
@@ -519,7 +529,6 @@ public class BBDDVerticle extends AbstractVerticle {
 								message.reply("ERROR AL OBTENER EL USUARIO PARA BORRAR LA ALARMA");
 							}
 						});
-						
 
 						Query<RowSet<Row>> query = mySqlClient
 								.query("DELETE FROM proyectodad.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
@@ -547,7 +556,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 		consumer.handler(message -> {
 			JsonObject jsonNewAlarma = new JsonObject(message.body());
-			if(jsonNewAlarma.getString("hash_mac_fk") != "") {
+			if (jsonNewAlarma.getString("hash_mac_fk") != "") {
 				AlarmaImpl newAlarma = new AlarmaImpl();
 				// newAlarma.setOid_alarma(Short.valueOf(jsonNewAlarma.getString("oid_alarma")));
 				newAlarma.setDias(jsonNewAlarma.getString("dias"));
@@ -559,13 +568,12 @@ public class BBDDVerticle extends AbstractVerticle {
 				newAlarma.setCiclo_descanso(Short.valueOf(jsonNewAlarma.getString("ciclo_descanso")));
 				newAlarma.setHash_mac_fk(jsonNewAlarma.getString("hash_mac_fk"));
 
-				Query<RowSet<Row>> query = mySqlClient
-						.query("INSERT INTO proyectodad.alarmas(dias, t_inicio, t_fin,"
-								+ "t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk) " + "VALUES ('"
-								+ newAlarma.getDias() + "','" + newAlarma.getT_inicio() + "','" + newAlarma.getT_fin()
-								+ "','" + newAlarma.getT_trabajo() + "','" + newAlarma.getT_descanso() + "','"
-								+ newAlarma.getCiclo_trabajo() + "','" + newAlarma.getCiclo_descanso() + "','"
-								+ newAlarma.getHash_mac_fk() + "');");
+				Query<RowSet<Row>> query = mySqlClient.query("INSERT INTO proyectodad.alarmas(dias, t_inicio, t_fin,"
+						+ "t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk) " + "VALUES ('"
+						+ newAlarma.getDias() + "','" + newAlarma.getT_inicio() + "','" + newAlarma.getT_fin() + "','"
+						+ newAlarma.getT_trabajo() + "','" + newAlarma.getT_descanso() + "','"
+						+ newAlarma.getCiclo_trabajo() + "','" + newAlarma.getCiclo_descanso() + "','"
+						+ newAlarma.getHash_mac_fk() + "');");
 
 				query.execute(res -> {
 					if (res.succeeded()) {
@@ -576,7 +584,8 @@ public class BBDDVerticle extends AbstractVerticle {
 					;
 				});
 			}
-			if(jsonNewAlarma.getString("hash_mac_fk") == "") message.reply(jsonNewAlarma);
+			if (jsonNewAlarma.getString("hash_mac_fk") == "")
+				message.reply(jsonNewAlarma);
 		});
 	}
 
@@ -1003,8 +1012,9 @@ public class BBDDVerticle extends AbstractVerticle {
 			});
 		});
 	}
-	
-	// Obtiene el registro de las alarmas de un mes y anyo asociadas a un usuario dado su hash_mac
+
+	// Obtiene el registro de las alarmas de un mes y anyo asociadas a un usuario
+	// dado su hash_mac
 	private void obtenerRegistrosAlarmasUsuarioAnyo() {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerRegistrosAlarmasUsuarioAnyo");
 
@@ -1012,9 +1022,9 @@ public class BBDDVerticle extends AbstractVerticle {
 			JsonObject jsonEditLlamada = new JsonObject(message.body());
 			String hash_mac_fk = jsonEditLlamada.getString("hash_mac_fk");
 			String anyo = jsonEditLlamada.getString("anyo");
-			
-			Query<RowSet<Row>> query = mySqlClient
-					.query("SELECT * FROM proyectodad.registros WHERE hash_mac_fk = '" + hash_mac_fk + "' AND YEAR(fecha) = " + anyo + ";");
+
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.registros WHERE hash_mac_fk = '"
+					+ hash_mac_fk + "' AND YEAR(fecha) = " + anyo + ";");
 
 			query.execute(res -> {
 				JsonObject json = new JsonObject();
@@ -1048,7 +1058,6 @@ public class BBDDVerticle extends AbstractVerticle {
 			});
 		});
 	}
-
 
 	// Obtiene el registro de llamadas enviadas por un usuario dado su hash_mac
 	private void obtenerRegistrosLlamadasEnviadas() {

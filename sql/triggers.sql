@@ -100,15 +100,22 @@ CREATE TRIGGER alarmas_inicio_fin_solapado_INSERT BEFORE INSERT
     DECLARE bandera1 SMALLINT;
 	DECLARE bandera2 SMALLINT;
     DECLARE bandera3 SMALLINT;
+    DECLARE i SMALLINT; SET i = 1;
+    
+	WHILE i < CHAR_LENGTH(NEW.dias)
+    DO
+		SELECT COUNT(*) INTO bandera1 FROM proyectodad.alarmas WHERE  NEW.t_inicio >= t_inicio AND NEW.t_inicio <= t_fin AND hash_mac_fk = NEW.hash_mac_fk AND dias LIKE CONCAT('%', SUBSTRING(NEW.dias, i, 1) ,'%');
+		SELECT COUNT(*) INTO bandera2 FROM proyectodad.alarmas WHERE  NEW.t_fin >= t_inicio AND NEW.t_fin <= t_fin AND hash_mac_fk = NEW.hash_mac_fk AND dias LIKE CONCAT('%', SUBSTRING(NEW.dias, i, 1) ,'%');
+		SELECT COUNT(*) INTO bandera3 FROM proyectodad.alarmas WHERE NEW.t_fin <= NEW.t_inicio AND dias LIKE CONCAT('%', SUBSTRING(NEW.dias, i, 1) ,'%');
+	
+		IF (bandera1 OR bandera2 OR bandera3) 
+			THEN
+			signal sqlstate '50000' set message_text = 'Error al establecer horario, las alarmas no pueden ser solapadas y el tiempo de fin tiene que ser superior al de inicio';  
+		END IF;
+    SET i = i + 1;
+  END WHILE;
             
-	SELECT COUNT(*) INTO bandera1 FROM proyectodad.alarmas WHERE  NEW.t_inicio >= t_inicio AND NEW.t_inicio <= t_fin AND hash_mac_fk = NEW.hash_mac_fk;
-	SELECT COUNT(*) INTO bandera2 FROM proyectodad.alarmas WHERE  NEW.t_fin >= t_inicio AND NEW.t_fin <= t_fin AND hash_mac_fk = NEW.hash_mac_fk;
-	SELECT COUNT(*) INTO bandera3 FROM proyectodad.alarmas WHERE NEW.t_fin <= NEW.t_inicio;
 
-    IF (bandera1 OR bandera2 OR bandera3) 
-		THEN
-		signal sqlstate '50000' set message_text = 'Error al establecer horario, las alarmas no pueden ser solapadas y el tiempo de fin tiene que ser superior al de inicio';  
-	END IF;
 END//
 
 SHOW TRIGGERS;
