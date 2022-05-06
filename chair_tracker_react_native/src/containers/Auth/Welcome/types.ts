@@ -2,4 +2,4 @@ import type { MainStackScreenProps } from 'navigator/types';
 
 export type Props = MainStackScreenProps<'Alarms'> & {};
 
-export type ContainerProps = { safeTop: number };
+export type ContainerProps = { safeTop?: number; safeBottom?: number };

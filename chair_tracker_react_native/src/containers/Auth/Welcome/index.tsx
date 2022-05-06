@@ -16,7 +16,7 @@ import type { Props } from './types';
 
 const Welcome: FC<Props> = () => {
   const { handleToLogin, handleToSignUp } = useConnect();
-  const { top: safeTop } = useSafeAreaInsets();
+  const { top: safeTop, bottom: safeBottom } = useSafeAreaInsets();
 
   return (
     <Container safeTop={safeTop}>
@@ -24,7 +24,7 @@ const Welcome: FC<Props> = () => {
         <Background source={LOGO} />
       </ImageContainer>
 
-      <SubContainer>
+      <SubContainer safeBottom={safeBottom}>
         <Title>Welcome</Title>
         <Subtitle>
           This is Chair Tracker App. Please log in and start tracking your work
