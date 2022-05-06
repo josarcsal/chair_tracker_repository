@@ -2,13 +2,11 @@ import type { FC } from 'react';
 import { useCallback } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { Alarma } from 'axios/types/alarma';
-import { PlusIcon } from 'components';
 import AlarmCard from 'components/AlarmCard';
 import MainHeader from 'components/Header/MainHeader';
-import RefreshIcon from 'components/Icons/RefreshIcon';
 import type { AlarmProps } from 'containers/Main/Tabs/Screens/Alarms/types';
 import useConnect from './connect';
-import { AddButton, AlarmList, Container, RefreshButton } from './styles';
+import { AlarmList, Container } from './styles';
 import type { Props } from './types';
 
 const Alarms: FC<Props> = () => {
@@ -38,13 +36,12 @@ const Alarms: FC<Props> = () => {
   readValue();
   return (
     <Container safeTop={safeTop}>
-      <MainHeader title="Alarms" subtitle="Your schedule" />
-      <RefreshButton onPress={() => refetch()}>
-        <RefreshIcon size={27} />
-      </RefreshButton>
-      <AddButton onPress={handleToAddAlarms}>
-        <PlusIcon />
-      </AddButton>
+      <MainHeader
+        title="Alarms"
+        subtitle="Your schedule"
+        handleAdd={handleToAddAlarms}
+        refetch={refetch}
+      />
       <AlarmList
         data={normalizedData}
         keyExtractor={handleKeyExtractor}
