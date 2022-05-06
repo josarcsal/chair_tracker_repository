@@ -9,10 +9,10 @@ export const useARegistroAlarmaByUserID = (
 ) => {
   const { data, loading, error, refetch } = useAxios<JSON>({
     baseURL: AXIOS_ENDPOINT,
-    method: 'get',
     url: '/registros/alarmas/hash_macAnyo',
     headers: {
       'content-type': 'application/json',
+      'X-Custom-Header': 'custom-header-value',
     },
     params: { hash_mac_fk: hashMac, anyo: anyo },
   });

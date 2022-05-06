@@ -7,10 +7,10 @@ export const useAlarmasByDay = (day?: string, hashMac?: string | null) => {
   //DEBEMOS RECOGER LA MAC DE LA PLACA DEL USER Y ALMACENARLA
   const { data, loading, error, refetch } = useAxios<JSON>({
     baseURL: AXIOS_ENDPOINT,
-    method: 'get',
     url: '/alarmas/hash_macDia',
     headers: {
       'content-type': 'application/json',
+      'X-Custom-Header': 'custom-header-value',
     },
     params: { hash_mac_fk: hashMac, dias: day },
   });

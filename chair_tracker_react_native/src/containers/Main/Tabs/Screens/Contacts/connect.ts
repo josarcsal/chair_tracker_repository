@@ -4,13 +4,17 @@ import { useNavigation } from '@react-navigation/core';
 import { useContactsUsuario } from 'axios/hooks/Users/useContactsUsuario';
 
 const useConnect = () => {
-  const { normalizedData } = useContactsUsuario();
+  const [hashMac, setHashMac] = useState<string | null>();
+
+  const { normalizedData } = useContactsUsuario(hashMac || '');
 
   const [nifJefe, setNifJefe] = useState<string | null>();
 
   async function readValue() {
     const v = await AsyncStorage.getItem('nif_jefe');
+    const y = await AsyncStorage.getItem('hash_mac');
     setNifJefe(v);
+    setHashMac(y);
   }
   const { navigate } = useNavigation();
 

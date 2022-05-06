@@ -13,14 +13,14 @@ INSERT INTO Usuarios     (hash_mac, nif, contrasena, last_login, nombre, apellid
 INSERT INTO Usuarios     (hash_mac, nif, contrasena, last_login, nombre, apellidos, rol, nif_jefe)
     VALUES ('mac5', '51168940J', 'pass5', '2021-04-28 14:57:05', 'User5', 'Lastname5', 'E', '49163961H');
     
-INSERT INTO Alarmas     (oid_alarma, dias, t_inicio, t_fin, t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk)
-    VALUES (1, 'L', '08:00', '12:00', 30, 10, 0, 0, 'mac1');
+INSERT INTO Alarmas     (dias, t_inicio, t_fin, t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk)
+    VALUES ('L', '08:00', '12:00', 30, 10, 0, 0, 'mac1');
 
-INSERT INTO Alarmas     (oid_alarma, dias, t_inicio, t_fin, t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk)
-    VALUES (2, 'MJ', '18:30', '20:00', 50, 20, 0, 0, 'mac1');
+INSERT INTO Alarmas     (dias, t_inicio, t_fin, t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk)
+    VALUES ('MJ', '18:30', '20:00', 50, 20, 0, 0, 'mac1');
         
-INSERT INTO Alarmas     (oid_alarma, dias, t_inicio, t_fin, t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk)
-    VALUES (3, 'LXV', '12:30', '17:45', 25, 5, 0, 0, 'mac1');
+INSERT INTO Alarmas     (dias, t_inicio, t_fin, t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk)
+    VALUES ('LXV', '12:30', '17:45', 25, 5, 0, 0, 'mac1');
     
 INSERT INTO Llamadas     (estado, desde, descripcion, remitente_hash_mac_fk, destinatario_hash_mac_fk)
     VALUES ('Pendiente', 'Department 1', 'Message 1', 'mac2', 'mac1');
