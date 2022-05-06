@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS Alarmas;
 DROP TABLE IF EXISTS Usuarios;
 
 CREATE TABLE Usuarios(
-	hash_mac VARCHAR(9) PRIMARY KEY,
+	hash_mac VARCHAR(10) PRIMARY KEY,
     nif         VARCHAR(9) NOT NULL,
     contrasena  VARCHAR(64) NOT NULL,
     last_login   DATETIME,
