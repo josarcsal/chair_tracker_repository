@@ -1,39 +1,38 @@
-// import { MQTT_ENDPOINT } from '@env';
-// import MQTT from 'sp-react-native-mqtt';
+import { MQTT_ENDPOINT } from '@env';
+import * as Mqtt from 'react-native-native-mqtt';
 
-// export const setupMqtt = () => {
-//   console.log(MQTT_ENDPOINT);
-//   const MqttClient = MQTT.createClient({
-//     uri: 'mqtt://' + MQTT_ENDPOINT,
-//     clientId: '1001',
-//   })
-//     .then(function (client) {
-//       client.on('closed', function () {
-//         console.log('mqtt.event.closed');
-//       });
+export const setupMqtt = () => {
+  const mqttClient = new Mqtt.Client('tcp://' + MQTT_ENDPOINT);
 
-//       client.on('error', function (msg) {
-//         console.log('mqtt.event.error', msg);
-//       });
+  mqttClient
+    .connect({
+      clientId: '1001',
+      username: 'root',
+      password: 'root',
+      allowUntrustedCA: true,
+    })
+    .then(function (client: any) {
+      client.on(Mqtt.Event.Message, (topic: string, message: Buffer) => {
+        console.log('Mqtt Message:', topic, message.toString());
+      });
 
-//       client.on('message', function (msg) {
-//         console.log('mqtt.event.message', msg);
-//       });
+      client.on(Mqtt.Event.Connect, () => {
+        console.log('MQTT Connect');
+        // client.subscribe(['mac1/alarmas/refresh'], [0]);
+      });
 
-//       client.on('connect', function () {
-//         console.log('connected');
-//         client.subscribe('/data', 0);
-//         client.publish('/data', 'test', 0, false);
-//       });
+      client.on(Mqtt.Event.Error, (error: string) => {
+        console.log('MQTT Error:', error);
+      });
 
-//       client.connect();
+      client.on(Mqtt.Event.Disconnect, (cause: string) => {
+        console.log('MQTT Disconnect:', cause);
+      });
+    })
+    .catch(function (err: any) {
+      console.log(err);
+    });
+  return mqttClient;
+};
 
-//       client.subscribe('/mac123/alarmas', 0);
-//     })
-//     .catch(function (err) {
-//       console.log(err);
-//     });
-//   return MqttClient;
-// };
-
-// export default setupMqtt;
+export default setupMqtt;

@@ -3,3 +3,4 @@ declare module '@env' {
   export const MQTT_ENDPOINT: string;
 }
 declare module 'react-native-general-calendars';
+declare module 'react-native-native-mqtt';
