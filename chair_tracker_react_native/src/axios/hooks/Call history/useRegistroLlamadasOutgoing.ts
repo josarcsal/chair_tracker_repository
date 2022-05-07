@@ -4,8 +4,7 @@ import type { RegistroLlamada } from 'axios/types/registro';
 import { normalizeRegistroLlamada } from 'models/Registros/index';
 
 export const useRegistroLlamadasOutgoing = (hashMac?: string | null) => {
-  //DEBEMOS RECOGER LA MAC DE LA PLACA DEL USER Y ALMACENARLA
-  const { data, loading, error } = useAxios<JSON>({
+  const { data, loading, error, refetch } = useAxios<JSON>({
     baseURL: AXIOS_ENDPOINT,
     method: 'get',
     url: '/registros/llamadas/enviadas/hash_mac',
@@ -17,10 +16,11 @@ export const useRegistroLlamadasOutgoing = (hashMac?: string | null) => {
 
   const auxData = data || '';
   const normalizedDataOutgoing: RegistroLlamada[] = [];
+  const refetchOutgoing = refetch;
 
   Object.values(auxData).forEach((value) => {
     normalizedDataOutgoing.push(normalizeRegistroLlamada(value));
   });
 
-  return { normalizedDataOutgoing, loading, error };
+  return { normalizedDataOutgoing, loading, error, refetchOutgoing };
 };

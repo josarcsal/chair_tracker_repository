@@ -29,6 +29,7 @@ public class MqttVerticle extends AbstractVerticle {
 
 		actualizacionAlarmas();
 		llamadaAUsuario();
+		actualizacionRegistros();
 	}
 
 	private void llamadaAUsuario() {
@@ -37,8 +38,19 @@ public class MqttVerticle extends AbstractVerticle {
 		consumer.handler(message -> {
 
 			JsonObject json = new JsonObject(message.body());
-			mqttClient.publish(json.getString("destinatario_hash_mac_fk") + "/llamadas",
+			mqttClient.publish(json.getString("destinatario_hash_mac_fk") + "/llamadas/recibidas",
 					Buffer.buffer("Llamada desde " + json.getString("remitente_hash_mac_fk")), MqttQoS.AT_LEAST_ONCE,
+					false, false, publishHandler -> {
+						if (publishHandler.succeeded()) {
+							System.out.println("Message has been published");
+						} else {
+							System.out.println("Error while publishing message");
+						}
+
+					});
+			
+			mqttClient.publish(json.getString("remitente_hash_mac_fk") + "/llamadas/enviadas",
+					Buffer.buffer("Llamada a " + json.getString("destinatario_hash_mac_fk")), MqttQoS.AT_LEAST_ONCE,
 					false, false, publishHandler -> {
 						if (publishHandler.succeeded()) {
 							System.out.println("Message has been published");
@@ -69,6 +81,27 @@ public class MqttVerticle extends AbstractVerticle {
 
 						});
 			}
+		});
+	}
+	
+	private void actualizacionRegistros() {
+		MessageConsumer<String> consumer = vertx.eventBus().consumer("actualizacionRegistros");
+
+		consumer.handler(message -> {
+
+			JsonObject json = new JsonObject(message.body());
+
+				mqttClient.publish(json.getString("hash_mac_fk") + "/registros/refresh",
+						Buffer.buffer("Alarmas han sido actualizadas"), MqttQoS.AT_LEAST_ONCE, false, false,
+						publishHandler -> {
+							if (publishHandler.succeeded()) {
+								System.out.println("Message has been published");
+							} else {
+								System.out.println("Error while publishing message");
+							}
+
+						});
+			
 		});
 	}
 }

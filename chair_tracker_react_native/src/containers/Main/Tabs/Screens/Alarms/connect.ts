@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react';
+import { MQTT_ENDPOINT } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/core';
 import * as Mqtt from 'react-native-native-mqtt';
 import { useAlarmasByHashMac } from 'axios/hooks/Alarms/useAlarmasByHashMac';
-import setupMqtt from 'mqtt/client';
 
 const useConnect = () => {
   const [hashMac, setHashMac] = useState<string | null>();
@@ -14,11 +14,27 @@ const useConnect = () => {
     setHashMac(v);
   }
 
-  const mqttClient = setupMqtt();
+  const mqttClient = new Mqtt.Client('tcp://' + MQTT_ENDPOINT);
+
+  mqttClient.connect(
+    {
+      clientId: '1001',
+      username: 'root',
+      password: 'root',
+    },
+    (err: any) => {
+      console.log(err);
+    },
+  );
 
   mqttClient.on(Mqtt.Event.Connect, () => {
-    console.log('MQTT Connect');
-    mqttClient.subscribe(['mac1/alarmas/refresh'], [0]);
+    mqttClient.subscribe([hashMac + '/alarmas/refresh'], [0]);
+    mqttClient.subscribe(['null/alarmas/refresh'], [0]);
+  });
+
+  mqttClient.on(Mqtt.Event.Message, (topic: any, message: any) => {
+    console.log('Mqtt Message:', topic, message.toString());
+    refetch();
   });
 
   const { navigate } = useNavigation();

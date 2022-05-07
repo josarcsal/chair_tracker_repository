@@ -272,7 +272,7 @@ void callback(char *topic, byte *payload, unsigned int length)
   }
   Serial.println();
 
-  String topicCmp1 = hashMac + "/llamadas";
+  String topicCmp1 = hashMac + "/llamadas/recibidas";
   String topicCmp2 = hashMac + "/alarmas/refresh";
 
   int topicLlamada = strcmp(topic, topicCmp1.c_str());
