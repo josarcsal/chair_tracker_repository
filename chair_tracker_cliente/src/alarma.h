@@ -6,4 +6,5 @@ String getValue(String data, char separator, int index);
 int StringToIntAlarma(String alarma, String valor);
 String timeFromClientToBBDD(String hora);
 void sonarAlarma(uint8_t ALARMA_PIN);
+void onOffAlarma(uint8_t ALARMA_PIN);
 void sonarVibrador(uint8_t VIBRADOR_PIN);

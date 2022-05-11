@@ -196,6 +196,17 @@ void sonarAlarma(uint8_t ALARMA_PIN)
   digitalWrite(ALARMA_PIN, LOW);
 }
 
+void onOffAlarma(uint8_t ALARMA_PIN)
+{
+  digitalWrite(ALARMA_PIN, HIGH);
+  delay(200);
+  digitalWrite(ALARMA_PIN, LOW);
+  delay(200);
+  digitalWrite(ALARMA_PIN, HIGH);
+  delay(200);
+  digitalWrite(ALARMA_PIN, LOW);
+}
+
 void sonarVibrador(uint8_t VIBRADOR_PIN)
 {
   digitalWrite(VIBRADOR_PIN, HIGH);
