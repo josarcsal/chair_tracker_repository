@@ -47,21 +47,10 @@ WiFiManagerParameter custom_server("server", "Server IP", server, 40);
 WiFiManagerParameter custom_http_port("http_port", "API Port", http_port, 6);
 WiFiManagerParameter custom_mqtt_port("mqtt_port", "MQTT Port", mqtt_port, 6);
 
-//Declaracion de variables usadas
-// const char *ssid = "Xiaomi_4A";
-// //const char *ssid = "MiFibra-919C";
-// const char *password = "oE25yJ9ms54Vd9222Z6B";
-// //const char *password = "9We7qZEF";
-// const char *ipServer = "192.168.1.56";
-// //const char *ipServer = "192.168.1.44";
-// const int portHttp = 8084;
-// const int portMqtt = 1883;
 const char *mqttUser = "root";
 const char *mqttPassword = "root";
 
 WiFiClient espClient;
-// IPAddress server(192, 168, 1, 56);
-//IPAddress server(192, 168, 1, 44);
 PubSubClient mqttClient(espClient);
 HttpClient httpClient = HttpClient(espClient, server, atoi(http_port));
 
@@ -73,6 +62,7 @@ String hashMac = macEsp.substring(0,10);
 String proxima;
 int wifiFlag = 0;
 int alarmaActiva = 0;
+int inicioAlarma = 0;
 int distanciaAnterior = 50;
 int levantado = 10;
 int marcaTiempo1;
@@ -90,7 +80,7 @@ void setup()
   
   //WIFI
   delay(3000);
- // Serial.println("Setup mode...");
+  // Serial.println("Setup mode...");
   //wifiManager.resetSettings();
  
   wm.addParameter(&custom_server);
@@ -172,6 +162,10 @@ void loop()
     if (marcaTiempo1 >= proximaT_inicio && marcaTiempo1 <= proximaT_final)
     {
       alarmaActiva = 1;
+      if(inicioAlarma == 0){
+        inicioAlarma = 1;
+        onOffAlarma(ALARMA_PIN);
+      }
       if (distanciaActual < 20 && distanciaAnterior > 40)
       {
         Serial.println("Me siento");
@@ -255,6 +249,10 @@ void loop()
       ciclosTrabajo = 0;
       ciclosDescanso = 0;
       alarmaActiva = 0;
+      if(inicioAlarma == 1){
+        inicioAlarma = 0;
+        onOffAlarma(ALARMA_PIN);
+      }
     }
   } 
 }

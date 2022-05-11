@@ -108,7 +108,6 @@ CREATE TRIGGER alarmas_inicio_fin_solapado_INSERT BEFORE INSERT
 		SELECT COUNT(*) INTO bandera1 FROM proyectodad.alarmas WHERE  NEW.t_inicio >= t_inicio AND NEW.t_inicio <= t_fin AND hash_mac_fk = NEW.hash_mac_fk AND dias LIKE CONCAT('%', SUBSTRING(NEW.dias, i, 1) ,'%');
 		SELECT COUNT(*) INTO bandera2 FROM proyectodad.alarmas WHERE  NEW.t_fin >= t_inicio AND NEW.t_fin <= t_fin AND hash_mac_fk = NEW.hash_mac_fk AND dias LIKE CONCAT('%', SUBSTRING(NEW.dias, i, 1) ,'%');
 		SELECT COUNT(*) INTO bandera3 FROM proyectodad.alarmas WHERE NEW.t_fin <= NEW.t_inicio AND dias LIKE CONCAT('%', SUBSTRING(NEW.dias, i, 1) ,'%');
-#		SELECT COUNT(*) INTO bandera4 FROM proyectodad.alarmas WHERE  NEW.t_inicio = t_inicio AND NEW.t_fin = t_fin AND hash_mac_fk = NEW.hash_mac_fk AND dias LIKE CONCAT('%', SUBSTRING(NEW.dias, i, 1) ,'%');
 		SELECT COUNT(*) INTO bandera4 FROM proyectodad.alarmas WHERE  NOT(NEW.t_inicio  < t_inicio ) AND NOT(NEW.t_inicio > t_inicio ) AND NOT(NEW.t_fin < t_fin) AND NOT(NEW.t_fin > t_fin ) AND hash_mac_fk = NEW.hash_mac_fk AND dias LIKE  CONCAT('%', SUBSTRING(NEW.dias, i, 1) ,'%');
 
 		IF (bandera1 OR bandera2 OR bandera3 OR bandera4) 
