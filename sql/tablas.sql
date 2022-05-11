@@ -1,5 +1,5 @@
-CREATE SCHEMA IF NOT EXISTS proyectodad;
-USE proyectodad;
+CREATE SCHEMA IF NOT EXISTS chairtrackerdb;
+USE chairtrackerdb;
 
 DROP TABLE IF EXISTS Registros;
 DROP TABLE IF EXISTS Llamadas;

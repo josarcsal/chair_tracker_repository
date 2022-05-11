@@ -25,7 +25,7 @@ public class BBDDVerticle extends AbstractVerticle {
 	@Override
 	public void start(Promise<Void> startFuture) {
 		MySQLConnectOptions connectOptions = new MySQLConnectOptions().setPort(3306).setHost("localhost")
-				.setDatabase("proyectodad").setUser("root").setPassword("root");
+				.setDatabase("chairtrackerdb").setUser("root").setPassword("root");
 
 		PoolOptions poolOptions = new PoolOptions().setMaxSize(5);
 
@@ -80,7 +80,7 @@ public class BBDDVerticle extends AbstractVerticle {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerUsuarios");
 
 		consumer.handler(message -> {
-			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.usuarios;");
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM chairtrackerdb.usuarios;");
 
 			query.execute(res -> {
 				JsonObject json = new JsonObject();
@@ -119,7 +119,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			String hash_mac = jsonHash.getString("hash_mac");
 			if (!(hash_mac.equals(""))) {
 				Query<RowSet<Row>> queryCount = mySqlClient
-						.query("SELECT rol, nif FROM proyectodad.usuarios WHERE hash_mac = '" + hash_mac + "';");
+						.query("SELECT rol, nif FROM chairtrackerdb.usuarios WHERE hash_mac = '" + hash_mac + "';");
 
 				queryCount.execute(res -> {
 					if (res.succeeded()) {
@@ -129,7 +129,7 @@ public class BBDDVerticle extends AbstractVerticle {
 						if (rowCount.getString("rol").equals("J")) {
 
 							Query<RowSet<Row>> queryJefe = mySqlClient
-									.query("SELECT * FROM proyectodad.Usuarios WHERE nif_jefe = '"
+									.query("SELECT * FROM chairtrackerdb.Usuarios WHERE nif_jefe = '"
 											+ rowCount.getString("nif") + "' OR rol = 'J';");
 
 							queryJefe.execute(resQueryJefe -> {
@@ -157,7 +157,7 @@ public class BBDDVerticle extends AbstractVerticle {
 							});
 						} else {
 							Query<RowSet<Row>> queryEmpleado = mySqlClient.query(
-									"SELECT * FROM proyectodad.Usuarios WHERE nif_jefe = '" + rowCount.getString("nif")
+									"SELECT * FROM chairtrackerdb.Usuarios WHERE nif_jefe = '" + rowCount.getString("nif")
 											+ "' OR nif = '" + rowCount.getString("nif") + "';");
 
 							queryEmpleado.execute(resQueryEmpleado -> {
@@ -208,7 +208,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			System.out.println(contrasena);
 
 			Query<RowSet<Row>> queryCount = mySqlClient
-					.query("SELECT COUNT(*), hash_mac, nombre, nif_jefe FROM proyectodad.usuarios WHERE nif = '" + nif
+					.query("SELECT COUNT(*), hash_mac, nombre, nif_jefe FROM chairtrackerdb.usuarios WHERE nif = '" + nif
 							+ "' AND contrasena = '" + contrasena + "';");
 
 			queryCount.execute(res -> {
@@ -243,7 +243,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			String hash_mac = message.body();
 
 			Query<RowSet<Row>> queryCount = mySqlClient
-					.query("SELECT COUNT(*) AS cuenta FROM proyectodad.usuarios WHERE hash_mac = '" + hash_mac + "';");
+					.query("SELECT COUNT(*) AS cuenta FROM chairtrackerdb.usuarios WHERE hash_mac = '" + hash_mac + "';");
 
 			queryCount.execute(res -> {
 				if (res.succeeded()) {
@@ -253,7 +253,7 @@ public class BBDDVerticle extends AbstractVerticle {
 					if (rowCount.getInteger("cuenta") > 0) {
 
 						Query<RowSet<Row>> query = mySqlClient
-								.query("DELETE FROM proyectodad.Usuarios WHERE hash_mac = '" + hash_mac + "';");
+								.query("DELETE FROM chairtrackerdb.Usuarios WHERE hash_mac = '" + hash_mac + "';");
 
 						query.execute(resQuery -> {
 							if (resQuery.succeeded()) {
@@ -291,7 +291,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			newUser.setNif_jefe(jsonNewUsuario.getString("nif_jefe"));
 
 			Query<RowSet<Row>> query = mySqlClient.query(
-					"INSERT INTO proyectodad.Usuarios(hash_mac, nif, contrasena, last_login, nombre, apellidos, rol, nif_jefe) "
+					"INSERT INTO chairtrackerdb.Usuarios(hash_mac, nif, contrasena, last_login, nombre, apellidos, rol, nif_jefe) "
 							+ "VALUES ('" + newUser.getHash_mac() + "','" + newUser.getNif() + "','"
 							+ newUser.getContrasena() + "','" + newUser.getLast_login() + "','" + newUser.getNombre()
 							+ "','" + newUser.getApellidos() + "','" + newUser.getRol() + "','" + newUser.getNif_jefe()
@@ -329,7 +329,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			editUser.setNif_jefe(jsonEditUsuario.getString("nif_jefe"));
 
 			Query<RowSet<Row>> queryCount = mySqlClient
-					.query("SELECT COUNT(*) AS cuenta FROM proyectodad.Usuarios WHERE hash_mac = '" + hash_mac + "';");
+					.query("SELECT COUNT(*) AS cuenta FROM chairtrackerdb.Usuarios WHERE hash_mac = '" + hash_mac + "';");
 
 			queryCount.execute(res -> {
 				if (res.succeeded()) {
@@ -338,7 +338,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 					if (rowCount.getInteger("cuenta") > 0) {
 
-						Query<RowSet<Row>> query = mySqlClient.query("UPDATE proyectodad.Usuarios SET hash_mac = '"
+						Query<RowSet<Row>> query = mySqlClient.query("UPDATE chairtrackerdb.Usuarios SET hash_mac = '"
 								+ editUser.getHash_mac() + "', nif = '" + editUser.getNif() + "', contrasena = '"
 								+ editUser.getContrasena() + "', last_login = '" + editUser.getLast_login()
 								+ "', nombre = '" + editUser.getNombre() + "', apellidos = '" + editUser.getApellidos()
@@ -377,7 +377,7 @@ public class BBDDVerticle extends AbstractVerticle {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerAlarmas");
 
 		consumer.handler(message -> {
-			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.alarmas;");
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM chairtrackerdb.alarmas;");
 
 			query.execute(res -> {
 				JsonObject json = new JsonObject();
@@ -416,7 +416,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			String hash_mac_fk = jsonEditLlamada.getString("hash_mac_fk");
 
 			Query<RowSet<Row>> query = mySqlClient
-					.query("SELECT * FROM proyectodad.alarmas WHERE hash_mac_fk = '" + hash_mac_fk + "';");
+					.query("SELECT * FROM chairtrackerdb.alarmas WHERE hash_mac_fk = '" + hash_mac_fk + "';");
 
 			query.execute(res -> {
 				JsonObject json = new JsonObject();
@@ -455,7 +455,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			String hash_mac_fk = jsonEditLlamada.getString("hash_mac_fk");
 			String dias = jsonEditLlamada.getString("dias");
 
-			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.alarmas WHERE hash_mac_fk = '"
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM chairtrackerdb.alarmas WHERE hash_mac_fk = '"
 					+ hash_mac_fk + "' AND dias LIKE '%" + dias + "%';");
 
 			query.execute(res -> {
@@ -493,7 +493,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			String oid_alarma = message.body();
 
 			Query<RowSet<Row>> queryCount = mySqlClient.query(
-					"SELECT COUNT(*) AS cuenta FROM proyectodad.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
+					"SELECT COUNT(*) AS cuenta FROM chairtrackerdb.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
 
 			queryCount.execute(res -> {
 				JsonObject json = new JsonObject();
@@ -504,7 +504,7 @@ public class BBDDVerticle extends AbstractVerticle {
 					if (rowCount.getInteger("cuenta") > 0) {
 
 						Query<RowSet<Row>> queryUser = mySqlClient
-								.query("SELECT * FROM proyectodad.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
+								.query("SELECT * FROM chairtrackerdb.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
 
 						queryUser.execute(resQueryUser -> {
 							if (resQueryUser.succeeded()) {
@@ -531,7 +531,7 @@ public class BBDDVerticle extends AbstractVerticle {
 						});
 
 						Query<RowSet<Row>> query = mySqlClient
-								.query("DELETE FROM proyectodad.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
+								.query("DELETE FROM chairtrackerdb.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
 
 						query.execute(resQuery -> {
 							if (resQuery.succeeded()) {
@@ -568,7 +568,7 @@ public class BBDDVerticle extends AbstractVerticle {
 				newAlarma.setCiclo_descanso(Short.valueOf(jsonNewAlarma.getString("ciclo_descanso")));
 				newAlarma.setHash_mac_fk(jsonNewAlarma.getString("hash_mac_fk"));
 
-				Query<RowSet<Row>> query = mySqlClient.query("INSERT INTO proyectodad.alarmas(dias, t_inicio, t_fin,"
+				Query<RowSet<Row>> query = mySqlClient.query("INSERT INTO chairtrackerdb.alarmas(dias, t_inicio, t_fin,"
 						+ "t_trabajo, t_descanso, ciclo_trabajo, ciclo_descanso, hash_mac_fk) " + "VALUES ('"
 						+ newAlarma.getDias() + "','" + newAlarma.getT_inicio() + "','" + newAlarma.getT_fin() + "','"
 						+ newAlarma.getT_trabajo() + "','" + newAlarma.getT_descanso() + "','"
@@ -609,7 +609,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			editAlarma.setHash_mac_fk(jsonEditAlarma.getString("hash_mac_fk"));
 
 			Query<RowSet<Row>> queryCount = mySqlClient.query(
-					"SELECT COUNT(*) AS cuenta FROM proyectodad.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
+					"SELECT COUNT(*) AS cuenta FROM chairtrackerdb.alarmas WHERE oid_alarma = '" + oid_alarma + "';");
 
 			queryCount.execute(res -> {
 				if (res.succeeded()) {
@@ -618,7 +618,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 					if (rowCount.getInteger("cuenta") > 0) {
 
-						Query<RowSet<Row>> query = mySqlClient.query("UPDATE proyectodad.alarmas SET "
+						Query<RowSet<Row>> query = mySqlClient.query("UPDATE chairtrackerdb.alarmas SET "
 								+ "oid_alarma = '" + editAlarma.getOid_alarma() + "', dias = '" + editAlarma.getDias()
 								+ "', t_inicio = '" + editAlarma.getT_inicio() + "', t_fin = '" + editAlarma.getT_fin()
 								+ "', t_trabajo = '" + editAlarma.getT_trabajo() + "', t_descanso = '"
@@ -657,7 +657,7 @@ public class BBDDVerticle extends AbstractVerticle {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerLlamadas");
 
 		consumer.handler(message -> {
-			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.llamadas;");
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM chairtrackerdb.llamadas;");
 
 			query.execute(res -> {
 				JsonObject json = new JsonObject();
@@ -692,7 +692,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			String destinatario_hash_mac_fk = jsonEditLlamada.getString("destinatario_hash_mac_fk");
 
 			Query<RowSet<Row>> query = mySqlClient
-					.query("SELECT * FROM proyectodad.llamadas WHERE destinatario_hash_mac_fk = '"
+					.query("SELECT * FROM chairtrackerdb.llamadas WHERE destinatario_hash_mac_fk = '"
 							+ destinatario_hash_mac_fk + "';");
 
 			query.execute(res -> {
@@ -728,7 +728,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			String remitente_hash_mac_fk = jsonEditLlamada.getString("remitente_hash_mac_fk");
 
 			Query<RowSet<Row>> query = mySqlClient
-					.query("SELECT * FROM proyectodad.llamadas WHERE remitente_hash_mac_fk = '" + remitente_hash_mac_fk
+					.query("SELECT * FROM chairtrackerdb.llamadas WHERE remitente_hash_mac_fk = '" + remitente_hash_mac_fk
 							+ "';");
 
 			query.execute(res -> {
@@ -770,7 +770,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			newLlamada.setDestinatario_hash_mac_fk(jsonNewLlamada.getString("destinatario_hash_mac_fk"));
 
 			Query<RowSet<Row>> query = mySqlClient.query(
-					"INSERT INTO proyectodad.llamadas(estado, desde, descripcion, remitente_hash_mac_fk, destinatario_hash_mac_fk) "
+					"INSERT INTO chairtrackerdb.llamadas(estado, desde, descripcion, remitente_hash_mac_fk, destinatario_hash_mac_fk) "
 							+ "VALUES ('" + newLlamada.getEstado() + "','" + newLlamada.getDesde() + "','"
 							+ newLlamada.getDescripcion() + "','" + newLlamada.getRemitente_hash_mac_fk() + "','"
 							+ newLlamada.getDestinatario_hash_mac_fk() + "');");
@@ -803,7 +803,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			editLlamada.setDestinatario_hash_mac_fk(jsonEditLlamada.getString("destinatario_hash_mac_fk"));
 
 			Query<RowSet<Row>> queryCount = mySqlClient.query(
-					"SELECT COUNT(*) AS cuenta FROM proyectodad.llamadas WHERE oid_llamada = '" + oid_llamada + "';");
+					"SELECT COUNT(*) AS cuenta FROM chairtrackerdb.llamadas WHERE oid_llamada = '" + oid_llamada + "';");
 
 			queryCount.execute(res -> {
 				if (res.succeeded()) {
@@ -813,7 +813,7 @@ public class BBDDVerticle extends AbstractVerticle {
 					if (rowCount.getInteger("cuenta") > 0) {
 
 						Query<RowSet<Row>> query = mySqlClient.query(
-								"UPDATE proyectodad.llamadas SET " + "oid_llamada = '" + editLlamada.getOid_llamada()
+								"UPDATE chairtrackerdb.llamadas SET " + "oid_llamada = '" + editLlamada.getOid_llamada()
 										+ "', estado = '" + editLlamada.getEstado() + "', desde = '"
 										+ editLlamada.getDesde() + "', descripcion = '" + editLlamada.getDescripcion()
 										+ "', remitente_hash_mac_fk = '" + editLlamada.getRemitente_hash_mac_fk()
@@ -852,7 +852,7 @@ public class BBDDVerticle extends AbstractVerticle {
 		MessageConsumer<String> consumer = vertx.eventBus().consumer("obtenerRegistros");
 
 		consumer.handler(message -> {
-			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.registros;");
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM chairtrackerdb.registros;");
 
 			query.execute(res -> {
 				JsonObject json = new JsonObject();
@@ -893,7 +893,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 		consumer.handler(message -> {
 
-			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.registros WHERE tipo = 'L';");
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM chairtrackerdb.registros WHERE tipo = 'L';");
 
 			query.execute(res -> {
 				JsonObject json = new JsonObject();
@@ -934,7 +934,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 		consumer.handler(message -> {
 
-			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.registros WHERE tipo = 'A';");
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM chairtrackerdb.registros WHERE tipo = 'A';");
 
 			query.execute(res -> {
 				JsonObject json = new JsonObject();
@@ -978,7 +978,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			String hash_mac_fk = jsonEditLlamada.getString("hash_mac_fk");
 
 			Query<RowSet<Row>> query = mySqlClient
-					.query("SELECT * FROM proyectodad.registros WHERE hash_mac_fk =" + " '" + hash_mac_fk + "';");
+					.query("SELECT * FROM chairtrackerdb.registros WHERE hash_mac_fk =" + " '" + hash_mac_fk + "';");
 
 			query.execute(res -> {
 				JsonObject json = new JsonObject();
@@ -1023,7 +1023,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			String hash_mac_fk = jsonEditLlamada.getString("hash_mac_fk");
 			String anyo = jsonEditLlamada.getString("anyo");
 
-			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM proyectodad.registros WHERE hash_mac_fk = '"
+			Query<RowSet<Row>> query = mySqlClient.query("SELECT * FROM chairtrackerdb.registros WHERE hash_mac_fk = '"
 					+ hash_mac_fk + "' AND YEAR(fecha) = " + anyo + ";");
 
 			query.execute(res -> {
@@ -1068,7 +1068,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			String remitente_hash_mac_fk = jsonEditLlamada.getString("remitente_hash_mac_fk");
 
 			Query<RowSet<Row>> query = mySqlClient
-					.query("SELECT * FROM proyectodad.registros WHERE remitente_hash_mac_fk =" + " '"
+					.query("SELECT * FROM chairtrackerdb.registros WHERE remitente_hash_mac_fk =" + " '"
 							+ remitente_hash_mac_fk + "';");
 
 			query.execute(res -> {
@@ -1113,7 +1113,7 @@ public class BBDDVerticle extends AbstractVerticle {
 			String destinatario_hash_mac_fk = jsonEditLlamada.getString("destinatario_hash_mac_fk");
 
 			Query<RowSet<Row>> query = mySqlClient
-					.query("SELECT * FROM proyectodad.registros WHERE destinatario_hash_mac_fk =" + " '"
+					.query("SELECT * FROM chairtrackerdb.registros WHERE destinatario_hash_mac_fk =" + " '"
 							+ destinatario_hash_mac_fk + "';");
 
 			query.execute(res -> {

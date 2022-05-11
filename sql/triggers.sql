@@ -1,4 +1,4 @@
-USE proyectodad;
+USE chairtrackerdb;
 
 DROP TRIGGER IF EXISTS Rellena_Registros_Llamadas_INSERT;
 DROP TRIGGER IF EXISTS Rellena_Registros_Alarmas_INSERT;
