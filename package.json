@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "react-native-native-mqtt": "^0.1.8"
+  }
+}
