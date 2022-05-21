@@ -20,6 +20,9 @@ const useConnect = () => {
   const { normalizedDataOutgoing, refetchOutgoing } =
     useRegistroLlamadasOutgoing(hashMac);
 
+  const finalDataIncoming = normalizedDataIncoming.reverse();
+  const finalDataOutgoing = normalizedDataOutgoing.reverse();
+
   const mqttClient = new Mqtt.Client('tcp://' + MQTT_ENDPOINT);
 
   mqttClient.connect(
@@ -60,8 +63,8 @@ const useConnect = () => {
   };
 
   return {
-    normalizedDataIncoming,
-    normalizedDataOutgoing,
+    finalDataIncoming,
+    finalDataOutgoing,
     handleGoBack,
     onPageScroll,
     currentPage,

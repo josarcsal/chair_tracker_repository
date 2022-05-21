@@ -8,7 +8,10 @@ import StatusBar from 'components/StatusBar';
 import Navigator from 'navigator';
 import theme from 'theme';
 import type { Props } from './types';
-LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
+LogBox.ignoreLogs([
+  'new NativeEventEmitter',
+  'Possible Unhandled Promise Rejection',
+]); // Ignore log notification by message
 if (
   Platform.OS === 'android' &&
   UIManager.setLayoutAnimationEnabledExperimental
