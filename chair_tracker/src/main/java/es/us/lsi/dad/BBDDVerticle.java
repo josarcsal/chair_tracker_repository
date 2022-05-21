@@ -693,7 +693,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 			Query<RowSet<Row>> query = mySqlClient
 					.query("SELECT * FROM chairtrackerdb.llamadas WHERE destinatario_hash_mac_fk = '"
-							+ destinatario_hash_mac_fk + "';");
+							+ destinatario_hash_mac_fk + "' ORDER BY oid_llamada DESC;");
 
 			query.execute(res -> {
 				JsonObject json = new JsonObject();
@@ -729,7 +729,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 			Query<RowSet<Row>> query = mySqlClient
 					.query("SELECT * FROM chairtrackerdb.llamadas WHERE remitente_hash_mac_fk = '" + remitente_hash_mac_fk
-							+ "';");
+							+ "' ORDER BY oid_llamada DESC;");
 
 			query.execute(res -> {
 				JsonObject json = new JsonObject();
@@ -1069,7 +1069,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 			Query<RowSet<Row>> query = mySqlClient
 					.query("SELECT * FROM chairtrackerdb.registros WHERE remitente_hash_mac_fk =" + " '"
-							+ remitente_hash_mac_fk + "';");
+							+ remitente_hash_mac_fk + "' ORDER BY oid_llamada_fk DESC;");
 
 			query.execute(res -> {
 				JsonObject json = new JsonObject();
@@ -1114,7 +1114,7 @@ public class BBDDVerticle extends AbstractVerticle {
 
 			Query<RowSet<Row>> query = mySqlClient
 					.query("SELECT * FROM chairtrackerdb.registros WHERE destinatario_hash_mac_fk =" + " '"
-							+ destinatario_hash_mac_fk + "';");
+							+ destinatario_hash_mac_fk + "' ORDER BY oid_llamada_fk DESC;");
 
 			query.execute(res -> {
 				JsonObject json = new JsonObject();

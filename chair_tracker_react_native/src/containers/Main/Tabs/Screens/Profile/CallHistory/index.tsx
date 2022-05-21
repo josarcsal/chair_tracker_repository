@@ -13,8 +13,8 @@ import type { Props } from './types';
 const CallHistory: FC<Props> = () => {
   const { safeTop } = useSafeAreaInsets();
   const {
-    normalizedDataIncoming,
-    normalizedDataOutgoing,
+    finalDataIncoming,
+    finalDataOutgoing,
     handleGoBack,
     onPageScroll,
     currentPage,
@@ -33,10 +33,10 @@ const CallHistory: FC<Props> = () => {
         scrollEnabled
       >
         <Page key="1" collapsable={false}>
-          <List data={normalizedDataIncoming} />
+          <List data={finalDataIncoming} />
         </Page>
         <Page key="2" collapsable={false}>
-          <List data={normalizedDataOutgoing} />
+          <List data={finalDataOutgoing} />
         </Page>
       </Pager>
     </Container>
