@@ -10,7 +10,6 @@ import theme from 'theme';
 import type { Props } from './types';
 LogBox.ignoreLogs([
   'new NativeEventEmitter',
-  'Possible Unhandled Promise Rejection',
 ]); // Ignore log notification by message
 if (
   Platform.OS === 'android' &&

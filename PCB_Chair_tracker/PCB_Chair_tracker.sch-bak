@@ -1,0 +1,293 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L PCB_Chair_tracker-rescue:CEM-1203(42)-CEM-1203_42_ Alt1
+U 1 1 61A63BAD
+P 3750 3150
+F 0 "Alt1" H 3650 3104 50  0000 R CNN
+F 1 "CEM-1203(42)" H 3650 3195 50  0000 R CNN
+F 2 "CEM-1203_42_:CUI_CEM-1203(42)" H 3750 3150 50  0001 L BNN
+F 3 "" H 3750 3150 50  0001 L BNN
+F 4 "CUI" H 3750 3150 50  0001 L BNN "MF"
+F 5 "CUI" H 3750 3150 50  0001 L BNN "PACKAGE"
+F 6 "Good" H 3750 3150 50  0001 L BNN "AVAILABILITY"
+F 7 "Audio Magnetic 3Vo-p 5Vo-p 35mA 3.5Vo-p 85dBA Wire Lead Through Hole Tray" H 3750 3150 50  0001 L BNN "DESCRIPTION"
+F 8 "0.49 USD" H 3750 3150 50  0001 L BNN "PRICE"
+F 9 "CEM-1203_42_" H 3750 3150 50  0001 L BNN "MP"
+	1    3750 3150
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	3950 2900 3750 2900
+Wire Wire Line
+	3750 2900 3750 2950
+Text Label 3950 2900 0    50   ~ 0
+GND
+Text Label 6300 3550 0    50   ~ 0
+GND
+Wire Wire Line
+	3750 3350 3750 3500
+Wire Wire Line
+	3750 3500 3950 3500
+Text Label 3950 3500 0    50   ~ 0
+ALARMA_PIN
+Text Label 4500 2650 0    50   ~ 0
+ALARMA_PIN
+Text Label 4500 2500 0    50   ~ 0
+ECHO_PIN
+Wire Wire Line
+	4750 2650 4500 2650
+Wire Wire Line
+	4750 2500 4500 2500
+Wire Wire Line
+	4750 2350 4500 2350
+Text Label 4500 2350 0    50   ~ 0
+TRIGGER_PIN
+Text Label 6350 2050 0    50   ~ 0
+VIN
+$Comp
+L Connector:Conn_01x02_Male tp2
+U 1 1 61A75B5C
+P 7400 2750
+F 0 "tp2" V 7554 2562 50  0000 R CNN
+F 1 "Conn_01x02_Male" V 7463 2562 50  0000 R CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 7400 2750 50  0001 C CNN
+F 3 "~" H 7400 2750 50  0001 C CNN
+	1    7400 2750
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector:Conn_01x02_Male tp1
+U 1 1 61A7C3D4
+P 7400 2350
+F 0 "tp1" H 7372 2232 50  0000 R CNN
+F 1 "Conn_01x02_Male" H 7372 2323 50  0000 R CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 7400 2350 50  0001 C CNN
+F 3 "~" H 7400 2350 50  0001 C CNN
+	1    7400 2350
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	7200 2250 6950 2250
+Text Label 6950 2250 0    50   ~ 0
+GND
+Wire Wire Line
+	6950 2750 7200 2750
+Text Label 6950 2750 0    50   ~ 0
+VIN
+$Comp
+L Connector:Conn_01x02_Male bat1
+U 1 1 61A7EFD7
+P 6500 2450
+F 0 "bat1" H 6608 2631 50  0000 C CNN
+F 1 "Conn_01x02_Male" H 6608 2540 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 6500 2450 50  0001 C CNN
+F 3 "~" H 6500 2450 50  0001 C CNN
+	1    6500 2450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6700 2450 6850 2450
+Text Label 6850 2450 0    50   ~ 0
+B-
+Wire Wire Line
+	7200 2350 7100 2350
+Text Label 7100 2350 0    50   ~ 0
+B-
+Wire Wire Line
+	6700 2550 6850 2550
+Text Label 6850 2550 0    50   ~ 0
+B+
+Wire Wire Line
+	7200 2650 7100 2650
+Text Label 7100 2650 0    50   ~ 0
+B+
+$Comp
+L Connector:Conn_01x02_Male led1
+U 1 1 61A8145C
+P 7400 3150
+F 0 "led1" H 7372 3032 50  0000 R CNN
+F 1 "Conn_01x02_Male" H 7372 3123 50  0000 R CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 7400 3150 50  0001 C CNN
+F 3 "~" H 7400 3150 50  0001 C CNN
+	1    7400 3150
+	-1   0    0    1   
+$EndComp
+Text Label 6350 2150 0    50   ~ 0
+3V3
+Wire Wire Line
+	7200 3150 7050 3150
+Text Label 7050 3150 0    50   ~ 0
+GND
+$Comp
+L PCB_Chair_tracker-rescue:1614977-1-1614977-1 R1
+U 1 1 61A856A3
+P 6550 3050
+F 0 "R1" H 6550 3256 50  0000 C CNN
+F 1 "1614977-1" H 6550 3165 50  0000 C CNN
+F 2 "1614977-1:RESAD640W45L370D200" H 6550 3050 50  0001 L BNN
+F 3 "" H 6550 3050 50  0001 L BNN
+F 4 "0204" H 6550 3050 50  0001 L BNN "Package"
+F 5 "100" H 6550 3050 50  0001 L BNN "Resistance"
+F 6 "1%" H 6550 3050 50  0001 L BNN "Tolerance"
+F 7 "Compliant" H 6550 3050 50  0001 L BNN "EU_RoHS_Compliance"
+F 8 "1614977-1" H 6550 3050 50  0001 L BNN "Comment"
+F 9 "200 V" H 6550 3050 50  0001 L BNN "Voltage_Rating"
+F 10 ".25 W" H 6550 3050 50  0001 L BNN "Power_Rating"
+	1    6550 3050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6750 3050 7200 3050
+Wire Wire Line
+	6350 3050 6250 3050
+Text Label 6300 3050 0    50   ~ 0
+3V3
+Wire Wire Line
+	5450 1550 5450 1650
+Text Label 5450 1650 0    50   ~ 0
+VIN
+Wire Wire Line
+	5550 1550 5550 1650
+Wire Wire Line
+	5550 1650 5800 1650
+Text Label 5800 1650 0    50   ~ 0
+VIBRADOR_PIN
+Wire Wire Line
+	4750 2200 4500 2200
+Text Label 4500 2200 0    50   ~ 0
+VIBRADOR_PIN
+$Comp
+L Connector:Conn_01x03_Male Vib1
+U 1 1 61A893F4
+P 5450 1350
+F 0 "Vib1" V 5512 1494 50  0000 L CNN
+F 1 "Conn_01x03_Male" V 5603 1494 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 5450 1350 50  0001 C CNN
+F 3 "~" H 5450 1350 50  0001 C CNN
+	1    5450 1350
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5350 1550 5350 1650
+Wire Wire Line
+	5350 1650 5150 1650
+Text Label 5150 1650 0    50   ~ 0
+GND
+Wire Wire Line
+	6150 3550 6300 3550
+Wire Wire Line
+	6150 2150 6350 2150
+Wire Wire Line
+	6150 2050 6350 2050
+$Comp
+L PCB_Chair_tracker-rescue:113990105-113990105 ESP1
+U 1 1 61A4F083
+P 5450 2750
+F 0 "ESP1" H 5450 3717 50  0000 C CNN
+F 1 "113990105" H 5450 3626 50  0000 C CNN
+F 2 "113990105:SEEED_113990105" H 5450 2750 50  0001 L BNN
+F 3 "" H 5450 2750 50  0001 L BNN
+F 4 "N/A" H 5450 2750 50  0001 L BNN "PARTREV"
+F 5 "Seeed" H 5450 2750 50  0001 L BNN "MANUFACTURER"
+F 6 "N/A" H 5450 2750 50  0001 L BNN "MAXIMUM_PACKAGE_HEIGHT"
+F 7 "Manufacturer Recommendations" H 5450 2750 50  0001 L BNN "STANDARD"
+	1    5450 2750
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:PWR_FLAG #FLG0101
+U 1 1 61A97054
+P 6950 2250
+F 0 "#FLG0101" H 6950 2325 50  0001 C CNN
+F 1 "PWR_FLAG" H 6950 2423 50  0000 C CNN
+F 2 "" H 6950 2250 50  0001 C CNN
+F 3 "~" H 6950 2250 50  0001 C CNN
+	1    6950 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:PWR_FLAG #FLG0102
+U 1 1 61A9724E
+P 6950 2750
+F 0 "#FLG0102" H 6950 2825 50  0001 C CNN
+F 1 "PWR_FLAG" H 6950 2923 50  0000 C CNN
+F 2 "" H 6950 2750 50  0001 C CNN
+F 3 "~" H 6950 2750 50  0001 C CNN
+	1    6950 2750
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:PWR_FLAG #FLG0103
+U 1 1 61A97480
+P 6350 2150
+F 0 "#FLG0103" H 6350 2225 50  0001 C CNN
+F 1 "PWR_FLAG" H 6350 2323 50  0000 C CNN
+F 2 "" H 6350 2150 50  0001 C CNN
+F 3 "~" H 6350 2150 50  0001 C CNN
+	1    6350 2150
+	-1   0    0    1   
+$EndComp
+Text Label 4100 2400 0    50   ~ 0
+ECHO_PIN
+Wire Wire Line
+	3900 2400 4100 2400
+Text Label 4100 2300 0    50   ~ 0
+TRIGGER_PIN
+Wire Wire Line
+	3900 2300 4100 2300
+Text Label 4100 2500 0    50   ~ 0
+GND
+Wire Wire Line
+	3900 2500 4100 2500
+Text Label 4100 2200 0    50   ~ 0
+VIN
+Wire Wire Line
+	3900 2200 4100 2200
+$Comp
+L Connector:Conn_01x04_Male Prox1
+U 1 1 61A6D2BF
+P 3700 2300
+F 0 "Prox1" H 3808 2581 50  0000 C CNN
+F 1 "Conn_01x04_Male" H 3808 2490 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical" H 3700 2300 50  0001 C CNN
+F 3 "~" H 3700 2300 50  0001 C CNN
+	1    3700 2300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H1
+U 1 1 61AF9079
+P 4200 1600
+F 0 "H1" H 4300 1646 50  0000 L CNN
+F 1 "MountingHole" H 4300 1555 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 4200 1600 50  0001 C CNN
+F 3 "~" H 4200 1600 50  0001 C CNN
+	1    4200 1600
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H2
+U 1 1 61AF95E9
+P 6250 2700
+F 0 "H2" H 6350 2746 50  0000 L CNN
+F 1 "MountingHole" H 6350 2655 50  0000 L CNN
+F 2 "MountingHole:MountingHole_3.2mm_M3" H 6250 2700 50  0001 C CNN
+F 3 "~" H 6250 2700 50  0001 C CNN
+	1    6250 2700
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC
